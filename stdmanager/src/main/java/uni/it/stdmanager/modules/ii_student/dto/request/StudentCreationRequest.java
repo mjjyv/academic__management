@@ -24,7 +24,7 @@ public class StudentCreationRequest {
     @Email(message = "Email không hợp lệ")
     private String email;
 
-    @NotBlank(message = "Cần có ID lớp hành chính")
+    @NotNull(message = "Cần có ID lớp hành chính")
     private UUID classId;
 
     private UUID majorId;

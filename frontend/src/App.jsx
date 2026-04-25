@@ -6,6 +6,7 @@ import MainLayout from './layouts/MainLayout';
 // Import Pages
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import StudentListPage from './pages/students/StudentListPage';
 
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
@@ -32,7 +33,7 @@ function App() {
 
             {/* Đăng ký các Route tương ứng với menuConfig.js */}
             <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
-            <Route path="/students" element={<Placeholder title="Quản lý Hồ sơ Sinh viên" />} />
+            <Route path="/students" element={<StudentListPage />} />
             <Route path="/lecturers" element={<Placeholder title="Quản lý Giảng viên & Nhân sự" />} />
             <Route path="/academic" element={<Placeholder title="Chương trình đào tạo & Học phần" />} />
             <Route path="/registration" element={<Placeholder title="Đăng ký học phần trực tuyến" />} />
