@@ -1,0 +1,1158 @@
+I. NHÓM QUẢN LÝ NGƯỜI DÙNG – PHÂN QUYỀN
+
+TT	Tên bảng	Mô tả	
+1	users	Lưu thông tin tài khoản đăng nhập hệ thống cho sinh viên, giảng viên, giáo vụ và quản trị viên	
+2	roles	Định nghĩa các vai trò người dùng trong hệ thống (ADMIN, GIAOVU, GIANGVIEN, SINHVIEN)	
+3	user_roles	Bảng trung gian dùng để gán một hoặc nhiều vai trò cho mỗi người dùng	
+4	permissions	Lưu danh sách các quyền chức năng chi tiết trong hệ thống	
+5	role_permissions	Bảng trung gian dùng để gán các quyền cụ thể cho từng vai trò	
+
+Bảng users	
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính của người dùng
+2	username	NVARCHAR(50)	Tên đăng nhập (duy nhất)
+3	password_hash	NVARCHAR(255)	Mật khẩu đã được mã hóa
+4	full_name	NVARCHAR(100)	Họ và tên người dùng
+5	email	NVARCHAR(100)	Email người dùng
+6	phone	NVARCHAR(20)	Số điện thoại
+7	avatar_url	NVARCHAR(255)	Ảnh đại diện
+8	last_login_at	DATETIME2	Thời điểm đăng nhập gần nhất
+9	created_at	DATETIME2	Thời điểm tạo
+10	updated_at	DATETIME2	Thời điểm cập nhật
+11	created_by	UNIQUEIDENTIFIER	Người tạo
+12	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+13	deleted_at	DATETIME2	Thời điểm xóa (xóa mềm)
+14	deleted_by	UNIQUEIDENTIFIER	Người xóa
+15	is_active	BIT	Trạng thái hiệu lực (1: hoạt động, 0: khóa)
+			
+Bảng roles	
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính của vai trò
+2	code	NVARCHAR(50)	Mã vai trò (ADMIN, GIAOVU, …)
+3	name	NVARCHAR(100)	Tên vai trò hiển thị
+4	description	NVARCHAR(255)	Mô tả chức năng vai trò
+5	is_system	BIT	Vai trò hệ thống (không xóa)
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+10	deleted_at	DATETIME2	Thời điểm xóa (xóa mềm)
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+12	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng user_roles
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	user_id	UNIQUEIDENTIFIER	Khóa ngoại → users.id
+3	role_id	UNIQUEIDENTIFIER	Khóa ngoại → roles.id
+4	created_at	DATETIME2	Thời điểm gán vai trò
+5	updated_at	DATETIME2	Thời điểm cập nhật
+6	created_by	UNIQUEIDENTIFIER	Người thực hiện gán
+7	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+8	deleted_at	DATETIME2	Thời điểm hủy gán (xóa mềm)
+9	deleted_by	UNIQUEIDENTIFIER	Người hủy gán
+10	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng permissions		thầy chốt rồi :d	
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính của quyền
+2	code	NVARCHAR(100)	Mã quyền (duy nhất, dùng trong code)
+3	name	NVARCHAR(150)	Tên quyền hiển thị
+4	module	NVARCHAR(100)	Nhóm chức năng (STUDENT, COURSE, GRADE, …)
+5	description	NVARCHAR(255)	Mô tả quyền
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+10	deleted_at	DATETIME2	Thời điểm xóa (xóa mềm)
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+12	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng role_permissions
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	role_id	UNIQUEIDENTIFIER	Khóa ngoại → roles.id
+3	permission_id	UNIQUEIDENTIFIER	Khóa ngoại → permissions.id
+4	created_at	DATETIME2	Thời điểm gán quyền
+5	updated_at	DATETIME2	Thời điểm cập nhật
+6	created_by	UNIQUEIDENTIFIER	Người thực hiện gán
+7	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+8	deleted_at	DATETIME2	Thời điểm thu hồi quyền (xóa mềm)
+9	deleted_by	UNIQUEIDENTIFIER	Người thu hồi quyền
+10	is_active	BIT	Trạng thái hiệu lực
+
+
+II. NHÓM QUẢN LÝ SINH VIÊN			
+STT	Tên bảng	Chức năng	
+1	students	Thông tin hồ sơ sinh viên	
+2	student_status	Bảng lịch sử trạng thái sinh viên (đang học, bảo lưu, thôi học, tốt nghiệp)	
+3	student_classes	Lớp hành chính/Lớp sinh hoạt	
+			
+Bảng: students			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	user_id	UNIQUEIDENTIFIER	Khóa ngoại → users.id
+3	student_code	VARCHAR(20)	Mã số sinh viên (Duy nhất)
+4	full_name	NVARCHAR(100)	Họ và tên sinh viên
+5	date_of_birth	DATE	ngày sinh của sinh viên
+6	gender	NVARCHAR(10),	1: Nam, 2: Nữ, 0: Khác
+7	personal_identification_number	VARCHAR(20)	CMND/CCCD
+8	date_of_issue	DATE	Ngày cấp CMND/CCCD
+9	card_place	NVARCHAR(100)	Nơi cấp CCCD
+10	address	NVARCHAR(300)	địa chỉ thường trú
+11	current_address	NVARCHAR(300)	địa chỉ hiện tại
+12	department_id	UNIQUEIDENTIFIER	FK -> khoa(Nhóm III)
+13	major_id	UNIQUEIDENTIFIER	FK -> ngành(Nhóm IV)
+14	program_id	UNIQUEIDENTIFIER	FK -> Chương trình đào tạo( nhóm IV)
+15	status_id	UNIQUEIDENTIFIER	Trạng thái hiện tại của sinh viên
+16	class_id	UNIQUEIDENTIFIER	Lớp hành chính hiện tại
+17	admission_year	INT	ngày tháng nhập học
+18	created_at	DATETIME2	Thời điểm tạo
+19	updated_at	DATETIME2	Thời điểm cập nhật
+20	created_by	UNIQUEIDENTIFIER	Người tạo
+21	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+22	deleted_at	DATETIME2	Thời điểm xóa
+23	deleted_by	UNIQUEIDENTIFIER	Người xóa
+24	is_active	BIT	Trạng thái hiệu lực
+			
+			
+			
+Bảng: student_status			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	student_id 	UNIQUEIDENTIFIER	Sinh viên
+3	status_code	NVARCHAR(50)	Mã trạng thái
+4	status_name	NVARCHAR(100)	Tên trạng thái
+5	start_date	DATE	ngày bắt đầu
+6	end_date	DATE	ngày kết thúc
+7	description	NVARCHAR(255)	ghi chú
+8	reason	NVARCHAR(255)	Lý do
+9	created_at	DATETIME2	Thời điểm tạo
+10	updated_at	DATETIME2	Thời điểm cập nhật
+11	created_by	UNIQUEIDENTIFIER	Người tạo
+12	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+13	deleted_at	DATETIME2	Thời điểm xóa
+14	deleted_by	UNIQUEIDENTIFIER	Người xóa
+15	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng: student_classes		--> danh sách lớp hành chính, lớp sinh hoạt	
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	class_code	VARCHAR(20)	Mã lớp (VD: CNTT-K20A
+3	class_name	NVARCHAR(100)	Tên lớp hành chính
+4	course_year	VARCHAR(20)	-- Khóa (VD: 2020)
+5	advisor_id	UNIQUEIDENTIFIER	Cố vấn học tập
+8	created_at	DATETIME2	Thời điểm tạo
+9	updated_at	DATETIME2	Thời điểm cập nhật
+10	created_by	UNIQUEIDENTIFIER	Người tạo
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+12	deleted_at	DATETIME2	Thời điểm xóa (xóa mềm)
+13	deleted_by	UNIQUEIDENTIFIER	Người xóa
+14	is_active	BIT	Trạng thái hiệu lực (1: hoạt động, 0: khóa)
+
+
+III. NHÓM QUẢN LÝ GIẢNG VIÊN – NHÂN SỰ			
+			
+STT	Tên bảng	Chức năng	
+1	departments	Khoa / Viện quản/phòng ban/... lý giảng viên và ngành học	
+2	positions		
+3	employees	Thông tin giảng viên/ nhân viên/ phòng ban/giáo vụ/ ...	
+4	lecturer_degrees		
+5	lecturer_positions_history		
+6	contracts		
+7	lecturer_specializations		
+			
+
+Bảng departments (1)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	code	VARCHAR(10)	Mã khoa
+3	name	NVARCHAR(100)	Tên khoa / viện
+4	description	NVARCHAR(255)	Mô tả
+5	established_year	INT	Năm thành lập
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+11	deleted_at	DATETIME2	Thời điểm xóa
+12	deleted_by	UNIQUEIDENTIFIER	Người xóa
+10	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng employees (1)			
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	user_id	UNIQUEIDENTIFIER	Tài khoản đăng nhập
+3	employee_code	VARCHAR(20)	Mã nhân viên
+4	full_name	NVARCHAR(100)	Họ tên
+5	date_of_birth	DATE	Ngày sinh
+6	gender	NVARCHAR(10)	Giới tính (1: Nam, 2: Nữ, 0: Khác)
+7	email	NVARCHAR(100)	Email
+8	phone	VARCHAR(20)	Số điện thoại
+9	address	NVARCHAR(255)	Địa chỉ
+10	department_id	UNIQUEIDENTIFIER	Phòng ban / khoa
+11	position	NVARCHAR(100)	Chức vụ
+12	hire_date	DATE	Ngày tuyển dụng
+13	contract_type	NVARCHAR(255)	Loại hợp đồng
+14	salary_coefficient	DECIMAL(4,2)	Hệ số lương
+15	academic_degree	NVARCHAR(50)	Học vị (ThS, TS)
+16	academic_title	NVARCHAR(50)	Học hàm (GS, PGS)
+17	specialization	NVARCHAR(255)	chuyên môn
+18	created_at	DATETIME2	Thời điểm tạo
+19	updated_at	DATETIME2	Thời điểm cập nhật
+20	created_by	UNIQUEIDENTIFIER	Người tạo
+21	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+22	deleted_at	DATETIME2	Thời điểm xóa
+23	deleted_by	UNIQUEIDENTIFIER	Người xóa
+24	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng positions (2)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	code	VARCHAR(10)	Mã chức danh
+3	name	NVARCHAR(50)	Tên chức danh
+4	level	INT	Thứ bậc học thuật
+5	description	NVARCHAR(255)	Mô tả
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+11	deleted_at	DATETIME2	Thời điểm xóa
+12	deleted_by	UNIQUEIDENTIFIER	Người xóa
+10	is_active	BIT	Trạng thái hiệu lực
+			
+			
+			
+Bảng lecturer_degrees (4)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	lecturer_id	UNIQUEIDENTIFIER	Giảng viên
+3	degree	NVARCHAR(50)	Học vị
+4	major	NVARCHAR(100)	Chuyên ngành
+5	university	NVARCHAR(150)	Trường đào tạo
+6	graduation_year	INT	Năm tốt nghiệp
+7	is_highest	BIT	Học vị cao nhất
+8	created_at	DATETIME2	Thời điểm tạo
+9	updated_at	DATETIME2	Thời điểm cập nhật
+10	created_by	UNIQUEIDENTIFIER	Người tạo
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+12	deleted_at	DATETIME2	Thời điểm xóa
+13	deleted_by	UNIQUEIDENTIFIER	Người xóa
+14	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng lecturer_positions_history (5)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	lecturer_id	UNIQUEIDENTIFIER	Giảng viên
+3	position_id	UNIQUEIDENTIFIER	Chức danh
+4	start_date	DATE	Ngày bắt đầu
+5	end_date	DATE	Ngày kết thúc
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+10	deleted_at	DATETIME2	Thời điểm xóa
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+12	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng contracts (6)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	lecturer_id	UNIQUEIDENTIFIER	Giảng viên
+3	contract_type	NVARCHAR(50)	Loại hợp đồng
+4	start_date	DATE	Ngày bắt đầu
+5	end_date	DATE	Ngày kết thúc
+6	salary_coefficient	DECIMAL(5,2)	Hệ số lương
+7	created_at	DATETIME2	Thời điểm tạo
+8	updated_at	DATETIME2	Thời điểm cập nhật
+9	created_by	UNIQUEIDENTIFIER	Người tạo
+10	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+11	deleted_at	DATETIME2	Thời điểm xóa
+12	deleted_by	UNIQUEIDENTIFIER	Người xóa
+13	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng lecturer_specializations (7)			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khoá chính
+2	lecturer_id	UNIQUEIDENTIFIER	Giảng viên
+3	specialization	NVARCHAR(100)	Chuyên môn
+4	created_at	DATETIME2	Thời điểm tạo
+5	updated_at	DATETIME2	Thời điểm cập nhật
+6	created_by	UNIQUEIDENTIFIER	Người tạo
+7	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+8	deleted_at	DATETIME2	Thời điểm xóa
+9	deleted_by	UNIQUEIDENTIFIER	Người xóa
+10	is_active	BIT	Trạng thái hiệu lực
+
+
+
+IV. NHÓM QUẢN LÝ CHƯƠNG TRÌNH – MÔN HỌC			
+			
+STT	Tên bảng	Mô tả	
+1	majors	Ngành đào tạo	
+2	training_programs	Chương trình đào tạo	
+3	courses	Môn học / Học phần	
+4	training_program_courses	Danh sách học phần của một chương trình đào tạo	
+			
+			
+			
+Bảng majors			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	department_id	UNIQUEIDENTIFIER	FK → department
+3	major_code	VARCHAR(20)	Mã ngành
+4	major_name	NVARCHAR(255)	Tên ngành
+5	description	NVARCHAR(MAX)	Mô tả ngành
+6	effective_date	VARCHAR(20)	Ngày có hiệu lực
+7	expiry_date	VARCHAR(20)	Ngày hết hiệu lực
+8	created_at	DATETIME2	Ngày tạo
+9	updated_at	DATETIME2	Ngày cập nhật
+10	created_by	UNIQUEIDENTIFIER	Người tạo
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+12	deleted_at	DATETIME2	Ngành còn hiệu lực hay không
+13	deleted_by	UNIQUEIDENTIFIER	Thời điểm xóa mềm
+14	is_active	BIT	Người thực hiện xóa
+			
+			
+Bảng training_programs			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	program_code	VARCHAR(50)	Mã chương trình
+3	program_name	NVARCHAR(255)	Tên chương trình
+4	program_name_en	NVARCHAR(255)	Tên chương trình tiếng anh
+5	major_id	UNIQUEIDENTIFIER	FK → majors
+6	department_id	UNIQUEIDENTIFIER	FK → department
+7	degree_level	NVARCHAR(50)	Bậc đào tạo (Đại học, Cao học, Tiến sĩ)
+8	education_type	NVARCHAR(50)	Loại hình đào tạo (Chính quy, Liên thông, VB2)
+9	total_credits	DECIMAL(5,1)	Tổng tín chỉ toàn chương trình
+10	required_credits	DECIMAL(5,1)	Tín chỉ bắt buộc
+11	elective_credits	DECIMAL(5,1)	Tín chỉ tự chọn
+12	internship_credits	DECIMAL(5,1)	Tín chỉ thực tập
+13	thesis_credits	DECIMAL(5,1)	Tín chỉ khóa luận
+14	admission_year	DATE	Năm tuyển sinh
+15	duration_years	DECIMAL(5,1)	Thời gian đào tạo: 4.5 năm, 6.5 năm,..
+16	max_duration_years	DECIMAL(5,1)	Thời gian đào tạo tối đa của ngành này: 4.5 năm, 6.5 năm,..
+17	effective_date	DATE	Ngày hiệu lực chương trình
+18	expiry_date	DATE	Ngày hết hiệu lực chương trình
+19	description	NVARCHAR(MAX)	Mô tả chương trình
+20	objectives	NVARCHAR(MAX)	Mục tiêu đào tạo
+21	learning_outcomes	NVARCHAR(MAX)	Chuẩn đầu ra
+22	version	NVARCHAR(20)	Phiên bản
+23	status	NVARCHAR(20)	Trạng thái đào tạo: đang đào tạo, dừng đào tạo
+24	created_at	DATETIME2	Thời điểm tạo
+25	updated_at	DATETIME2	Thời điểm cập nhật
+26	created_by	UNIQUEIDENTIFIER	Người tạo
+27	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+28	deleted_at	DATETIME2	Thời điểm xóa
+29	deleted_by	UNIQUEIDENTIFIER	Người xóa
+30	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng training_program_courses (Học phần của học kỳ)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính, định danh duy nhất cho mỗi bản ghi
+2	training_program_id	UNIQUEIDENTIFIER	Khóa ngoại liên kết tới chương trình đào tạo
+3	course_id	UNIQUEIDENTIFIER	Khóa ngoại liên kết tới học phần
+4	course_code	VARCHAR(50)	Mã học phần (lưu dư để truy vấn nhanh, tránh join)
+5	course_name	NVARCHAR(255)	Tên học phần
+6	semester	INT	Học kỳ gợi ý học môn (ví dụ: 1 → 10)
+7	year	INT	Năm học (ví dụ: năm 1 → năm 5)
+8	is_required	BIT	Xác định môn bắt buộc (1) hay tự chọn (0)
+9	group_code	NVARCHAR(50)	Mã nhóm môn tự chọn (ví dụ: AI, CNPM, HTTT...)
+10	credits	DECIMAL(5,1)	Số tín chỉ của học phần trong CTĐT
+11	prerequisite_course_id	UNIQUEIDENTIFIER	Mã môn tiên quyết (chỉ áp dụng nếu 1 môn)
+12	is_prerequisite_required	BIT	Xác định môn tiên quyết có bắt buộc không
+13	note	NVARCHAR(500)	Ghi chú thêm về học phần
+14	sort_order	INT	Thứ tự hiển thị học phần trong chương trình
+15	status	NVARCHAR(20)	Trạng thái đào tạo: đang đào tạo, dừng đào tạo
+16	created_at	DATETIME2	Thời điểm tạo
+17	updated_at	DATETIME2	Thời điểm cập nhật
+18	created_by	UNIQUEIDENTIFIER	Người tạo
+19	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+20	deleted_at	DATETIME2	Thời điểm xóa
+21	deleted_by	UNIQUEIDENTIFIER	Người xóa
+22	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng courses - Học phần			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	department_id	UNIQUEIDENTIFIER	FK → department
+3	course_code	VARCHAR(20)	Mã học phần
+4	course_name	NVARCHAR(255)	Tên học phần
+5	course_name_en	NVARCHAR(255)	Tên tiếng Anh
+6	credits	DECIMAL(5,1)	Số tín chỉ
+7	course_type	VARCHAR(20)	Phân loại môn
+8	theory_hours	DECIMAL(5,1)	Số tiết lý thuyết
+9	practice_hours	DECIMAL(5,1)	Số tiết thực hành
+10	self_study_hours	DECIMAL(5,1)	Số giờ tự học
+11	internship_credits	DECIMAL(5,1)	Số giờ thực tập
+12	description	NVARCHAR(MAX)	Mô tả học phần
+13	created_at	DATETIME2	Thời điểm tạo
+14	updated_at	DATETIME2	Thời điểm cập nhật
+15	created_by	UNIQUEIDENTIFIER	Người tạo
+16	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+17	deleted_at	DATETIME2	Thời điểm xóa
+18	deleted_by	UNIQUEIDENTIFIER	Người xóa
+19	is_active	BIT	Trạng thái hiệu lực
+			
+			
+			
+Bảng course_prerequisites			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	course_id	UNIQUEIDENTIFIER	Môn học chính
+3	prerequisite_course_id	UNIQUEIDENTIFIER	Môn tiên quyết
+4	created_at	DATETIME2	Ngày tạo
+5	updated_at	DATETIME2	Ngày cập nhật
+6	created_by	UNIQUEIDENTIFIER	Người tạo
+7	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+8	deleted_at	DATETIME2	Thời điểm xóa mềm
+9	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa
+10	is_active	BIT	Còn áp dụng hay không
+
+
+
+V. NHÓM QUẢN LÝ HỌC KỲ – LỚP HỌC PHẦN			
+			
+TT	Tên bảng	Mô tả	
+1	semesters	Quản lý thông tin các học kỳ của nhà trường như mã học kỳ, thời gian bắt đầu – kết thúc và trạng thái hoạt động.	
+2	course_sections	Quản lý thông tin các lớp học phần (khác lớp sinh hoạt)	
+3	student_course_sections	Quản lý danh sách sinh viên trong lớp học phần	
+4	lecturer_course_sections	Quản lý việc phân công giảng viên dạy các lớp học phần, cho biết giảng viên nào dạy lớp nào và trạng thái phân công.	
+			
+			
+Bảng semesters			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính học kỳ
+2	semester_code	NVARCHAR(50)	Mã học kỳ (HK1_2024_2025)
+3	semester_name	NVARCHAR(100)	Tên học kỳ (Học kỳ 1 năm 2024–2025)
+4	academic_year	NVARCHAR(20)	Năm học (2024–2025)
+5	start_date	DATE	Ngày bắt đầu học kỳ
+6	end_date	DATE	Ngày kết thúc học kỳ
+7	is_active	BIT	Trạng thái hiệu lực
+8	created_at	DATETIME2	Thời điểm tạo
+9	updated_at	DATETIME2	Thời điểm cập nhật
+10	created_by	UNIQUEIDENTIFIER	Người tạo
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+12	deleted_at	DATETIME2	Thời điểm xóa (xóa mềm)
+13	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+			
+Bảng course_sections			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính của lớp học phần
+2	class_code	VARCHAR(50)	Mã lớp học phần (VD: IT101-01)
+3	course_id	UNIQUEIDENTIFIER	Liên kết tới môn học
+4	semester_id	UNIQUEIDENTIFIER	Liên kết tới học kỳ
+5	academic_year	NVARCHAR(20)	Năm học (VD: 2024-2025)
+6	lecturer_id	UNIQUEIDENTIFIER	Giảng viên chính phụ trách
+7	room_id	UNIQUEIDENTIFIER	Phòng học của lớp
+8	building_id	UNIQUEIDENTIFIER	Tòa nhà nơi đặt phòng học
+9	max_students	INT	Sĩ số tối đa
+10	min_students	INT	Sĩ số tối thiểu
+11	class_type	NVARCHAR(50)	Loại lớp (theory / lab / hybrid)
+12	status	NVARCHAR(50)	Trạng thái (planned / open / closed / canceled)
+13	registration_start	DATETIME2	Thời gian bắt đầu đăng ký
+14	registration_end	DATETIME2	Thời gian kết thúc đăng ký
+15	note	NVARCHAR(255)	Ghi chú thêm
+16	created_at	DATETIME2	Thời điểm tạo
+17	updated_at	DATETIME2	Thời điểm cập nhật
+18	created_by	UNIQUEIDENTIFIER	Người tạo
+19	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+20	deleted_at	DATETIME2	Thời điểm xóa
+21	deleted_by	UNIQUEIDENTIFIER	Người xóa
+22	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng student_course_sections			
+Stt	Tên trường	Kiểu dữ liệu (SQL Server)	Ý nghĩa
+1	id	UNIQUEIDENTIFIER (PK)	Khóa chính, định danh duy nhất mỗi bản ghi
+2	student_id	UNIQUEIDENTIFIER	Mã sinh viên (liên kết bảng students)
+3	course_section_id	UNIQUEIDENTIFIER	Mã lớp học phần (liên kết bảng course_sections)
+4	status	VARCHAR(50)	Trạng thái: studying, completed, dropped
+5	registered_at	DATETIME	Thời điểm đăng ký học phần
+6	updated_at	DATETIME	Thời điểm cập nhật gần nhất
+7	created_by	UNIQUEIDENTIFIER	Người tạo (admin / giáo vụ)
+8	note	NVARCHAR(255)	Ghi chú (nếu có)
+9	is_active	BIT	Trạng thái hoạt động (1: còn hiệu lực, 0: đã hủy)
+10	created_at	DATETIME2	Thời điểm tạo
+11	updated_at	DATETIME2	Thời điểm cập nhật
+12	created_by	UNIQUEIDENTIFIER	Người tạo
+13	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+14	deleted_at	DATETIME2	Thời điểm xóa
+15	deleted_by	UNIQUEIDENTIFIER	Người xóa
+16	is_active	BIT	Trạng thái hiệu lực
+			
+			
+			
+			
+			
+Bảng lecturer_course_sections			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	lecturer_id	UNIQUEIDENTIFIER	Khóa ngoại → employees.id (vai trò GIANGVIEN)
+3	course_section_id	UNIQUEIDENTIFIER	Khóa ngoại → course_sections.id
+4	role	NVARCHAR(50)	Vai trò giảng dạy (Giảng viên chính / Giảng viên phụ)
+5	is_active	BIT	Trạng thái phân công (1: đang hiệu lực, 0: ngừng)
+6	created_at	DATETIME2	Thời điểm phân công
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người thực hiện phân công
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật thông tin phân công
+10	deleted_at	DATETIME2	Thời điểm hủy phân công (xóa mềm)
+11	deleted_by	UNIQUEIDENTIFIER	Người hủy phân công
+
+
+
+VI. NHÓM ĐĂNG KÝ HỌC PHẦN – ĐĂNG KÝ HỌC LẠI			
+			
+STT	Tên bảng	Mô tả	
+1	registration_periods	Đợt đăng ký	
+2	course_registrations	Chi tiết đăng ký	
+3	equivalent_courses	Môn tương đương	
+			
+Bảng registration_periods (Đợt đăng ký)			
+			
+STT	Tên cột	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khóa chính (Default: NEWSEQUENTIALID()).
+2	name	NVARCHAR(200)	Tên đợt đăng ký (VD: "Đợt 1 - Học kỳ 2").
+3	semester_id	UNIQUEIDENTIFIER	Khóa ngoại → semesters.id (Nhóm V).
+4	start_time	DATETIME2	Thời điểm bắt đầu mở cổng.
+5	end_time	DATETIME2	Thời điểm tự động khóa cổng.
+6	target_config	NVARCHAR(MAX)	Lưu cấu hình đối tượng (JSON): Khóa, Khoa....
+7	max_credits	TINYINT	Số tín chỉ tối đa được đăng ký (Mặc định: 25).
+8	min_credits	TINYINT	Số tín chỉ tối thiểu (Mặc định: 12).
+9	allow_retake	BIT	Cho phép học lại/cải thiện hay không.
+10	is_active	BIT	Trạng thái đóng/mở thủ công.
+11	created_at	DATETIME2	Thời điểm tạo
+12	updated_at	DATETIME2	Thời điểm cập nhật
+13	created_by	UNIQUEIDENTIFIER	Người tạo
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+15	deleted_at	DATETIME2	Thời điểm xóa
+16	deleted_by	UNIQUEIDENTIFIER	Người xóa
+17	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng course_registrations (Chi tiết đăng ký)			
+			
+STT	Tên cột	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khóa chính (Default: NEWSEQUENTIALID()) 
+2	student_id	UNIQUEIDENTIFIER	FK liên kết với bảng students 
+3	course_section_id	UNIQUEIDENTIFIER	FK liên kết với bảng course_sections 
+4	registration_period_id	UNIQUEIDENTIFIER	FK liên kết với bảng registration_periods 
+5	registration_type	TINYINT	1: Học mới; 2: Học lại; 3: Cải thiện 
+6	replaced_grade_id	UNIQUEIDENTIFIER	ID điểm cũ nếu đăng ký học lại/cải thiện 
+7	registered_at	DATETIME2	Thời điểm thực hiện đăng ký 
+8	status	TINYINT	1: Thành công; 2: Chờ thanh toán; 3: Đã hủy 
+9	is_paid	BIT	Đã thanh toán học phí chưa (Đồng bộ từ Nhóm IX) 
+10	row_version	ROWVERSION	Xử lý tranh chấp đăng ký cùng lúc 
+11	created_at	DATETIME2	Thời điểm tạo
+12	updated_at	DATETIME2	Thời điểm cập nhật
+13	created_by	UNIQUEIDENTIFIER	Người tạo
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+15	deleted_at	DATETIME2	Thời điểm xóa
+16	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+			
+Bảng equivalent_courses (Môn tương đương)			
+			
+STT	Tên cột	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khóa chính 
+2	original_course_id	UNIQUEIDENTIFIER	FK liên kết bảng courses (Môn cũ/gốc) 
+3	equivalent_course_id	UNIQUEIDENTIFIER	FK liên kết bảng courses (Môn mới/thay thế) 
+4	equivalence_type	TINYINT	1: Thay thế hoàn toàn; 2: Tương đương song song 
+5	effect_date	DATE	Ngày bắt đầu áp dụng 
+6	is_active	BIT	Trạng thái sử dụng (1: Đang áp dụng) 
+7	note	NVARCHAR(500)	Lý do tương đương 
+8	created_at	DATETIME2	Thời điểm tạo
+9	updated_at	DATETIME2	Thời điểm cập nhật
+10	created_by	UNIQUEIDENTIFIER	Người tạo
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+12	deleted_at	DATETIME2	Thời điểm xóa
+13	deleted_by	UNIQUEIDENTIFIER	Người xóa
+
+
+
+VII. NHÓM QUẢN LÝ LỊCH HỌC – PHÒNG HỌC			
+			
+Bảng tóm tắt			
+STT	Tên bảng	Mô tả	
+1	Rooms	Lưu thông tin chi tiết về phòng học: sức chứa, loại phòng, trạng thái và trang thiết bị	
+2	Schedules	Lưu lịch học cụ thể cho từng lớp học phần theo ngày, phòng và ca học	
+3	Time_slots	Lưu thông tin ca học (khung giờ bắt đầu – kết thúc)	
+5	Buildings		
+			
+			
+Bảng rooms – Phòng học			
+STT	Tên cột	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Định danh duy nhất cho mỗi phòngng
+2	room_code	VARCHAR(20)	Mã ngắn gọn để nhận diện nhanh (VD: A101)-vd: p707
+3	room_name	NVARCHAR(100)	Tên đầy đủ của phòng (có thể trùng với mã hoặc chi tiết hơn)
+4	building_id	UNIQUEIDENTIFIER	Khóa ngoại liên kết tới bảng buildings
+5	floor	INT	Xác định vị trí phòng trong tòa nhà
+6	capacity	INT	Số lượng sinh viên tối đa phòng có thể chứa
+7	room_type	NVARCHAR(50)	Phân loại phòng (lý thuyết, lab, phòng máy, xưởng thực thành...)
+8	status	NVARCHAR(50)	Tình trạng sử dụng của phòng (đang dùng, bảo trì...)
+9	has_projector	BIT	1: có, 0: không
+10	has_air_conditioner	BIT	1: có, 0: không
+11	has_computer	BIT	1: phòng máy, 0: phòng thường
+12	description	NVARCHAR(255)	Thông tin bổ sung về phòng
+13	created_at	DATETIME2	Thời điểm tạo
+14	updated_at	DATETIME2	Thời điểm cập nhật
+15	created_by	UNIQUEIDENTIFIER	Người tạo
+16	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+17	deleted_at	DATETIME2	Thời điểm xóa
+18	deleted_by	UNIQUEIDENTIFIER	Người xóa
+19	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng schedules			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	course_section_id	UNIQUEIDENTIFIER	Lớp học phần (là lớp ghép hoặc ko ghép)
+3	lecturer_id	UNIQUEIDENTIFIER	Giảng viên (Khóa ngoại → employees.id)
+4	room_id	UNIQUEIDENTIFIER	Phòng
+5	day_of_week	INT	Thứ trong tuần
+6	date	DATE	 Ngày cụ thể (dùng cho lịch chi tiết)
+7	shift		Ca học (Sáng / Chiều / Tối)
+8	start_period 	INT	– Tiết bắt đầu (VD: 1)
+9	end_period	INT	– Tiết kết thúc (VD: 3)
+10	number_of_periods	INT	 – Số tiết (có thể tính: end - start + 1)
+11	start_date	DATETIME2	Thời gian bắt đầu của học phần
+12	end_date	DATETIME2	Thời gian kết thúc của học phần
+13	mode	NVARCHAR(100)	Hình thức: ONLINE / OFFLINE / HYBRID
+14	status	NVARCHAR(255)	Trạng thái:DRAFT (lịch nháp)/OFFICIAL (chính thức)/CANCELLED (hủy)/COMPLETED (đã dạy)
+15	description	NVARCHAR(255)	Thông tin bổ sung về phòng
+16	schedule_status	VARCHAR(50)	Trạng thái lịch
+17	note	NVARCHAR(255)	Ghi chú: Đổi phòng học, đổi giờ học lùi lại, học bù, ...
+18	created_at	DATETIME2	Thời điểm tạo
+19	updated_at	DATETIME2	Thời điểm cập nhật
+20	created_by	UNIQUEIDENTIFIER	Người tạo
+21	updated_by	UNIQUEIDENTIFIER	Người cập nhật 
+22	deleted_at	DATETIME2	Thời điểm xóa
+23	deleted_by	UNIQUEIDENTIFIER	Người xóa
+24	is_active	BIT	Trạng thái hiệu lực
+			
+			
+Bảng time_slots			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính của ca học.
+2	slot_code	NVARCHAR(50)	Mã ca học (Ca1, Ca2, Sáng 1, …).
+3	start_time	TIME	Giờ bắt đầu.
+4	end_time	TIME	Giờ kết thúc.
+5	is_active	BIT	Trạng thái hiệu lực.
+6	created_at	DATETIME2	Thời điểm tạo.
+7	updated_at	DATETIME2	Thời điểm cập nhật.
+8	created_by	UNIQUEIDENTIFIER	Người tạo.
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+10	deleted_at	DATETIME2	Thời điểm xóa mềm.
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+Bảng buildings (đã bổ sung)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	building_code	VARCHAR(10)	Mã tòa nhà — duy nhất
+3	building_name	NVARCHAR(100)	Tên tòa nhà 
+4	address	NVARCHAR(200)	Địa chỉ/ vị trí trong khuôn viên trường
+5	total_floors	TINYINT	Tổng số tầng
+6	building_type	VARCHAR(10)	Loại toà nhà
+7	description	NVARCHAR(255)	Mô tả chức năng sử dụng
+8	note	NVARCHAR(255)	Ghi chú vận hành
+9	is_active	BIT	Trạng thái hiệu lực.
+10	created_at	DATETIME2	Thời điểm tạo.
+11	updated_at	DATETIME2	Thời điểm cập nhật.
+12	created_by	UNIQUEIDENTIFIER	Người tạo.
+13	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+14	deleted_at	DATETIME2	Thời điểm xóa mềm.
+15	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+
+VIII. NHÓM ĐIỂM – ĐÁNH GIÁ HỌC TẬP			
+			
+STT	Tên bảng	Chức năng	
+1	grade_components	Thành phần điểm (chuyên cần, giữa kỳ, cuối kỳ…)	
+2	student_component_grades	(Điểm thành phần sinh viên)	
+3	student_summaries	(Tổng kết học phần)	
+4	grade_scales	(Thang điểm quy đổi)	
+			
+			
+Bảng grade_components 			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	course_section_id	UNIQUEIDENTIFIER	Khóa ngoại → course_sections.id (Nhóm V).
+3	component_code	VARCHAR(20)	Mã thành phần (CC, GK, CK, BT...).
+4	component_name	NVARCHAR(50)	Tên thành phần (Chuyên cần, Giữa kỳ...).
+5	weight_percentage	DECIMAL(5, 2)	Trọng số (%) của thành phần điểm.
+6	min_score	DECIMAL(4, 2)	Điểm tối thiểu để đạt thành phần này.
+7	max_score	DECIMAL(4, 2)	Điểm tối đa (thường là 10.00).
+8	is_required	BIT	1: Bắt buộc phải có điểm; 0: Không bắt buộc.
+9	input_order	INT	Thứ tự hiển thị khi nhập điểm.
+10	is_active	BIT	Trạng thái hiệu lực.
+11	created_at	DATETIME2	Thời điểm tạo.
+12	updated_at	DATETIME2	Thời điểm cập nhật.
+13	created_by	UNIQUEIDENTIFIER	Người tạo.
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+15	deleted_at	DATETIME2	Thời điểm xóa mềm.
+16	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+			
+Bảng student_component_grades			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	registration_id	UNIQUEIDENTIFIER	Khóa ngoại → course_registrations.id (Nhóm VI).
+3	component_id	UNIQUEIDENTIFIER	Khóa ngoại → grade_components.id.
+4	score	DECIMAL(4, 2)	Điểm số thực tế (0.00 - 10.00).
+5	is_retake	BIT	Có phải điểm thi lại/cải thiện không.
+6	is_locked	BIT	1: Đã khóa (không được sửa); 0: Đang nhập.
+7	graded_at	DATETIME2	Thời điểm nhập điểm.
+8	graded_by	UNIQUEIDENTIFIER	Khóa ngoại → users.id (Giảng viên nhập).
+9	note	NVARCHAR(255)	Ghi chú (Vắng thi, hoãn thi...).
+10	is_active	BIT	Trạng thái hiệu lực
+11	created_at	DATETIME2	Thời điểm tạo.
+12	updated_at	DATETIME2	Thời điểm cập nhật.
+13	created_by	UNIQUEIDENTIFIER	Người tạo.
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+15	deleted_at	DATETIME2	Thời điểm xóa mềm.
+16	deleted_by	UNIQUEIDENTIFIER	Người xóa
+			
+			
+Bảng student_summaries			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	registration_id	UNIQUEIDENTIFIER	Khóa ngoại → course_registrations.id (Nhóm VI).
+3	total_score	DECIMAL(4, 2)	Điểm tổng kết hệ 10 (Sau khi nhân trọng số).
+4	scale_id	UNIQUEIDENTIFIER	Khóa ngoại → grade_scales.id.
+5	letter_grade	VARCHAR(2)	Điểm chữ (A, B+, C...).
+6	gpa_value	DECIMAL(3, 2)	Điểm hệ 4.
+7	result	VARCHAR(10)	Kết quả cuối cùng (PASS/FAIL).
+8	is_finalized	BIT	Trạng thái chốt điểm để đưa vào bảng điểm tổng kết.
+9	created_at	DATETIME2	Thời điểm tạo.
+10	updated_at	DATETIME2	Thời điểm cập nhật.
+11	created_by	UNIQUEIDENTIFIER	Người tạo.
+12	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+13	deleted_at	DATETIME2	Thời điểm xóa mềm.
+14	deleted_by	UNIQUEIDENTIFIER	Người xóa
+15	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng grade_scales			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	scale_code	VARCHAR(10)	Mã thang điểm (A, B+, C...).
+3	min_score	DECIMAL(4, 2)	Cận dưới điểm hệ 10.
+4	max_score	DECIMAL(4, 2)	Cận trên điểm hệ 10.
+5	letter_grade	VARCHAR(2)	Điểm chữ tương ứng.
+6	gpa_value	DECIMAL(3, 2)	Điểm hệ 4 tương ứng.
+7	is_pass	BIT	Điểm này có được tính là đạt hay không.
+8	is_active	BIT	Trạng thái hiệu lực.
+9	created_at	DATETIME2	Thời điểm tạo.
+10	updated_at	DATETIME2	Thời điểm cập nhật.
+11	created_by	UNIQUEIDENTIFIER	Người tạo.
+12	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+13	deleted_at	DATETIME2	Thời điểm xóa mềm.
+14	deleted_by	UNIQUEIDENTIFIER	Người xóa
+
+
+
+IX. NHÓM HỌC PHÍ – TÀI CHÍNH			
+			
+STT	Tên bảng	Chức năng	
+1	tuition_fees	(Mức định mức học phí)	
+2	student_tuition	(Học phí sinh viên theo học kỳ)	
+3	payments	(Lịch sử giao dịch thanh toán)	
+			
+Bảng tuition_fees (Mức học phí theo tín chỉ / chương trình)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	program_id	UNIQUEIDENTIFIER	Liên kết với bảng Chương trình đào tạo.
+3	course_year	VARCHAR(10)	Khóa học (Ví dụ: K23, K24).
+4	price_per_credit	DECIMAL(15, 2)	Đơn giá cho mỗi tín chỉ.
+5	base_tuition	DECIMAL(15, 2)	Học phí cố định mỗi kỳ (nếu có).
+6	effective_date	DATE	Ngày bắt đầu áp dụng mức phí.
+7	is_active	BIT	Trạng thái hiệu lực.
+8	created_at	DATETIME2	Thời điểm tạo bản ghi.
+9	updated_at	DATETIME2	
+10	created_by	UNIQUEIDENTIFIER	Người tạo định mức.
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật định mức.
+12	deleted_at	DATETIME2	Thời điểm xóa mềm.
+13	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa.
+			
+Bảng student_tuition(Học phí sinh viên theo học kỳ)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	student_id	UNIQUEIDENTIFIER	Liên kết với bảng sinh viên.
+3	semester_id	UNIQUEIDENTIFIER	Liên kết với bảng học kỳ.
+4	tuition_fee_id	UNIQUEIDENTIFIER	FK -> tuition_fees
+5	total_credits	INT	Tổng số tín chỉ sinh viên đăng ký trong kỳ.
+6	raw_amount	DECIMAL(15, 2)	Tổng tiền gốc (tín chỉ x đơn giá).
+7	scholarship_deduction	DECIMAL(15, 2)	Số tiền được trừ từ học bổng.
+8	exemption_amount	DECIMAL(15, 2)	Số tiền được miễn giảm chính sách.
+9	net_amount	DECIMAL(15, 2)	Số tiền thực nộp (gốc - giảm – học bổng).
+10	paid_amount	DECIMAL(15, 2)	Tổng số tiền sinh viên đã nộp.
+11	debt_amount	DECIMAL(15, 2)	Số tiền còn nợ.
+12	status	TINYINT	Trạng thái: 1-PAID, 2-PARTIAL, 3-DEBT, 4-OVERDUE.
+13	deadline	DATE	Hạn chót hoàn thành học phí.
+14	is_active	BIT	Trạng thái hiệu lực.
+15	created_at	DATETIME2	Thời điểm tạo bản ghi.
+16	updated_at	DATETIME2	Thời điểm cập nhật (Khi đóng thêm tiền).
+17	created_by	UNIQUEIDENTIFIER	Người tạo/Hệ thống tạo.
+18	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+19	deleted_at	DATETIME2	Thời điểm xóa mềm.
+20	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa.
+			
+Bảng payments (Lịch sử thanh toán học phí)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính giao dịch.
+2	tuition_id	UNIQUEIDENTIFIER	Liên kết với bảng student_tuition.
+3	amount_paid	DECIMAL(15, 2)	Số tiền nộp trong lần giao dịch này.
+4	payment_date	DATETIME2	Ngày giờ thực tế thực hiện giao dịch.
+5	payment_method	TINYINT	1-Bank Transfer, 2-Cash, 3-E-wallet.
+6	payment_status	VARCHAR(20)	Trạng thái giao dịch ("PENDING", SUCCESS", FAILED","REFUNDED", "CANCELLED")
+7	transaction_ref	VARCHAR(100)	Mã tham chiếu/đối soát ngân hàng.
+8	cashier_id	UNIQUEIDENTIFIER	Người thu tiền hoặc hệ thống tự động.
+9	notes	NVARCHAR(MAX)	Ghi chú thêm.
+10	is_active	BIT	Trạng thái giao dịch (1: Hợp lệ, 0: Đã hủy).
+11	created_at	DATETIME2	Thời điểm ghi nhận vào hệ thống.
+12	updated_at	DATETIME2	Thời điểm cập nhật cuối.
+13	created_by	UNIQUEIDENTIFIER	Người thực hiện ghi nhận.
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật thông tin.
+15	deleted_at	DATETIME2	Thời điểm hủy/xóa giao dịch.
+16	deleted_by	UNIQUEIDENTIFIER	Người thực hiện hủy.
+
+
+
+
+
+X. NHÓM QUẢN LÝ THI – KHẢO THÍ			
+			
+STT	Tên bảng	Mô tả	
+1	exam_types	Loại kỳ thi	
+2	exams	Lịch thi	
+3	exam_rooms 	Phòng thi	
+4	exam_registrations	Danh sách thí sinh	
+5	exam_results	Kết quả thi	
+6	exam_papers	Đề thi	
+			
+			
+1. Bảng exam_types (Loại kỳ thi)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	name	NVARCHAR(100)	Tên loại kỳ thi (Giữa kỳ, Cuối kỳ...)
+3	description	NVARCHAR(MAX)	Mô tả chi tiết
+4	created_at	DATETIME2	Thời điểm tạo
+5	updated_at	DATETIME2	Thời điểm cập nhật
+6	created_by	UNIQUEIDENTIFIER	Người tạo
+7	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+8	deleted_at	DATETIME2	Thời điểm xóa
+9	deleted_by	UNIQUEIDENTIFIER	Người xóa
+10	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng 2: exams (Lịch thi)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	exam_type_id	UNIQUEIDENTIFIER	Khóa ngoại → exam_types.id.
+3	course_section_id	UNIQUEIDENTIFIER	Khóa ngoại → course_sections.id (Đồng bộ Nhóm V).
+4	semester_id	UNIQUEIDENTIFIER	Khóa ngoại → semesters.id (Đồng bộ Nhóm V).
+5	exam_date	DATE	Ngày tổ chức thi.
+6	start_time	TIME	Giờ bắt đầu.
+7	duration_minutes	SMALLINT	Thời gian làm bài
+8	end_time	TIME	Thời gian kết thúc
+9	exam_format	VARCHAR(20)	Thể loại thi( trắc nghiệm, thi máy, vấn đáp, thực hành,..)
+10	exam_status	VARCHAR(20)	Trạng thái thi(Đã lên lịch, đang diễn ra, kết thúc, hoãn thi,...)
+11	supervisor_count	TINYINT	Số lượng cán bộ coi thi
+12	created_at	DATETIME2	Thời điểm tạo.
+13	updated_at	DATETIME2	Thời điểm cập nhật.
+14	created_by	UNIQUEIDENTIFIER	Người tạo.
+15	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+16	deleted_at	DATETIME2	Thời điểm xóa.
+17	deleted_by	UNIQUEIDENTIFIER	Người xóa.
+18	is_active	BIT	Trạng thái hiệu lực.
+			
+			
+Bảng 3: exam_rooms (Phòng thi)			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	exam_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết exams)
+3	room_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết rooms.id)
+4	capacity	INT	Sức chứa
+5	created_at	DATETIME2	Thời điểm tạo
+6	updated_at	DATETIME2	Thời điểm cập nhật
+7	created_by	UNIQUEIDENTIFIER	Người tạo
+8	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+9	deleted_at	DATETIME2	Thời điểm xóa
+10	deleted_by	UNIQUEIDENTIFIER	Người xóa
+11	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng 4: exam_registrations (Danh sách thí sinh)			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	exam_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết exams)
+3	exam_room_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết exam_rooms)
+4	student_id	UNIQUEIDENTIFIER	ID sinh viên
+5	roll_number	VARCHAR(20)	Số báo danh
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+10	deleted_at	DATETIME2	Thời điểm xóa
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+12	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng 5: exam_results (Kết quả thi)			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	registration_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết exam_registrations)
+3	score	DECIMAL(4, 2)	Điểm số
+4	status	NVARCHAR(50)	Trạng thái (Đạt, Vắng, Vi phạm...)
+5	graded_by	UNIQUEIDENTIFIER	Người chấm điểm
+6	graded_at	DATETIME	Thời gian chấm điểm
+7	is_locked	BIT	Đã chốt điểm thi
+8	appeal_status	VARCHAR(20)	Trạng thái phúc khảo
+9	created_at	DATETIME2	Thời điểm tạo
+10	updated_at	DATETIME2	Thời điểm cập nhật
+11	created_by	UNIQUEIDENTIFIER	Người tạo
+12	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+13	deleted_at	DATETIME2	Thời điểm xóa
+14	deleted_by	UNIQUEIDENTIFIER	Người xóa
+15	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng 6: exam_papers (Đề thi)			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	exam_id	UNIQUEIDENTIFIER	Khóa ngoại (Liên kết exams)
+3	paper_code	VARCHAR(20)	Mã đề thi
+4	file_url	NVARCHAR(500)	Đường dẫn file đề
+5	created_at	DATETIME2	Thời điểm tạo
+6	updated_at	DATETIME2	Thời điểm cập nhật
+7	created_by	UNIQUEIDENTIFIER	Người tạo
+8	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+9	deleted_at	DATETIME2	Thời điểm xóa
+10	deleted_by	UNIQUEIDENTIFIER	Người xóa
+11	is_active	BIT	Trạng thái hiệu lực
+
+
+
+XI. NHÓM QUẢN LÝ TỐT NGHIỆP			
+			
+STT	Tên bảng	Chức năng	
+1	graduation_conditions	(Điều kiện xét tốt nghiệp) 	
+2	graduation_results	(Kết quả xét tốt nghiệp)	
+			
+			
+graduation_conditions (Điều kiện xét tốt nghiệp) 			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	program_id	UNIQUEIDENTIFIER	chương trình áp dụng
+3	applied_cohort	NVARCHAR(10)	Khóa áp dụng (K22, K23, …)
+4	min_total_credits	INT	Số tín chỉ tối thiểu
+5	min_gpa	DECIMAL(3,2)	GPA tối thiểu
+6	max_failed_credits	INT	Số tín chỉ nợ tối đa
+7	english_requirement	NVARCHAR(100)	Chuẩn ngoại ngữ
+8	it_requirement	NVARCHAR(100)	Chuẩn tin học
+9	conduct_required	NVARCHAR(50)	Hạnh kiểm yêu cầu
+10	note	NVARCHAR(MAX)	Ghi chú
+11	created_at	DATETIME2	Thời điểm tạo
+12	updated_at	DATETIME2	Thời điểm cập nhật
+13	created_by	UNIQUEIDENTIFIER	Người tạo
+14	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+15	deleted_at	DATETIME2	Thời điểm xóa
+16	deleted_by	UNIQUEIDENTIFIER	Người xóa
+17	is_active	BIT	Trạng thái hiệu lực
+			
+			
+graduation_results (Kết quả xét tốt nghiệp)			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	student_id	UNIQUEIDENTIFIER	Sinh viên được xét
+3	condition_id	UNIQUEIDENTIFIER	Điều kiện xét áp dụng
+4	gpa	DECIMAL(3,2)	GPA tại thời điểm xét
+5	total_credits	INT	Tổng tín chỉ tích lũy
+6	failed_credits	INT	Số tín chỉ chưa đạt
+7	result	TINYINT	Kết quả (Đạt / Không đạt)
+8	classification	TINYINT	Xếp loại tốt nghiệp
+9	decision_date	DATE	Ngày xét
+10	reviewer	UNIQUEIDENTIFIER	Người/phòng xét
+11	note	NVARCHAR(MAX)	Ghi chú
+12	created_at	DATETIME2	Thời điểm tạo
+13	updated_at	DATETIME2	Thời điểm cập nhật
+14	created_by	UNIQUEIDENTIFIER	Người tạo
+15	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+16	deleted_at	DATETIME2	Thời điểm xóa
+17	deleted_by	UNIQUEIDENTIFIER	Người xóa
+18	is_active	BIT	Trạng thái hiệu lực
+
+
+
+
+XII. NHÓM THÔNG BÁO – HỆ THỐNG			
+			
+STT	Tên bảng	Chức năng	
+1	notifications	Lưu trữ nội dung thông báo chung của hệ thống.	
+2	user_notifications	Quản lý trạng thái nhận và đọc thông báo của từng người dùng.	
+3	logs	Nhật ký ghi lại các hành động tác động vào dữ liệu hệ thống.	
+4	settings	Quản lý các tham số cấu hình toàn hệ thống.	
+			
+			
+Bảng: notifications			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	title	NVARCHAR(255)	Tiêu đề thông báo
+3	content	NVARCHAR(MAX)	Nội dung thông báo
+4	type_id	UNIQUEIDENTIFIER	Loại thông báo
+5	target_role_id	UNIQUEIDENTIFIER	Khóa ngoại → roles.id (Nhóm I) (Đối tượng nhận).
+6	created_at	DATETIME2	Thời điểm tạo
+7	updated_at	DATETIME2	Thời điểm cập nhật
+8	created_by	UNIQUEIDENTIFIER	Người tạo
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+10	deleted_at	DATETIME2	Thời điểm xóa
+11	deleted_by	UNIQUEIDENTIFIER	Người xóa
+12	is_active	BIT	Trạng thái hiệu lực
+			
+Bảng: user_notifications			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	user_id	UNIQUEIDENTIFIER	Khóa ngoại → users.id (Người nhận).
+3	notification_id	UNIQUEIDENTIFIER	Khóa ngoại → notifications.id.
+4	is_read	BIT	1: Đã đọc, 0: Chưa đọc.
+5	read_at	DATETIME2	Thời điểm người dùng đọc thông báo.
+6	is_active	BIT	Trạng thái hiệu lực.
+7	created_at	DATETIME2	Thời điểm thông báo được gửi tới user.
+8	updated_at	DATETIME2	Thời điểm cập nhật trạng thái.
+9	deleted_at	DATETIME2	Thời điểm user xóa/ẩn thông báo khỏi danh sách.
+10	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa (thường là chính user).
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật
+			
+Bảng: logs			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính
+2	user_id	UNIQUEIDENTIFIER	Người thực hiện FK - > user_id
+3	action	NVARCHAR(100)	Hành động
+4	table_name	NVARCHAR(100)	Bảng bị tác động
+5	record_id	UNIQUEIDENTIFIER	Bản ghi liên quan
+6	description	NVARCHAR(MAX)	Mô tả chi tiết
+7	created_at	DATETIME2	Thời điểm ghi log
+8	is_active	BIT	Trạng thái hiệu lực.
+			
+			
+Bảng: settings			
+Stt	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính.
+2	key	NVARCHAR(100)	Tên khóa cấu hình (Ví dụ: MAX_CREDITS_PER_SEMESTER).
+3	value	NVARCHAR(MAX)	Giá trị của cấu hình.
+4	description	NVARCHAR(255)	Mô tả tác dụng của cấu hình.
+5	is_active	BIT	Cấu hình có đang được áp dụng hay không.
+6	created_at	DATETIME2	Thời điểm tạo cấu hình.
+7	updated_at	DATETIME2	Thời điểm cập nhật cấu hình lần cuối.
+8	created_by	UNIQUEIDENTIFIER	Người tạo cấu hình.
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật cấu hình.
+9	deleted_at	DATETIME2	Thời điểm user xóa/ẩn cấu hình hệ thống.
+10	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa (thường là chính user).
+
+
+
+XIV. NHÓM GỬI EMAIL – LIÊN LẠC TỰ ĐỘNG			
+			
+STT	Tên bảng	Chức năng	
+1	email_templates	Lưu trữ các mẫu email (tiêu đề, nội dung HTML) dùng chung.	
+2	email_attachments	Quản lý các tệp tin đính kèm (PDF, bảng điểm...) gắn với email.	
+3	email_groups	Định nghĩa nhóm người nhận (theo lớp, khoa, hoặc loại đối tượng).	
+4	email_queue	Hàng đợi chứa các email đang chờ hệ thống gửi tự động.	
+5	smtp_configs	Lưu cấu hình kết nối máy chủ gửi email (SMTP).	
+6	email_logs	Nhật ký lưu lại lịch sử và kết quả của các email đã thực hiện gửi.	
+			
+			
+			
+Bảng email_templates			
+STT	Tên thuộc tính	Kiểu dữ liệu	Mô tả
+1	id	UNIQUEIDENTIFIER	Khóa chính mẫu email.
+2	name	NVARCHAR(255)	Tên mẫu email.
+3	subject	NVARCHAR(255)	Tiêu đề mặc định của email.
+4	body_html	NVARCHAR(MAX)	Nội dung email định dạng HTML.
+5	is_active	BIT	Trạng thái sử dụng.
+6	created_at	DATETIME2	Thời điểm tạo.
+7	updated_at	DATETIME2	Thời điểm cập nhật.
+8	created_by	UNIQUEIDENTIFIER	Người tạo mẫu.
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật cuối.
+10	deleted_at	DATETIME2	Thời điểm xóa mềm.
+11	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa.
+			
+Bảng email_attachments			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính. 
+2	email_queue_id	UNIQUEIDENTIFIER	Thuộc email_queue. 
+3	file_name	NVARCHAR(255)	Tên file. 
+4	file_path	NVARCHAR(500)	Đường dẫn lưu trữ. 
+5	file_type	NVARCHAR(50)	Loại file. 
+6	is_active	BIT	Trạng thái. 
+7	created_at	DATETIME2	Thời điểm tạo. 
+8	updated_at	DATETIME2	Thời điểm cập nhật. 
+9	created_by	UNIQUEIDENTIFIER	Người tạo đính kèm. 
+10	updated_by	UNIQUEIDENTIFIER	Người cập nhật. 
+11	deleted_at	DATETIME2	Thời điểm xóa. 
+12	deleted_by	UNIQUEIDENTIFIER	Người xóa. 
+			
+			
+Bảng email_groups			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính. 
+2	group_name	NVARCHAR(200)	Tên nhóm người nhận. 
+3	group_type	NVARCHAR(100)	Loại nhóm (Lớp/Khoa/SV). 
+4	description	NVARCHAR(500)	Mô tả nhóm. 
+5	is_active	BIT	Trạng thái hiệu lực. 
+6	created_at	DATETIME2	Thời điểm tạo. 
+7	updated_at	DATETIME2	Thời điểm cập nhật. 
+8	created_by	UNIQUEIDENTIFIER	Người tạo nhóm. 
+9	updated_by	UNIQUEIDENTIFIER	Người cập nhật nhóm. 
+10	deleted_at	DATETIME2	Thời điểm xóa mềm. 
+11	deleted_by	UNIQUEIDENTIFIER	Người thực hiện xóa. 
+			
+			
+			
+Bảng email_queue			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính hàng đợi. 
+2	recipient_email	NVARCHAR(255)	Email người nhận. 
+3	template_id	UNIQUEIDENTIFIER	Khóa ngoại → email_templates.id. 
+4	status	TINYINT	Trạng thái (1: PENDING, 2: SENT, 3: FAILED). 
+5	retry_count	INT	Số lần gửi lại. 
+6	scheduled_at	DATETIME2	Thời gian dự kiến gửi. 
+7	is_active	BIT	Trạng thái hiệu lực của yêu cầu.
+8	created_at	DATETIME2	Thời điểm tạo lệnh. 
+9	updated_at	DATETIME2	Thời điểm cập nhật trạng thái. 
+10	created_by	UNIQUEIDENTIFIER	Người/Hệ thống kích hoạt lệnh.
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật trạng thái.
+12	deleted_at	DATETIME2	Thời điểm hủy lệnh gửi.
+13	deleted_by	UNIQUEIDENTIFIER	Người thực hiện hủy.
+			
+Bảng smtp_configs			
+STT	Tên trường	Kiểu dữ liệu	Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính cấu hình. 
+2	host	NVARCHAR(255)	Máy chủ SMTP. 
+3	port	INT	Cổng SMTP. 
+4	username	NVARCHAR(255)	Tên đăng nhập. 
+5	password	NVARCHAR(255)	Mật khẩu (đã mã hóa). 
+6	encryption	NVARCHAR(50)	TLS / SSL. 
+7	is_active	BIT	Cấu hình đang sử dụng. 
+8	created_at	DATETIME2	Thời điểm tạo. 
+9	updated_at	DATETIME2	Thời điểm cập nhật.
+10	created_by	UNIQUEIDENTIFIER	Người tạo cấu hình.
+11	updated_by	UNIQUEIDENTIFIER	Người cập nhật.
+12	deleted_at	DATETIME2	Thời điểm xóa.
+13	deleted_by	UNIQUEIDENTIFIER	Người xóa.
+			
+Bảng email_logs			
+STT	Tên trường	Kiểu dữ liệu	 Ý nghĩa
+1	id	UNIQUEIDENTIFIER	Khóa chính log email. 
+2	template_id	UNIQUEIDENTIFIER	Khóa ngoại → email_templates.id. 
+3	sender_email	VARCHAR(255)	Email người gửi. 
+4	recipient_email	VARCHAR(255)	Email người nhận. 
+5	subject	NVARCHAR(500)	Tiêu đề email đã gửi. 
+6	body_html	NVARCHAR(MAX)	Nội dung email đã gửi. 
+7	status	TINYINT	Trạng thái (1: SUCCESS, 2: FAILED). 
+8	error_message	NVARCHAR(MAX)	Thông báo lỗi nếu có. 
+9	sent_at	DATETIME2	Thời điểm gửi thành công. 
+10	is_active	BIT	Trạng thái hiệu lực của bản ghi log.
+11	created_at	DATETIME2	Thời điểm tạo log. 
+12	updated_at	DATETIME2	Thời điểm cập nhật log (nếu có).
+13	created_by	UNIQUEIDENTIFIER	Hệ thống ghi nhận log.
+14	deleted_at	DATETIME2	Thời điểm ẩn log.
+15	deleted_by	UNIQUEIDENTIFIER	Người thực hiện ẩn.

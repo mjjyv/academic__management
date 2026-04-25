@@ -1,0 +1,666 @@
+// security/JwtService.java
+package uni.it.stdmanager.core.security;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+@Service
+public class JwtService {
+
+    @Value("${application.security.jwt.secret-key:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
+    private String secretKey;
+
+    @Value("${application.security.jwt.expiration:86400000}") // 24 giờ
+    private long jwtExpiration;
+
+    // 1. Trích xuất Username từ Token
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    // 2. Trích xuất một Claim cụ thể
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    // 3. Tạo Token mới từ UserDetails
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // 4. Kiểm tra tính hợp lệ của Token
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+}
+
+==================
+
+// security/SecurityUtils.java
+package uni.it.stdmanager.core.security;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Optional;
+
+public class SecurityUtils {
+
+    private SecurityUtils() {
+        // Private constructor để ngăn việc khởi tạo static class
+    }
+
+    /**
+     * Lấy Username của người dùng hiện tại đang đăng nhập.
+     */
+    public static Optional<String> getCurrentUserLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return Optional.ofNullable(extractPrincipal(authentication));
+    }
+
+    private static String extractPrincipal(Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        } else if (authentication.getPrincipal() instanceof UserDetails springSecurityUser) {
+            return springSecurityUser.getUsername();
+        } else if (authentication.getPrincipal() instanceof String s) {
+            return s;
+        }
+        return null;
+    }
+}
+
+==================
+
+// security/JwtAuthenticationFilter.java
+package uni.it.stdmanager.core.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService; // Bạn cần triển khai JwtService để xử lý Token
+    private final UserDetailsService userDetailsService;
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String username;
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        jwt = authHeader.substring(7);
+        username = jwtService.extractUsername(jwt);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+
+==================
+
+// exception/AppException.java
+package uni.it.stdmanager.core.exception;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class AppException extends RuntimeException {
+
+    private ErrorCode errorCode;
+
+    public AppException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+}
+
+==================
+
+// exception/GlobalExceptionHandler.java
+package uni.it.stdmanager.core.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import uni.it.stdmanager.core.dto.ApiResponse;
+
+import java.time.LocalDateTime;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // 1. Bắt lỗi nghiệp vụ do mình tự định nghĩa (AppException)
+    @ExceptionHandler(value = AppException.class)
+    ResponseEntity<ApiResponse<?>> handlingAppException(AppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+
+        apiResponse.setSuccess(false);
+        apiResponse.setCode(String.valueOf(errorCode.getCode()));
+        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
+    // 2. Bắt lỗi Validation (Dữ liệu đầu vào không hợp lệ)
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    ResponseEntity<ApiResponse<?>> handlingValidation(MethodArgumentNotValidException exception) {
+        String enumKey = exception.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+        } catch (IllegalArgumentException e) {
+            // Giữ nguyên mã lỗi mặc định nếu không khớp enum
+        }
+
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setSuccess(false);
+        apiResponse.setCode(String.valueOf(errorCode.getCode()));
+        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
+    // 3. Bắt các lỗi hệ thống không xác định (RunTime, SQL...)
+    @ExceptionHandler(value = Exception.class)
+    ResponseEntity<ApiResponse<?>> handlingRuntimeException(RuntimeException exception) {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+
+        apiResponse.setSuccess(false);
+        apiResponse.setCode(String.valueOf(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode()));
+        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+        apiResponse.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+    }
+}
+
+==================
+
+// exception/ErrorCode.java
+package uni.it.stdmanager.core.exception;
+
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+
+@Getter
+public enum ErrorCode {
+    UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống không xác định", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(1001, "Mã lỗi không hợp lệ", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1002, "Người dùng đã tồn tại", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1003, "Tên đăng nhập phải có ít nhất 3 ký tự", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1004, "Mật khẩu phải có ít nhất 8 ký tự", HttpStatus.BAD_REQUEST),
+    USER_NOT_EXISTED(1005, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1007, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
+    INVALID_DOB(1008, "Tuổi của bạn phải ít nhất là {min}", HttpStatus.BAD_REQUEST),
+    ;
+
+    ErrorCode(int code, String message, HttpStatusCode statusCode) {
+        this.code = code;
+        this.message = message;
+        this.statusCode = statusCode;
+    }
+
+    private final int code;
+    private final String message;
+    private final HttpStatusCode statusCode;
+}
+
+==================
+
+// dto/PageResponse.java
+package uni.it.stdmanager.core.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageResponse<T> {
+    private List<T> content;
+    private int pageNo;
+    private int pageSize;
+    private long totalElements;
+    private int totalPages;
+    private boolean last;
+
+    public static <T> PageResponse<T> of(List<T> content, int pageNo, int pageSize, long totalElements, int totalPages,
+            boolean last) {
+        return PageResponse.<T>builder()
+                .content(content)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(totalElements)
+                .totalPages(totalPages)
+                .last(last)
+                .build();
+    }
+}
+
+==================
+
+// dto/ErrorDetail.java
+package uni.it.stdmanager.core.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorDetail {
+    private String field;
+    private String message;
+    private Object rejectedValue;
+}
+
+==================
+
+// dto/ApiResponse.java
+package uni.it.stdmanager.core.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ApiResponse<T> {
+    private boolean success;
+    private String message;
+    private T data;
+    private String code; // Mã lỗi nội bộ (nếu có)
+    private LocalDateTime timestamp;
+
+    // Phản hồi thành công nhanh
+    public static <T> ApiResponse<T> success(T data, String message) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(true);
+        response.setMessage(message);
+        response.setData(data);
+        response.setTimestamp(LocalDateTime.now());
+        return response;
+    }
+
+    // Phản hồi thất bại nhanh
+    public static <T> ApiResponse<T> error(String message, String errorCode) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(false);
+        response.setMessage(message);
+        response.setCode(errorCode);
+        response.setTimestamp(LocalDateTime.now());
+        return response;
+    }
+}
+
+==================
+
+// config/SecurityConfig.java
+package uni.it.stdmanager.core.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+// import uni.it.stdmanager.core.security.JwtAuthenticationFilter; // Bỏ comment sau khi tạo file này
+
+import java.util.Arrays;
+import java.util.List;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity // Kích hoạt @PreAuthorize trên Controller
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final AuthenticationProvider authenticationProvider;
+    // private final JwtAuthenticationFilter jwtAuthFilter; // Bỏ comment sau khi
+    // tạo file này
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        // Mở khóa các endpoint công khai (Login & Swagger)
+                        .requestMatchers(
+                                "/api/v1/auth/login",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
+                        // Tất cả các request khác đều cần có Token hợp lệ
+                        .anyRequest().authenticated())
+                // Không lưu trạng thái phiên (Stateless)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider);
+
+        // Chèn bộ lọc JWT vào trước bộ lọc mặc định của Spring (Bỏ comment sau khi tạo
+        // JWT Filter)
+        // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Cấp phép cho cổng mặc định của Vite (React)
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+}
+
+==================
+
+// config/OpenApiConfig.java
+package uni.it.stdmanager.core.config;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@OpenAPIDefinition(info = @Info(title = "University IT Management System API (stdmanager)", description = "Tài liệu API chính thức cho các Module nghiệp vụ", version = "1.0", contact = @Contact(name = "Dev Team", email = "dev@uda.edu.vn")),
+        // Áp dụng yêu cầu bảo mật này cho toàn bộ API (ngoại trừ những API public)
+        security = {
+                @SecurityRequirement(name = "bearerAuth")
+        })
+@SecurityScheme(name = "bearerAuth", description = "Dán mã JWT Token vào đây để xác thực. Không cần thêm từ 'Bearer ' phía trước.", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
+public class OpenApiConfig {
+}
+
+==================
+
+// config/AuthConfig.java
+package uni.it.stdmanager.core.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+// QUAN TRỌNG: Import đúng package này
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+@RequiredArgsConstructor
+public class AuthConfig {
+
+    private final UserDetailsService userDetailsService;
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        // Constructor này nhận UserDetailsService làm tham số trong phiên bản này
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+}
+
+==================
+
+// config/JpaAuditingConfig.java
+package uni.it.stdmanager.core.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import java.util.UUID;
+
+/**
+ * Cấu hình kích hoạt JPA Auditing cho toàn bộ dự án.
+ */
+@Configuration
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+public class JpaAuditingConfig {
+
+    /**
+     * Khởi tạo bean AuditorAware để JPA sử dụng khi gặp các annotation
+     * 
+     * @CreatedBy hoặc @LastModifiedBy.
+     */
+    @Bean
+    public AuditorAware<UUID> auditorProvider() {
+        return new AuditorAwareImpl();
+    }
+}
+
+==================
+
+// config/AuditorAwareImpl.java
+package uni.it.stdmanager.core.config;
+
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Triển khai AuditorAware để lấy UUID của người dùng hiện tại từ
+ * SecurityContext.
+ * Dùng để tự động hóa các trường createdBy và updatedBy trong BaseEntity.
+ */
+@Component
+public class AuditorAwareImpl implements AuditorAware<UUID> {
+
+    @Override
+    public Optional<UUID> getCurrentAuditor() {
+        // 1. Lấy thông tin Authentication từ SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 2. Kiểm tra nếu chưa đăng nhập hoặc là người dùng vô danh (anonymous)
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
+            return Optional.empty();
+        }
+
+        // 3. Trích xuất ID người dùng.
+        // Giả định logic: ID được lưu trong Principal (Custom UserDetails) hoặc là
+        // chuỗi UUID
+        try {
+            // Trong thực tế, bạn sẽ cast authentication.getPrincipal() về CustomUserDetails
+            // của bạn
+            // Ở đây giả định định danh là chuỗi UUID hợp lệ
+            String userId = authentication.getName();
+            return Optional.of(UUID.fromString(userId));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+}
+
+==================
+
+// entity/BaseEntity.java
+package uni.it.stdmanager.core.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * Lớp nền tảng cho tất cả các thực thể trong hệ thống.
+ * Cung cấp các trường tự động truy vết (Auditing) và quản lý trạng thái.
+ */
+@Getter
+@Setter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
+
+    @LastModifiedBy
+    @Column(name = "updated_by")
+    private UUID updatedBy;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "deleted_by")
+    private UUID deletedBy;
+}
+
+==================
+
