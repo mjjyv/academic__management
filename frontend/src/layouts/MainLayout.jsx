@@ -11,6 +11,8 @@ const MainLayout = () => {
         navigate('/login');
     };
 
+    console.log(user)
+
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
             {/* Cột trái: Sidebar điều hướng */}

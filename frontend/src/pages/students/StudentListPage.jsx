@@ -19,6 +19,7 @@ const StudentListPage = () => {
         data: null
     });
 
+
     // State cho bộ lọc và phân trang
     const [filters, setFilters] = useState({
         keyword: '',
@@ -134,7 +135,7 @@ const StudentListPage = () => {
                                     <td className="p-4 text-sm font-medium text-blue-600">{student.studentCode}</td>
                                     <td className="p-4 text-sm font-semibold text-gray-800">{student.fullName}</td>
                                     <td className="p-4 text-sm text-gray-600">
-                                        {student.gender === '1' ? 'Nam' : student.gender === '2' ? 'Nữ' : 'Khác'}
+                                        {student.gender === 'Nam' ? 'Nam' : student.gender === 'Nữ' ? 'Nữ' : 'Khác'}
                                     </td>
                                     <td className="p-4 text-sm text-gray-600">{student.className || 'Chưa xếp lớp'}</td>
                                     <td className="p-4">
@@ -143,6 +144,7 @@ const StudentListPage = () => {
                                             : 'bg-gray-100 text-gray-700'
                                             }`}>
                                             {student.statusName || 'N/A'}
+                                            {console.log(student)}
                                         </span>
                                     </td>
                                     <td className="p-4 text-center">
