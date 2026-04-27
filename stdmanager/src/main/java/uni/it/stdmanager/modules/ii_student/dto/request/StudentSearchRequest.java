@@ -11,4 +11,6 @@ public class StudentSearchRequest {
     private UUID statusId;
     private int page = 0;
     private int size = 10;
+    private String sortBy = "studentCode";
+    private String sortDir = "asc";
 }

@@ -1,0 +1,1251 @@
+// App.jsx
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './routes/ProtectedRoute';
+import PublicRoute from './routes/PublicRoute';
+import MainLayout from './layouts/MainLayout';
+
+// Import Pages
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import StudentListPage from './pages/students/StudentListPage';
+
+// Placeholder Components cho các Module chưa triển khai
+const Placeholder = ({ title }) => (
+  <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100">
+    <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+    <p className="text-gray-500 italic">Tính năng này đang được phát triển theo lộ trình của Giai đoạn tiếp theo...</p>
+  </div>
+);
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* NHÓM 1: PUBLIC ROUTES - Dành cho khách / chưa đăng nhập */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        {/* NHÓM 2: PROTECTED ROUTES - Yêu cầu Token & MainLayout */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            {/* Mặc định vào Dashboard */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* Đăng ký các Route tương ứng với menuConfig.js */}
+            <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
+            <Route path="/students" element={<StudentListPage />} />
+            <Route path="/lecturers" element={<Placeholder title="Quản lý Giảng viên & Nhân sự" />} />
+            <Route path="/academic" element={<Placeholder title="Chương trình đào tạo & Học phần" />} />
+            <Route path="/registration" element={<Placeholder title="Đăng ký học phần trực tuyến" />} />
+            <Route path="/schedule" element={<Placeholder title="Thời khóa biểu & Lịch giảng dạy" />} />
+            <Route path="/grades" element={<Placeholder title="Quản lý Điểm & Kết quả học tập" />} />
+            <Route path="/finance" element={<Placeholder title="Học phí & Giao dịch tài chính" />} />
+            <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
+            <Route path="/settings" element={<Placeholder title="Thông báo & Cấu hình hệ thống" />} />
+          </Route>
+        </Route>
+
+        {/* CẤU HÌNH FALLBACK: Mọi đường dẫn lạ đều đẩy về /login hoặc /dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+==================
+
+// main.jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+==================
+
+// constants/menuConfig.js
+export const MENU_ITEMS = [
+    {
+        title: 'Bảng điều khiển',
+        path: '/dashboard',
+        roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
+    },
+    {
+        title: 'Quản trị hệ thống',
+        path: '/users',
+        roles: ['ADMIN'],
+    },
+    {
+        title: 'Quản lý Sinh viên',
+        path: '/students',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+    {
+        title: 'Quản lý Giảng viên',
+        path: '/lecturers',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+    {
+        title: 'Chương trình đào tạo',
+        path: '/academic',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+    {
+        title: 'Đăng ký học phần',
+        path: '/registration',
+        roles: ['ADMIN', 'GIAOVU', 'SINHVIEN'],
+    },
+    {
+        title: 'Lịch học & Giảng dạy',
+        path: '/schedule',
+        roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
+    },
+    {
+        title: 'Quản lý Điểm số',
+        path: '/grades',
+        roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
+    },
+    {
+        title: 'Học phí & Thanh toán',
+        path: '/finance',
+        roles: ['ADMIN', 'GIAOVU', 'SINHVIEN'],
+    },
+    {
+        title: 'Khảo thí & Tốt nghiệp',
+        path: '/exams',
+        roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
+    },
+    {
+        title: 'Thông báo & Cấu hình',
+        path: '/settings',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+];
+
+==================
+
+// api/authApi.js
+// src/api/authApi.js
+import axiosClient from './axiosClient';
+
+export const authApi = {
+    login: (data) => {
+        return axiosClient.post('/auth/login', data);
+    },
+    getMe: () => {
+        return axiosClient.get('/auth/me');
+    },
+    // Các hàm khác như changePassword có thể thêm vào đây
+};
+
+==================
+
+// api/axiosClient.js
+// src/api/axiosClient.js
+import axios from 'axios';
+import useAuthStore from '../store/useAuthStore';
+
+const axiosClient = axios.create({
+    baseURL: 'http://localhost:8080/api/v1', // URL của Spring Boot Backend
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Interceptor cho Request: Tự động đính kèm Token trước khi gửi
+axiosClient.interceptors.request.use(
+    (config) => {
+        const token = useAuthStore.getState().token;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// Interceptor cho Response: Xử lý lỗi tập trung (vd: 401 Hết hạn token)
+axiosClient.interceptors.response.use(
+    (response) => {
+        // Trả về thẳng data từ ApiResponse của Backend
+        return response.data;
+    },
+    (error) => {
+        const { response } = error;
+        if (response && response.status === 401) {
+            // Nếu lỗi 401 (Unauthorized), xóa phiên làm việc và bắt đăng nhập lại
+            useAuthStore.getState().logout();
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default axiosClient;
+
+==================
+
+// api/studentApi.js
+import axiosClient from './axiosClient';
+
+export const studentApi = {
+    getAll: (params) => {
+        return axiosClient.get('/students', { params });
+    },
+
+    getById: (id) => {
+        return axiosClient.get(`/students/${id}`);
+    },
+
+    create: (data) => {
+        return axiosClient.post('/students', data);
+    },
+
+    update: (id, data) => {
+        return axiosClient.put(`/students/${id}`, data);
+    },
+
+};
+
+// Thêm vào src/api/studentApi.js
+export const classApi = {
+    getAll: () => axiosClient.get('/student-classes'), // Giả định endpoint này tồn tại
+};
+
+==================
+
+// components/StudentFormModal.jsx
+import { useState, useEffect } from 'react';
+import { studentApi, classApi } from '../api/studentApi';
+
+const StudentFormModal = ({ isOpen, onClose, onSuccess, initialData }) => {
+    const isEdit = !!initialData;
+    const [classes, setClasses] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const [formData, setFormData] = useState({
+        studentCode: '',
+        fullName: '',
+        dateOfBirth: '',
+        gender: '1',
+        personalIdentificationNumber: '',
+        dateOfIssue: '',
+        cardPlace: '',
+        email: '',
+        phone: '',
+        address: '',
+        currentAddress: '',
+        classId: '',
+    });
+
+    useEffect(() => {
+        if (isOpen) {
+            classApi.getAll().then(res => {
+                if (res.success) setClasses(res.data);
+            });
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                studentCode: initialData.studentCode || '',
+                fullName: initialData.fullName || '',
+                dateOfBirth: initialData.dateOfBirth || '',
+                gender: initialData.gender || '1',
+                personalIdentificationNumber: initialData.personalIdentificationNumber || '',
+                dateOfIssue: initialData.dateOfIssue || '',
+                cardPlace: initialData.cardPlace || '',
+                email: initialData.email || '',
+                phone: initialData.phone || '',
+                address: initialData.address || '',
+                currentAddress: initialData.currentAddress || '',
+                classId: initialData.classId || '',
+            });
+        } else {
+            setFormData({
+                studentCode: '',
+                fullName: '',
+                dateOfBirth: '',
+                gender: '1',
+                personalIdentificationNumber: '',
+                dateOfIssue: '',
+                cardPlace: '',
+                email: '',
+                phone: '',
+                address: '',
+                currentAddress: '',
+                classId: '',
+            });
+        }
+    }, [initialData, isOpen]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            let response;
+            if (isEdit) {
+                response = await studentApi.update(initialData.id, formData);
+            } else {
+                response = await studentApi.create(formData);
+            }
+
+            if (response.success) {
+                onSuccess();
+                onClose();
+            }
+        } catch (error) {
+            alert(error.response?.data?.message || 'Có lỗi xảy ra khi lưu dữ liệu.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+                {/* Header */}
+                <div className="px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-blue-600 text-white">
+                    <div>
+                        <h3 className="text-xl font-bold">
+                            {isEdit ? 'Chỉnh sửa Hồ sơ Sinh viên' : 'Thêm Sinh viên mới'}
+                        </h3>
+                        <p className="text-blue-100 text-sm mt-1">
+                            Vui lòng điền đầy đủ thông tin bắt buộc (*)
+                        </p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-8">
+                    <form id="student-form" onSubmit={handleSubmit} className="space-y-8">
+
+                        {/* Group 1: Tài khoản & Học tập */}
+                        <section>
+                            <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4 border-b pb-2">1. Thông tin Học vụ</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Mã Sinh viên *</label>
+                                    <input name="studentCode" type="text" required disabled={isEdit} value={formData.studentCode} onChange={handleChange} className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 disabled:opacity-60" placeholder="VD: SV2026001" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Lớp hành chính *</label>
+                                    <select name="classId" required value={formData.classId} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="">-- Chọn lớp --</option>
+                                        {classes.map(c => (
+                                            <option key={c.id} value={c.id}>{c.className} ({c.classCode})</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Group 2: Cá nhân */}
+                        <section>
+                            <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4 border-b pb-2">2. Thông tin Cá nhân</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Họ và Tên *</label>
+                                    <input name="fullName" type="text" required value={formData.fullName} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Giới tính</label>
+                                    <select name="gender" value={formData.gender} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="1">Nam</option>
+                                        <option value="2">Nữ</option>
+                                        <option value="0">Khác</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Ngày sinh *</label>
+                                    <input name="dateOfBirth" type="date" required value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Số CMND/CCCD</label>
+                                    <input name="personalIdentificationNumber" type="text" value={formData.personalIdentificationNumber} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Ngày cấp</label>
+                                    <input name="dateOfIssue" type="date" value={formData.dateOfIssue} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div className="md:col-span-3">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nơi cấp</label>
+                                    <input name="cardPlace" type="text" value={formData.cardPlace} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Group 3: Liên hệ */}
+                        <section>
+                            <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4 border-b pb-2">3. Thông tin Liên lạc</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input name="email" type="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                                    <input name="phone" type="text" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ thường trú</label>
+                                    <input name="address" type="text" value={formData.address} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ hiện tại</label>
+                                    <input name="currentAddress" type="text" value={formData.currentAddress} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                            </div>
+                        </section>
+
+                    </form>
+                </div>
+
+                {/* Footer */}
+                <div className="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">
+                        Hủy bỏ
+                    </button>
+                    <button form="student-form" type="submit" disabled={loading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50">
+                        {loading ? 'Đang xử lý...' : isEdit ? 'Lưu thay đổi' : 'Hoàn tất Thêm mới'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default StudentFormModal;
+
+==================
+
+// components/StudentDetailModal.jsx
+const StudentDetailModal = ({ isOpen, onClose, studentData }) => {
+    if (!isOpen || !studentData) return null;
+
+    const InfoRow = ({ label, value }) => (
+        <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+            <span className="text-gray-500 text-sm">{label}:</span>
+            <span className="text-gray-900 font-medium text-sm text-right max-w-[60%]">{value || '---'}</span>
+        </div>
+    );
+
+    console.log(studentData);
+
+    const getStatusColor = (statusCode) => {
+        if (statusCode === 'STUDYING' || statusCode === 'ACTIVE') return 'bg-green-100 text-green-700';
+        if (statusCode === 'SUSPENDED') return 'bg-amber-100 text-amber-700';
+        if (statusCode === 'EXPELLED') return 'bg-red-100 text-red-700';
+        if (statusCode === 'GRADUATED') return 'bg-blue-100 text-blue-700';
+        return 'bg-gray-100 text-gray-700'; // PENDING / Default
+    };
+
+    const formatGender = (gender) => {
+        if (gender === '1' || gender === 'Nam') return 'Nam';
+        if (gender === '2' || gender === 'Nữ') return 'Nữ';
+        return 'Khác';
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+
+                {/* Header */}
+                <div className="p-6 bg-blue-700 text-white flex justify-between items-start">
+                    <div>
+                        <h2 className="text-2xl font-bold">{studentData.fullName}</h2>
+                        <div className="flex gap-4 mt-2 text-blue-100 text-sm">
+                            <p>MSSV: <span className="font-bold text-white">{studentData.studentCode}</span></p>
+                            <p>Khóa: <span className="font-bold text-white">{studentData.admissionYear || '---'}</span></p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        {/* Cột 1: Thông tin cá nhân */}
+                        <section>
+                            <h3 className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                Thông tin cá nhân
+                            </h3>
+                            <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm space-y-1">
+                                <InfoRow label="Giới tính" value={formatGender(studentData.gender)} />
+                                <InfoRow label="Ngày sinh" value={studentData.dateOfBirth} />
+                                <InfoRow label="Số CMND/CCCD" value={studentData.personalIdentificationNumber} />
+                                <InfoRow label="Email" value={studentData.email} />
+                                <InfoRow label="Số điện thoại" value={studentData.phone} />
+                                <InfoRow label="Địa chỉ" value={studentData.address} />
+                            </div>
+                        </section>
+
+                        {/* Cột 2: Thông tin học tập */}
+                        <section>
+                            <h3 className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                                Học vấn & Phân bổ
+                            </h3>
+                            <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm space-y-1">
+                                <InfoRow label="Lớp hành chính" value={studentData.className} />
+                                <InfoRow label="Ngành học" value={studentData.majorName} />
+                                <InfoRow label="Khoa/Viện" value={studentData.departmentName} />
+                                <div className="flex justify-between py-2 items-center mt-2 border-t border-gray-100 pt-3">
+                                    <span className="text-gray-500 text-sm font-medium">Trạng thái hiện tại:</span>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(studentData.statusCode)}`}>
+                                        {studentData.statusName || studentData.statusCode || 'Chưa xác định'}
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Lịch sử trạng thái */}
+                    <section className="mt-8">
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Lịch sử thay đổi trạng thái</h3>
+                        <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-gray-50 text-gray-600 border-b border-gray-200">
+                                    <tr>
+                                        <th className="p-4 font-semibold">Trạng thái</th>
+                                        <th className="p-4 font-semibold">Ngày bắt đầu</th>
+                                        <th className="p-4 font-semibold">Ghi chú / Lý do</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 bg-white">
+                                    {/* Giả lập map dữ liệu trạng thái nếu Backend có trả về mảng statusHistory */}
+                                    {studentData.statusHistory && studentData.statusHistory.length > 0 ? (
+                                        studentData.statusHistory.map((status, index) => (
+                                            <tr key={index} className="hover:bg-gray-50">
+                                                <td className="p-4">
+                                                    <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(status.statusCode)}`}>
+                                                        {status.statusName}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-gray-700">{status.startDate || '---'}</td>
+                                                <td className="p-4 text-gray-500 text-xs italic">{status.reason || status.description || 'Không có ghi chú'}</td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td className="p-4">
+                                                <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(studentData.statusCode)}`}>
+                                                    {studentData.statusName}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-gray-700">Theo hồ sơ gốc</td>
+                                            <td className="p-4 text-gray-400 text-xs italic">Dữ liệu trạng thái hiện tại</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                {/* Footer */}
+                <div className="p-5 border-t border-gray-200 bg-gray-50 flex justify-end">
+                    <button onClick={onClose} className="px-6 py-2.5 bg-gray-200 text-gray-800 rounded-lg font-bold shadow-sm hover:bg-gray-300 transition-colors">
+                        Đóng cửa sổ
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default StudentDetailModal;
+
+==================
+
+// routes/ProtectedRoute.jsx
+// src/routes/ProtectedRoute.jsx
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
+
+const ProtectedRoute = () => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+    // Nếu chưa đăng nhập, đẩy về trang login
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+
+    // Nếu đã đăng nhập, cho phép render các trang con (Dashboard, Profile...)
+    return <Outlet />;
+};
+
+export default ProtectedRoute;
+
+==================
+
+// routes/PublicRoute.jsx
+// src/routes/PublicRoute.jsx
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
+
+const PublicRoute = () => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+    // Nếu đã đăng nhập mà cố vào /login, đẩy thẳng vào /dashboard
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    // Nếu chưa đăng nhập, cho phép render trang Login
+    return <Outlet />;
+};
+
+export default PublicRoute;
+
+==================
+
+// index.css
+@import "tailwindcss";
+
+==================
+
+// store/useAuthStore.js
+// src/store/useAuthStore.js
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+const useAuthStore = create(
+    persist(
+        (set) => ({
+            token: null,
+            isAuthenticated: false,
+            user: null, // { username, fullName, roles: [] }
+
+            // Hàm gọi khi đăng nhập thành công
+            setAuth: (token, user) =>
+                set({
+                    token,
+                    isAuthenticated: true,
+                    user,
+                }),
+
+            // Hàm gọi khi đăng xuất hoặc token hết hạn
+            logout: () =>
+                set({
+                    token: null,
+                    isAuthenticated: false,
+                    user: null,
+                }),
+        }),
+        {
+            name: 'auth-storage', // Tên key lưu trong localStorage
+        }
+    )
+);
+
+export default useAuthStore;
+
+==================
+
+// layouts/MainLayout.jsx
+import { Outlet, useNavigate } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import useAuthStore from '../store/useAuthStore';
+
+const MainLayout = () => {
+    const { user, logout } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    console.log(user)
+
+    return (
+        <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+            {/* Cột trái: Sidebar điều hướng */}
+            <Sidebar />
+
+            {/* Cột phải: Header + Nội dung chính */}
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+                {/* Topbar: Thông tin User & Logout */}
+                <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-8 shrink-0 z-20">
+                    <div className="flex items-center space-x-3">
+                        <div className="bg-blue-50 p-2 rounded-lg">
+                            <span className="text-blue-600 font-bold text-xs uppercase tracking-widest">
+                                Phân hệ: {user?.roles?.[0] || 'N/A'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center space-x-6">
+                        <div className="text-right hidden sm:block">
+                            <p className="text-sm font-bold text-gray-900 leading-none mb-1">
+                                {user?.fullName}
+                            </p>
+                            <p className="text-xs text-gray-500 font-medium italic">
+                                @{user?.username}
+                            </p>
+                        </div>
+
+                        <div className="h-8 w-px bg-gray-200 mx-2"></div>
+
+                        <button
+                            onClick={handleLogout}
+                            className="px-4 py-2 bg-red-50 text-red-600 text-xs font-bold rounded-lg hover:bg-red-100 hover:text-red-700 transition-all duration-200 shadow-sm border border-red-100"
+                        >
+                            ĐĂNG XUẤT
+                        </button>
+                    </div>
+                </header>
+
+                {/* Vùng hiển thị Module Content */}
+                <main className="flex-1 overflow-y-auto p-8 relative">
+                    <div className="max-w-7xl mx-auto animate-fadeIn">
+                        <Outlet />
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+};
+
+export default MainLayout;
+
+==================
+
+// layouts/Sidebar.jsx
+import { Link, useLocation } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
+import { MENU_ITEMS } from '../constants/menuConfig';
+
+const Sidebar = () => {
+    const user = useAuthStore((state) => state.user);
+    const location = useLocation();
+
+    // Logic lọc menu theo Role
+    const filteredMenu = MENU_ITEMS.filter((item) =>
+        item.roles.some((role) => user?.roles?.includes(role))
+    );
+
+    return (
+        <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col h-screen shadow-xl">
+            <div className="p-6 text-2xl font-black text-blue-500 tracking-tighter border-b border-slate-800">
+                STD MANAGER
+            </div>
+
+            <nav className="flex-1 overflow-y-auto py-4">
+                {filteredMenu.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`flex items-center px-6 py-3.5 mb-1 transition-all duration-200 hover:bg-slate-800 hover:text-white ${isActive
+                                ? 'bg-blue-600 text-white border-r-4 border-blue-300 font-bold'
+                                : 'text-slate-400'
+                                }`}
+                        >
+                            <span>{item.title}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <div className="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+                v1.0.0-PROJ2
+            </div>
+        </aside>
+    );
+};
+
+export default Sidebar;
+
+==================
+
+// pages/DashboardPage.jsx
+// src/pages/DashboardPage.jsx
+import useAuthStore from '../store/useAuthStore';
+
+const DashboardPage = () => {
+    const user = useAuthStore((state) => state.user);
+
+    // Logic kiểm tra vai trò
+    const isRole = (roleCode) => {
+        return user?.roles?.includes(roleCode);
+    };
+
+    // Trả về lời chào phù hợp
+    const renderGreeting = () => {
+        if (!user) return null;
+
+        if (isRole('ADMIN')) {
+            return (
+                <div className="bg-purple-100 border-l-4 border-purple-500 text-purple-700 p-4 mb-4">
+                    <h2 className="font-bold text-lg">Trang quản trị hệ thống</h2>
+                    <p>Xin chào Quản trị viên <strong>{user.fullName}</strong>. Chúc bạn một ngày làm việc hiệu quả!</p>
+                </div>
+            );
+        }
+
+        if (isRole('GIAOVU')) {
+            return (
+                <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+                    <h2 className="font-bold text-lg">Trang quản lý đào tạo</h2>
+                    <p>Xin chào Giáo vụ <strong>{user.fullName}</strong>.</p>
+                </div>
+            );
+        }
+
+        if (isRole('GIANGVIEN')) {
+            return (
+                <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4">
+                    <h2 className="font-bold text-lg">Trang quản lý giảng dạy</h2>
+                    <p>Xin chào Giảng viên <strong>{user.fullName}</strong>.</p>
+                </div>
+            );
+        }
+
+        if (isRole('SINHVIEN')) {
+            return (
+                <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4">
+                    <h2 className="font-bold text-lg">Trang thông tin sinh viên</h2>
+                    <p>Xin chào Sinh viên <strong>{user.fullName}</strong>.</p>
+                </div>
+            );
+        }
+
+        // Default fallback
+        return (
+            <div className="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4 mb-4">
+                <h2 className="font-bold text-lg">Hệ thống Quản lý</h2>
+                <p>Xin chào <strong>{user.fullName}</strong>.</p>
+            </div>
+        );
+    };
+
+    return (
+        <div className="max-w-4xl mx-auto">
+            {renderGreeting()}
+
+            <div className="bg-white p-6 rounded shadow-sm">
+                <h3 className="text-gray-800 font-semibold border-b pb-2 mb-4">Thông tin phiên đăng nhập</h3>
+                <ul className="text-sm text-gray-600 space-y-2">
+                    <li><strong>Tài khoản:</strong> {user?.username}</li>
+                    <li><strong>Quyền hạn:</strong> {user?.roles?.join(', ')}</li>
+                </ul>
+            </div>
+        </div>
+    );
+};
+
+export default DashboardPage;
+
+==================
+
+// pages/students/StudentListPage.jsx
+// src/pages/students/StudentListPage.jsx
+import { useState, useEffect, useCallback } from 'react';
+import { studentApi } from '../../api/studentApi';
+import useAuthStore from '../../store/useAuthStore';
+import StudentFormModal from '../../components/StudentFormModal';
+import StudentDetailModal from '../../components/StudentDetailModal';
+import { Plus, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'; // Import thêm icon sắp xếp
+
+const StudentListPage = () => {
+    const { user } = useAuthStore();
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [totalPages, setTotalPages] = useState(0);
+
+    // State quản lý Modals
+    const [modalState, setModalState] = useState({
+        type: null,
+        isOpen: false,
+        data: null
+    });
+
+    // Cập nhật State: Thêm sortBy và sortDir
+    const [filters, setFilters] = useState({
+        keyword: '',
+        page: 0,
+        size: 10,
+        classId: '',
+        statusId: '',
+        sortBy: 'studentCode', // Cột sắp xếp mặc định
+        sortDir: 'asc'         // Chiều sắp xếp mặc định (asc / desc)
+    });
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // --- Logic Handlers ---
+    const fetchStudents = useCallback(async () => {
+        setLoading(true);
+        try {
+            // Đối với Spring Boot, tham số sắp xếp thường có dạng sort=studentCode,asc
+            // Tùy thuộc vào cấu hình DTO backend của bạn, có thể truyền riêng lẻ hoặc gộp
+            const apiParams = {
+                ...filters,
+                sort: `${filters.sortBy},${filters.sortDir}` // Dành cho Pageable mặc định của Spring
+            };
+
+            const response = await studentApi.getAll(apiParams);
+            if (response.success) {
+                setStudents(response.data.content);
+                setTotalPages(response.data.totalPages);
+            }
+        } catch (error) {
+            console.error('Lỗi khi tải danh sách sinh viên:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [filters]);
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            setFilters(prev => ({ ...prev, keyword: searchTerm, page: 0 }));
+        }, 500);
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        fetchStudents();
+    }, [fetchStudents]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setFilters(prev => ({ ...prev, page: newPage }));
+        }
+    };
+
+    // Hàm xử lý khi người dùng bấm vào tiêu đề cột
+    const handleSort = (field) => {
+        setFilters(prev => {
+            // Nếu bấm lại cột cũ, đảo chiều sắp xếp
+            if (prev.sortBy === field) {
+                return { ...prev, sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc' };
+            }
+            // Nếu bấm cột mới, mặc định là tăng dần
+            return { ...prev, sortBy: field, sortDir: 'asc' };
+        });
+    };
+
+    const openModal = (type, data = null) => {
+        setModalState({ type, isOpen: true, data });
+    };
+
+    const closeModal = () => {
+        setModalState({ type: null, isOpen: false, data: null });
+    };
+
+    const canEdit = user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r));
+
+    // Hàm Render tiêu đề cột hỗ trợ sắp xếp
+    const renderSortableHeader = (label, field) => {
+        const isActive = filters.sortBy === field;
+        return (
+            <th
+                className="p-4 border-b font-semibold cursor-pointer hover:bg-gray-100 transition-colors select-none group"
+                onClick={() => handleSort(field)}
+            >
+                <div className="flex items-center gap-1.5">
+                    {label}
+                    <span className="text-gray-400 group-hover:text-blue-500 transition-colors">
+                        {!isActive ? (
+                            <ArrowUpDown size={14} />
+                        ) : filters.sortDir === 'asc' ? (
+                            <ArrowUp size={14} className="text-blue-600" />
+                        ) : (
+                            <ArrowDown size={14} className="text-blue-600" />
+                        )}
+                    </span>
+                </div>
+            </th>
+        );
+    };
+
+    return (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            {/* Header & Toolbar */}
+            <div className="p-6 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800">Quản lý Sinh viên</h2>
+                    <p className="text-sm text-gray-500 mt-1">Danh sách hồ sơ và trạng thái học tập</p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <input
+                        type="text"
+                        placeholder="Tìm theo Tên hoặc MSSV..."
+                        className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {canEdit && (
+                        <button
+                            onClick={() => openModal('ADD')}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                        >
+                            <Plus size={18} /> Thêm sinh viên
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                    <thead>
+                        <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
+                            {/* Áp dụng Sort cho MSSV và Lớp */}
+                            {renderSortableHeader('MSSV', 'studentCode')}
+                            <th className="p-4 border-b font-semibold">Họ và Tên</th>
+                            <th className="p-4 border-b font-semibold">Giới tính</th>
+                            {renderSortableHeader('Lớp', 'studentClass.className')}
+                            <th className="p-4 border-b font-semibold">Trạng thái</th>
+                            <th className="p-4 border-b font-semibold text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                        {loading ? (
+                            <tr>
+                                <td colSpan="6" className="p-8 text-center text-gray-500">Đang tải dữ liệu...</td>
+                            </tr>
+                        ) : students.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" className="p-8 text-center text-gray-500">Không tìm thấy sinh viên nào.</td>
+                            </tr>
+                        ) : (
+                            students.map((student) => (
+                                <tr key={student.id} className="hover:bg-blue-50/50 transition-colors">
+                                    <td className="p-4 text-sm font-medium text-blue-600">{student.studentCode}</td>
+                                    <td className="p-4 text-sm font-semibold text-gray-800">{student.fullName}</td>
+                                    <td className="p-4 text-sm text-gray-600">
+                                        {student.gender === '1' || student.gender === 'Nam' ? 'Nam' : student.gender === '2' || student.gender === 'Nữ' ? 'Nữ' : 'Khác'}
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-600">{student.className || 'Chưa xếp lớp'}</td>
+                                    <td className="p-4">
+                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${student.statusCode === 'ACTIVE' || student.statusCode === 'STUDYING'
+                                            ? 'bg-green-100 text-green-700'
+                                            : 'bg-gray-100 text-gray-700'
+                                            }`}>
+                                            {student.statusName || 'N/A'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-center">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <button
+                                                onClick={() => openModal('VIEW', student)}
+                                                className="text-gray-500 hover:text-blue-600 text-sm font-medium"
+                                            >
+                                                Xem
+                                            </button>
+                                            {canEdit && (
+                                                <button
+                                                    onClick={() => openModal('EDIT', student)}
+                                                    className="text-gray-500 hover:text-amber-600 text-sm font-medium"
+                                                >
+                                                    Sửa
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="p-4 border-t border-gray-200 flex items-center justify-between text-sm">
+                <span className="text-gray-600">
+                    Trang {filters.page + 1} / {totalPages || 1}
+                </span>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => handlePageChange(filters.page - 1)}
+                        disabled={filters.page === 0 || loading}
+                        className="px-3 py-1 border border-gray-300 rounded disabled:opacity-50 hover:bg-gray-50"
+                    >
+                        Trước
+                    </button>
+                    <button
+                        onClick={() => handlePageChange(filters.page + 1)}
+                        disabled={filters.page >= totalPages - 1 || loading}
+                        className="px-3 py-1 border border-gray-300 rounded disabled:opacity-50 hover:bg-gray-50"
+                    >
+                        Sau
+                    </button>
+                </div>
+            </div>
+
+            {/* --- Modals Section --- */}
+            <StudentDetailModal
+                isOpen={modalState.isOpen && modalState.type === 'VIEW'}
+                onClose={closeModal}
+                studentData={modalState.data}
+            />
+
+            <StudentFormModal
+                isOpen={modalState.isOpen && (modalState.type === 'ADD' || modalState.type === 'EDIT')}
+                onClose={closeModal}
+                onSuccess={() => {
+                    fetchStudents();
+                    closeModal();
+                }}
+                initialData={modalState.type === 'EDIT' ? modalState.data : null}
+            />
+        </div>
+    );
+};
+
+export default StudentListPage;
+
+==================
+
+// pages/LoginPage.jsx
+// src/pages/LoginPage.jsx
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
+import { authApi } from '../api/authApi';
+
+const LoginPage = () => {
+    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const setAuth = useAuthStore((state) => state.setAuth);
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError(''); // Xóa lỗi khi người dùng bắt đầu nhập lại
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            // Gọi API đăng nhập
+            const response = await authApi.login(formData);
+
+            if (response.success) {
+                // Lưu token và user vào Zustand
+                setAuth(response.data.token, response.data.user);
+                // Chuyển hướng tới trang chính
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            // Xử lý lỗi từ Backend trả về (nếu có message thì hiển thị, không thì báo lỗi chung)
+            const errorMsg = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+            setError(errorMsg);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">Hệ thống Quản lý (stdmanager)</h2>
+
+                {error && (
+                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+                            Tên đăng nhập
+                        </label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={formData.username}
+                            onChange={handleChange}
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                            Mật khẩu
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={formData.password}
+                            onChange={handleChange}
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`w-full py-2 px-4 rounded text-white font-bold transition-colors ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                            }`}
+                    >
+                        {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default LoginPage;
+
+==================
+
+// pages/profile/ProfilePage.jsx
+
+
+==================
+
+// pages/profile/ProfilePage copy.jsx
+
+
+==================
+
+// App.css
+@import "tailwindcss";
+
+==================
+

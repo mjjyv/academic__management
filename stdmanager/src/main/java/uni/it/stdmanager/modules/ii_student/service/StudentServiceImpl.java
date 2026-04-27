@@ -27,6 +27,7 @@ import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentStatusRepository;
 
+import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -45,7 +46,11 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<StudentResponse> searchStudents(StudentSearchRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Sort sort = request.getSortDir().equalsIgnoreCase("asc") 
+                ? Sort.by(request.getSortBy()).ascending() 
+                : Sort.by(request.getSortBy()).descending();
+        
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Student> students = studentRepository.searchStudents(
                 request.getKeyword(), request.getClassId(), request.getStatusId(), pageable);
         return students.map(this::mapToResponse);

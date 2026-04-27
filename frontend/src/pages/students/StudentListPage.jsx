@@ -4,7 +4,7 @@ import { studentApi } from '../../api/studentApi';
 import useAuthStore from '../../store/useAuthStore';
 import StudentFormModal from '../../components/StudentFormModal';
 import StudentDetailModal from '../../components/StudentDetailModal';
-import { Plus } from 'lucide-react';
+import { Plus, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'; // Import thêm icon sắp xếp
 
 const StudentListPage = () => {
     const { user } = useAuthStore();
@@ -12,32 +12,38 @@ const StudentListPage = () => {
     const [loading, setLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(0);
 
-    // State quản lý Modals (Hợp nhất logic: tập trung quản lý type và data)
+    // State quản lý Modals
     const [modalState, setModalState] = useState({
-        type: null, // 'VIEW', 'EDIT', 'ADD'
+        type: null,
         isOpen: false,
         data: null
     });
 
-
-    // State cho bộ lọc và phân trang
+    // Cập nhật State: Thêm sortBy và sortDir
     const [filters, setFilters] = useState({
         keyword: '',
         page: 0,
         size: 10,
         classId: '',
-        statusId: ''
+        statusId: '',
+        sortBy: 'studentCode', // Cột sắp xếp mặc định
+        sortDir: 'asc'         // Chiều sắp xếp mặc định (asc / desc)
     });
 
-    // Debounce tìm kiếm
     const [searchTerm, setSearchTerm] = useState('');
 
     // --- Logic Handlers ---
-
     const fetchStudents = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await studentApi.getAll(filters);
+            // Đối với Spring Boot, tham số sắp xếp thường có dạng sort=studentCode,asc
+            // Tùy thuộc vào cấu hình DTO backend của bạn, có thể truyền riêng lẻ hoặc gộp
+            const apiParams = {
+                ...filters,
+                sort: `${filters.sortBy},${filters.sortDir}` // Dành cho Pageable mặc định của Spring
+            };
+
+            const response = await studentApi.getAll(apiParams);
             if (response.success) {
                 setStudents(response.data.content);
                 setTotalPages(response.data.totalPages);
@@ -49,7 +55,6 @@ const StudentListPage = () => {
         }
     }, [filters]);
 
-    // Effect xử lý Debounce tìm kiếm
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             setFilters(prev => ({ ...prev, keyword: searchTerm, page: 0 }));
@@ -67,7 +72,18 @@ const StudentListPage = () => {
         }
     };
 
-    // Các hàm mở Modal tập trung
+    // Hàm xử lý khi người dùng bấm vào tiêu đề cột
+    const handleSort = (field) => {
+        setFilters(prev => {
+            // Nếu bấm lại cột cũ, đảo chiều sắp xếp
+            if (prev.sortBy === field) {
+                return { ...prev, sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc' };
+            }
+            // Nếu bấm cột mới, mặc định là tăng dần
+            return { ...prev, sortBy: field, sortDir: 'asc' };
+        });
+    };
+
     const openModal = (type, data = null) => {
         setModalState({ type, isOpen: true, data });
     };
@@ -76,8 +92,31 @@ const StudentListPage = () => {
         setModalState({ type: null, isOpen: false, data: null });
     };
 
-    // Kiểm tra quyền chỉnh sửa
     const canEdit = user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r));
+
+    // Hàm Render tiêu đề cột hỗ trợ sắp xếp
+    const renderSortableHeader = (label, field) => {
+        const isActive = filters.sortBy === field;
+        return (
+            <th
+                className="p-4 border-b font-semibold cursor-pointer hover:bg-gray-100 transition-colors select-none group"
+                onClick={() => handleSort(field)}
+            >
+                <div className="flex items-center gap-1.5">
+                    {label}
+                    <span className="text-gray-400 group-hover:text-blue-500 transition-colors">
+                        {!isActive ? (
+                            <ArrowUpDown size={14} />
+                        ) : filters.sortDir === 'asc' ? (
+                            <ArrowUp size={14} className="text-blue-600" />
+                        ) : (
+                            <ArrowDown size={14} className="text-blue-600" />
+                        )}
+                    </span>
+                </div>
+            </th>
+        );
+    };
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -112,10 +151,11 @@ const StudentListPage = () => {
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
-                            <th className="p-4 border-b font-semibold">MSSV</th>
+                            {/* Áp dụng Sort cho MSSV và Lớp */}
+                            {renderSortableHeader('MSSV', 'studentCode')}
                             <th className="p-4 border-b font-semibold">Họ và Tên</th>
                             <th className="p-4 border-b font-semibold">Giới tính</th>
-                            <th className="p-4 border-b font-semibold">Lớp</th>
+                            {renderSortableHeader('Lớp', 'studentClass.className')}
                             <th className="p-4 border-b font-semibold">Trạng thái</th>
                             <th className="p-4 border-b font-semibold text-center">Thao tác</th>
                         </tr>
@@ -135,16 +175,15 @@ const StudentListPage = () => {
                                     <td className="p-4 text-sm font-medium text-blue-600">{student.studentCode}</td>
                                     <td className="p-4 text-sm font-semibold text-gray-800">{student.fullName}</td>
                                     <td className="p-4 text-sm text-gray-600">
-                                        {student.gender === 'Nam' ? 'Nam' : student.gender === 'Nữ' ? 'Nữ' : 'Khác'}
+                                        {student.gender === '1' || student.gender === 'Nam' ? 'Nam' : student.gender === '2' || student.gender === 'Nữ' ? 'Nữ' : 'Khác'}
                                     </td>
                                     <td className="p-4 text-sm text-gray-600">{student.className || 'Chưa xếp lớp'}</td>
                                     <td className="p-4">
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${student.statusCode === 'ACTIVE'
+                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${student.statusCode === 'ACTIVE' || student.statusCode === 'STUDYING'
                                             ? 'bg-green-100 text-green-700'
                                             : 'bg-gray-100 text-gray-700'
                                             }`}>
                                             {student.statusName || 'N/A'}
-                                            {console.log(student)}
                                         </span>
                                     </td>
                                     <td className="p-4 text-center">
@@ -196,21 +235,18 @@ const StudentListPage = () => {
             </div>
 
             {/* --- Modals Section --- */}
-
-            {/* Modal Xem chi tiết */}
             <StudentDetailModal
                 isOpen={modalState.isOpen && modalState.type === 'VIEW'}
                 onClose={closeModal}
                 studentData={modalState.data}
             />
 
-            {/* Modal Thêm/Sửa (Dùng chung StudentFormModal) */}
             <StudentFormModal
                 isOpen={modalState.isOpen && (modalState.type === 'ADD' || modalState.type === 'EDIT')}
                 onClose={closeModal}
                 onSuccess={() => {
-                    fetchStudents(); // Tải lại dữ liệu
-                    closeModal();    // Đóng modal
+                    fetchStudents();
+                    closeModal();
                 }}
                 initialData={modalState.type === 'EDIT' ? modalState.data : null}
             />
