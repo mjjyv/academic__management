@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { X, Save, User, Mail, Phone, Loader2 } from 'lucide-react';
+import { X, Save, User, Mail, Phone, Loader2, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { profileApi } from '../api/profileApi';
 
-const ProfileEditModal = ({ isOpen, onClose, initialData, onUpdate }) => {
+const ProfileEditModal = ({ isOpen, onClose, initialData, onUpdate, roles = [] }) => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: ''
     });
     const [loading, setLoading] = useState(false);
+
+    const canEditSensitiveInfo = roles.includes('ADMIN') || roles.includes('GIAOVU');
 
     useEffect(() => {
         if (initialData) {
@@ -53,6 +55,13 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onUpdate }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                    {!canEditSensitiveInfo && (
+                        <div className="bg-blue-50 text-blue-700 p-3 rounded-xl text-xs flex gap-2 items-start">
+                            <Lock size={16} className="shrink-0 mt-0.5" />
+                            <p>Tên và Email được quản lý bởi Hệ thống. Vui lòng liên hệ Giáo vụ nếu cần thay đổi.</p>
+                        </div>
+                    )}
+
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Họ và tên</label>
                         <div className="relative">
@@ -60,9 +69,10 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onUpdate }) => {
                             <input
                                 type="text"
                                 required
+                                disabled={!canEditSensitiveInfo}
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition-all outline-none"
+                                className={`w-full pl-10 pr-4 py-2.5 border border-gray-100 rounded-xl text-sm transition-all outline-none ${!canEditSensitiveInfo ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-gray-50 focus:bg-white focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900'}`}
                                 placeholder="Nhập họ tên đầy đủ"
                             />
                         </div>
@@ -75,9 +85,10 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onUpdate }) => {
                             <input
                                 type="email"
                                 required
+                                disabled={!canEditSensitiveInfo}
                                 value={formData.email}
                                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition-all outline-none"
+                                className={`w-full pl-10 pr-4 py-2.5 border border-gray-100 rounded-xl text-sm transition-all outline-none ${!canEditSensitiveInfo ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-gray-50 focus:bg-white focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900'}`}
                                 placeholder="example@email.com"
                             />
                         </div>

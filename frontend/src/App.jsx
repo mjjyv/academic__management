@@ -12,6 +12,10 @@ import LecturerListPage from './pages/LecturerListPage';
 import ProfilePage from './pages/ProfilePage';
 import ERDiagramView from './pages/ERDiagramView';
 
+// Modules IV & V
+import CourseListPage from './pages/academic/CourseListPage';
+import AcademicOverviewPage from './pages/academic/AcademicOverviewPage';
+
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
   <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -44,7 +48,8 @@ function App() {
             <Route path="/students" element={<StudentListPage />} />
             <Route path="/student-classes" element={<ClassHierarchyPage />} />
             <Route path="/lecturers" element={<LecturerListPage />} />
-            <Route path="/academic" element={<Placeholder title="Chương trình đào tạo & Học phần" />} />
+            <Route path="/academic" element={<CourseListPage />} />
+            <Route path="/academic-management" element={<AcademicOverviewPage />} />
             <Route path="/registration" element={<Placeholder title="Đăng ký học phần trực tuyến" />} />
             <Route path="/schedule" element={<Placeholder title="Thời khóa biểu & Lịch giảng dạy" />} />
             <Route path="/grades" element={<Placeholder title="Quản lý Điểm & Kết quả học tập" />} />

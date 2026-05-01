@@ -221,6 +221,7 @@ const ProfilePage = () => {
                 onClose={() => setIsEditModalOpen(false)} 
                 initialData={profile}
                 onUpdate={handleProfileUpdated}
+                roles={profile?.roles || []}
             />
         </div>
     );

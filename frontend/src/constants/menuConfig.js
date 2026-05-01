@@ -25,8 +25,13 @@ export const MENU_ITEMS = [
         roles: ['ADMIN', 'GIAOVU'],
     },
     {
-        title: 'Chương trình đào tạo',
+        title: 'Danh mục Môn học',
         path: '/academic',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+    {
+        title: 'Quản lý Đào tạo',
+        path: '/academic-management',
         roles: ['ADMIN', 'GIAOVU'],
     },
     {

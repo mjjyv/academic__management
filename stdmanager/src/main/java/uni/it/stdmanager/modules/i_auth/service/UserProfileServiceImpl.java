@@ -79,21 +79,33 @@ public class UserProfileServiceImpl implements UserProfileService {
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng: " + currentUsername));
 
+        Set<String> roles = userRoleRepository.findAllByUser(user).stream()
+                .map(ur -> ur.getRole().getCode())
+                .collect(Collectors.toSet());
+
+        boolean canEditSensitiveInfo = roles.contains("ADMIN") || roles.contains("GIAOVU");
+
         // Cập nhật User
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
+        if (canEditSensitiveInfo) {
+            user.setFullName(request.getFullName());
+            user.setEmail(request.getEmail());
+        }
         user.setPhone(request.getPhone());
         userRepository.save(user);
 
         // Đồng bộ với hồ sơ liên kết (nếu có)
         studentRepository.findByUserId(user.getId()).ifPresent(student -> {
-            student.setFullName(request.getFullName());
-            studentRepository.save(student);
+            if (canEditSensitiveInfo) {
+                student.setFullName(request.getFullName());
+                studentRepository.save(student);
+            }
         });
 
         employeeRepository.findByUserId(user.getId()).ifPresent(employee -> {
-            employee.setFullName(request.getFullName());
-            employee.setEmail(request.getEmail());
+            if (canEditSensitiveInfo) {
+                employee.setFullName(request.getFullName());
+                employee.setEmail(request.getEmail());
+            }
             employee.setPhone(request.getPhone());
             employeeRepository.save(employee);
         });
