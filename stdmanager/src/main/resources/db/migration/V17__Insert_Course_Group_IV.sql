@@ -1,82 +1,101 @@
--- =====================================================
--- TẠO DỮ LIỆU MẪU CHO NHÓM MÔN HỌC & CHƯƠNG TRÌNH (GROUP IV)
--- =====================================================
+-- stdmanager/src/main/resources/db/migration/V18__Insert_Course_Group_IV.sql
 
--- 1. Lấy lại ID Khoa đã tạo ở Nhóm III
-DECLARE @DeptCNTT UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'CNTT');
-DECLARE @DeptKinhTe UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'KINHTE');
-
--- 2. Dữ liệu cho bảng 'majors' (Ngành đào tạo)
-DECLARE @MajorCNTT UNIQUEIDENTIFIER = NEWID();
-DECLARE @MajorKinhTe UNIQUEIDENTIFIER = NEWID();
-
-INSERT INTO majors (id, department_id, major_code, major_name, description, effective_date, is_active) VALUES
-(@MajorCNTT, @DeptCNTT, 'NG_CNTT', N'Ngành Công nghệ thông tin', N'Đào tạo kỹ sư CNTT', '2020-01-01', 1),
-(@MajorKinhTe, @DeptKinhTe, 'NG_QTKD', N'Ngành Quản trị kinh doanh', N'Đào tạo cử nhân kinh tế', '2020-01-01', 1);
+USE [stdmanager_db];
 GO
 
--- 3. Dữ liệu cho bảng 'training_programs' (Chương trình đào tạo)
-DECLARE @MajorCNTT UNIQUEIDENTIFIER = (SELECT id FROM majors WHERE major_code = 'NG_CNTT');
-DECLARE @DeptCNTT UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'CNTT');
+-- ======================================================================
+-- KHỞI TẠO DỮ LIỆU MẪU CHO NHÓM IV (HỌC PHẦN, CHƯƠNG TRÌNH & NGÀNH)
+-- ======================================================================
 
-DECLARE @ProgCNTT_K45 UNIQUEIDENTIFIER = NEWID();
+-- Lấy ID của User Admin làm người tạo/cập nhật dữ liệu chuẩn
+DECLARE @AdminUserId UNIQUEIDENTIFIER = (SELECT id FROM users WHERE username = 'admin');
+DECLARE @Dept_CNTT UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'CNTT');
+DECLARE @Dept_KT UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'KT');
+DECLARE @Dept_NN UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'NN');
 
-INSERT INTO training_programs (
-    id, program_code, program_name, major_id, department_id, 
-    degree_level, total_credits, duration_years, status, is_active
-) VALUES (
-    @ProgCNTT_K45, 'CT_CNTT_K45', N'Chương trình CNTT Khóa 45', @MajorCNTT, @DeptCNTT, 
-    N'Đại học', 135, 4.0, N'ACTIVE', 1
-);
-GO
+-- ======================================================================
+-- 1. INSERT MAJORS (Ngành đào tạo)
+-- ======================================================================
 
--- 4. Dữ liệu cho bảng 'courses' (Môn học)
--- Tạo ID trước để dùng tham chiếu lẫn nhau (prerequisite)
-DECLARE @CourseSQL UNIQUEIDENTIFIER = NEWID();
-DECLARE @CourseJava UNIQUEIDENTIFIER = NEWID();
-DECLARE @CourseDB UNIQUEIDENTIFIER = NEWID();
-DECLARE @CourseWeb UNIQUEIDENTIFIER = NEWID();
+IF NOT EXISTS (SELECT 1 FROM majors WHERE major_code = 'CNTT_KTPM')
+    INSERT INTO majors (id, major_code, major_name, department_id, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CNTT_KTPM', N'Kỹ thuật Phần mềm', @Dept_CNTT, N'Chuyên ngành đào tạo kỹ sư phần mềm, lập trình ứng dụng', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
-DECLARE @DeptCNTT UNIQUEIDENTIFIER = (SELECT id FROM departments WHERE code = 'CNTT');
+IF NOT EXISTS (SELECT 1 FROM majors WHERE major_code = 'CNTT_MMT')
+    INSERT INTO majors (id, major_code, major_name, department_id, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CNTT_MMT', N'Mạng máy tính & Truyền thông', @Dept_CNTT, N'Chuyên ngành về hạ tầng mạng, an ninh mạng và truyền thông', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
-INSERT INTO courses (id, department_id, course_code, course_name, credits, course_type, theory_hours, practice_hours, is_active) VALUES
-(@CourseSQL, @DeptCNTT, 'MON_SQL', N'Cơ sở dữ liệu', 3.0, 'CORE', 30, 15, 1),          -- Môn cơ sở
-(@CourseJava, @DeptCNTT, 'MON_JAVA', N'Lập trình Java', 4.0, 'CORE', 45, 15, 1),        -- Môn cơ sở
-(@CourseDB, @DeptCNTT, 'MON_DBADV', N'CSDL Nâng cao', 3.0, 'ELECTIVE', 30, 15, 1),      -- Môn tự chọn (cần nền tảng SQL)
-(@CourseWeb, @DeptCNTT, 'MON_WEB', N'Lập trình Web', 3.0, 'CORE', 30, 15, 1);          -- Môn chuyên ngành (cần Java)
-GO
+IF NOT EXISTS (SELECT 1 FROM majors WHERE major_code = 'KT_QTKD')
+    INSERT INTO majors (id, major_code, major_name, department_id, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'KT_QTKD', N'Quản trị Kinh doanh', @Dept_KT, N'Đào tạo nhân sự quản trị, điều hành doanh nghiệp', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
--- 5. Dữ liệu cho bảng 'course_prerequisites' (Môn học tiên quyết)
--- Lấy lại ID môn học vừa tạo
-DECLARE @CourseSQL UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_SQL');
-DECLARE @CourseJava UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_JAVA');
-DECLARE @CourseDB UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_DBADV');
-DECLARE @CourseWeb UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_WEB');
+IF NOT EXISTS (SELECT 1 FROM majors WHERE major_code = 'KT_KT')
+    INSERT INTO majors (id, major_code, major_name, department_id, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'KT_KT', N'Kế toán', @Dept_KT, N'Đào tạo chuyên viên kế toán, kiểm toán và tài chính', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
--- Logic:
--- Để học 'CSDL Nâng cao' cần học xong 'Cơ sở dữ liệu'
--- Để học 'Lập trình Web' cần học xong 'Lập trình Java'
-INSERT INTO course_prerequisites (id, course_id, prerequisite_course_id, is_active) VALUES
-(NEWID(), @CourseDB, @CourseSQL, 1),
-(NEWID(), @CourseWeb, @CourseJava, 1);
-GO
+IF NOT EXISTS (SELECT 1 FROM majors WHERE major_code = 'NN_NNA')
+    INSERT INTO majors (id, major_code, major_name, department_id, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'NN_NNA', N'Ngôn ngữ Anh', @Dept_NN, N'Đào tạo cử nhân ngoại ngữ chuyên ngành tiếng Anh', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
--- 6. Dữ liệu cho bảng 'training_program_courses' (Môn học thuộc chương trình)
-DECLARE @ProgCNTT_K45 UNIQUEIDENTIFIER = (SELECT id FROM training_programs WHERE program_code = 'CT_CNTT_K45');
-DECLARE @CourseSQL UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_SQL');
-DECLARE @CourseJava UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_JAVA');
-DECLARE @CourseDB UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_DBADV');
-DECLARE @CourseWeb UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_WEB');
-DECLARE @CoursePrereqSQL UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MON_SQL');
+-- ======================================================================
+-- 2. INSERT TRAINING_PROGRAMS (Chương trình đào tạo)
+-- ======================================================================
 
-INSERT INTO training_program_courses (
-    id, training_program_id, course_id, course_code, course_name, 
-    semester, is_required, credits, prerequisite_course_id, is_active
-) VALUES 
--- Kỳ 1
-(NEWID(), @ProgCNTT_K45, @CourseSQL, 'MON_SQL', N'Cơ sở dữ liệu', 1, 1, 3.0, NULL, 1),
-(NEWID(), @ProgCNTT_K45, @CourseJava, 'MON_JAVA', N'Lập trình Java', 1, 1, 4.0, NULL, 1),
--- Kỳ 2 (Có môn tiên quyết)
-(NEWID(), @ProgCNTT_K45, @CourseDB, 'MON_DBADV', N'CSDL Nâng cao', 2, 0, 3.0, @CoursePrereqSQL, 1), -- Tự chọn, cần SQL
-(NEWID(), @ProgCNTT_K45, @CourseWeb, 'MON_WEB', N'Lập trình Web', 2, 1, 3.0, @CourseJava, 1);      -- Bắt buộc, cần Java
+DECLARE @Major_KTPM UNIQUEIDENTIFIER = (SELECT id FROM majors WHERE major_code = 'CNTT_KTPM');
+DECLARE @Major_MMT UNIQUEIDENTIFIER = (SELECT id FROM majors WHERE major_code = 'CNTT_MMT');
+DECLARE @Major_QTKD UNIQUEIDENTIFIER = (SELECT id FROM majors WHERE major_code = 'KT_QTKD');
+DECLARE @Major_NNA UNIQUEIDENTIFIER = (SELECT id FROM majors WHERE major_code = 'NN_NNA');
+
+IF NOT EXISTS (SELECT 1 FROM training_programs WHERE program_code = 'CT_KTPM_2022')
+    INSERT INTO training_programs (id, program_code, program_name, major_id, total_credits, duration_years, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CT_KTPM_2022', N'Chương trình KTPM Khóa 2022', @Major_KTPM, 135, 4.5, N'Chương trình đào tạo kỹ sư KTPM theo chuẩn CDIO áp dụng từ khóa 2022', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM training_programs WHERE program_code = 'CT_MMT_2022')
+    INSERT INTO training_programs (id, program_code, program_name, major_id, total_credits, duration_years, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CT_MMT_2022', N'Chương trình MMT Khóa 2022', @Major_MMT, 138, 4.5, N'Chương trình đào tạo kỹ sư Mạng và An toàn thông tin', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM training_programs WHERE program_code = 'CT_QTKD_2023')
+    INSERT INTO training_programs (id, program_code, program_name, major_id, total_credits, duration_years, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CT_QTKD_2023', N'Chương trình QTKD Khóa 2023', @Major_QTKD, 120, 4, N'Chương trình cử nhân QTKD cập nhật theo chuẩn AACSB', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM training_programs WHERE program_code = 'CT_NNA_2023')
+    INSERT INTO training_programs (id, program_code, program_name, major_id, total_credits, duration_years, description, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'CT_NNA_2023', N'Chương trình Ngôn ngữ Anh Khóa 2023', @Major_NNA, 125, 4, N'Chương trình cử nhân Ngôn ngữ Anh biên dịch - phiên dịch', 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+-- ======================================================================
+-- 3. INSERT COURSES (Học phần danh mục)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT1301')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'INT1301', N'Nhập môn Lập trình', 3, 30, 30, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT1302')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'INT1302', N'Cấu trúc Dữ liệu & Giải thuật', 4, 45, 30, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT2203')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'INT2203', N'Lập trình hướng đối tượng (Java)', 3, 30, 30, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT3305')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'INT3305', N'Phát triển ứng dụng Web (Spring Boot)', 3, 30, 30, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'ECO1101')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'ECO1101', N'Kinh tế vĩ mô', 3, 45, 0, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'MGT2201')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'MGT2201', N'Quản trị học đại cương', 3, 45, 0, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'ENG1101')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'ENG1101', N'Kỹ năng nghe nói tiếng Anh B1', 2, 15, 45, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'POL1001')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'POL1001', N'Triết học Mác - Lênin', 3, 45, 0, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
 GO

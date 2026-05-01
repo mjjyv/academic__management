@@ -7,6 +7,7 @@ import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import StudentListPage from './pages/students/StudentListPage';
+import ERDiagramView from './pages/ERDiagramView';
 
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
@@ -30,6 +31,9 @@ function App() {
           <Route element={<MainLayout />}>
             {/* Mặc định vào Dashboard */}
             <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* Thêm vào trong nhóm <Route element={<MainLayout />}> */}
+            <Route path="/er-diagram" element={<ERDiagramView />} />
 
             {/* Đăng ký các Route tương ứng với menuConfig.js */}
             <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />

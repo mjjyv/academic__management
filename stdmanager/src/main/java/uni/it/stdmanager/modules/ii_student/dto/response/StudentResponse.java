@@ -16,12 +16,20 @@ public class StudentResponse {
     private String gender;
     private String email;
     private String phone;
+    private String personalIdentificationNumber;
+    private LocalDate dateOfIssue;
+    private String cardPlace;
     private String address;
+    private String currentAddress;
 
     // Thông tin định danh liên kết
+    private UUID classId;
     private String className;
+    private UUID majorId;
     private String majorName;
+    private UUID departmentId;
     private String departmentName;
     private String statusName;
     private String statusCode;
+    private Integer admissionYear;
 }

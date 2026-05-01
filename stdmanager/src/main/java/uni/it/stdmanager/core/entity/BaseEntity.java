@@ -51,4 +51,8 @@ public abstract class BaseEntity {
 
     @Column(name = "deleted_by")
     private UUID deletedBy;
+
+    @Version
+    @Column(name = "lock_version")
+    private Integer lockVersion;
 }

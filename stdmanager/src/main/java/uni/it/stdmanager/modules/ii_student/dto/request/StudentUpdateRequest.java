@@ -12,7 +12,11 @@ public class StudentUpdateRequest {
     private String fullName;
     private LocalDate dateOfBirth;
     private String gender;
+    private String email;
     private String phone;
+    private String personalIdentificationNumber;
+    private LocalDate dateOfIssue;
+    private String cardPlace;
     private String address;
     private String currentAddress;
     private UUID classId;

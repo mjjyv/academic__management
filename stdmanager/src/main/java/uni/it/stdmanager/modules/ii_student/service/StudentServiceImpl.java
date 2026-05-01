@@ -78,6 +78,7 @@ public class StudentServiceImpl implements StudentService {
                 .passwordHash(passwordEncoder.encode(request.getStudentCode()))
                 .fullName(request.getFullName())
                 .email(request.getEmail())
+                .phone(request.getPhone())
                 .build();
         user = userRepository.save(user);
 
@@ -93,7 +94,13 @@ public class StudentServiceImpl implements StudentService {
                 .fullName(request.getFullName())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
+                .personalIdentificationNumber(request.getPersonalIdentificationNumber())
+                .dateOfIssue(request.getDateOfIssue())
+                .cardPlace(request.getCardPlace())
+                .address(request.getAddress())
+                .currentAddress(request.getCurrentAddress())
                 .studentClass(studentClass)
+                .admissionYear(calculateAdmissionYear(request.getStudentCode()))
                 // Giả định Major & Department lấy từ Class
                 .major(studentClass.getMajor())
                 .department(studentClass.getDepartment())
@@ -126,6 +133,14 @@ public class StudentServiceImpl implements StudentService {
             student.setGender(request.getGender());
         if (request.getPhone() != null)
             student.getUser().setPhone(request.getPhone());
+        if (request.getEmail() != null)
+            student.getUser().setEmail(request.getEmail());
+        if (request.getPersonalIdentificationNumber() != null)
+            student.setPersonalIdentificationNumber(request.getPersonalIdentificationNumber());
+        if (request.getDateOfIssue() != null)
+            student.setDateOfIssue(request.getDateOfIssue());
+        if (request.getCardPlace() != null)
+            student.setCardPlace(request.getCardPlace());
         if (request.getAddress() != null)
             student.setAddress(request.getAddress());
         if (request.getCurrentAddress() != null)
@@ -149,12 +164,34 @@ public class StudentServiceImpl implements StudentService {
                 .gender(student.getGender())
                 .email(student.getUser().getEmail())
                 .phone(student.getUser().getPhone())
+                .personalIdentificationNumber(student.getPersonalIdentificationNumber())
+                .dateOfIssue(student.getDateOfIssue())
+                .cardPlace(student.getCardPlace())
                 .address(student.getAddress())
+                .currentAddress(student.getCurrentAddress())
+                .classId(student.getStudentClass() != null ? student.getStudentClass().getId() : null)
                 .className(student.getStudentClass() != null ? student.getStudentClass().getClassName() : null)
+                .majorId(student.getMajor() != null ? student.getMajor().getId() : null)
                 .majorName(student.getMajor() != null ? student.getMajor().getMajorName() : null)
+                .departmentId(student.getDepartment() != null ? student.getDepartment().getId() : null)
                 .departmentName(student.getDepartment() != null ? student.getDepartment().getDepartmentName() : null)
                 .statusName(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusName() : null)
                 .statusCode(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusCode() : null)
+                .admissionYear(student.getAdmissionYear() != null ? student.getAdmissionYear() : calculateAdmissionYear(student.getStudentCode()))
                 .build();
+    }
+
+    private Integer calculateAdmissionYear(String studentCode) {
+        if (studentCode == null || studentCode.length() < 6) return null;
+        // Example: SV2026111 -> 2026
+        try {
+            String yearStr = studentCode.replaceAll("[^0-9]", "");
+            if (yearStr.length() >= 4) {
+                return Integer.parseInt(yearStr.substring(0, 4));
+            }
+        } catch (Exception e) {
+            // fallback
+        }
+        return null;
     }
 }

@@ -54,4 +54,9 @@ export const MENU_ITEMS = [
         path: '/settings',
         roles: ['ADMIN', 'GIAOVU'],
     },
+    {
+        title: 'Sơ đồ ER Hệ thống',
+        path: '/er-diagram',
+        roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
+    },
 ];

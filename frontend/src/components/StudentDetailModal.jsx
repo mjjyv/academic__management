@@ -24,6 +24,16 @@ const StudentDetailModal = ({ isOpen, onClose, studentData }) => {
         return 'Khác';
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return '---';
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        } catch (e) {
+            return dateString;
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -56,11 +66,18 @@ const StudentDetailModal = ({ isOpen, onClose, studentData }) => {
                             </h3>
                             <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm space-y-1">
                                 <InfoRow label="Giới tính" value={formatGender(studentData.gender)} />
-                                <InfoRow label="Ngày sinh" value={studentData.dateOfBirth} />
+                                <InfoRow label="Ngày sinh" value={formatDate(studentData.dateOfBirth)} />
                                 <InfoRow label="Số CMND/CCCD" value={studentData.personalIdentificationNumber} />
                                 <InfoRow label="Email" value={studentData.email} />
                                 <InfoRow label="Số điện thoại" value={studentData.phone} />
-                                <InfoRow label="Địa chỉ" value={studentData.address} />
+                                <div className="py-2 border-b border-gray-100">
+                                    <span className="text-gray-500 text-sm block mb-1">Địa chỉ thường trú:</span>
+                                    <span className="text-gray-900 font-medium text-sm">{studentData.address || '---'}</span>
+                                </div>
+                                <div className="py-2">
+                                    <span className="text-gray-500 text-sm block mb-1">Địa chỉ hiện tại:</span>
+                                    <span className="text-gray-900 font-medium text-sm">{studentData.currentAddress || '---'}</span>
+                                </div>
                             </div>
                         </section>
 

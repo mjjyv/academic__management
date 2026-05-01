@@ -21,8 +21,16 @@ public class StudentCreationRequest {
 
     private String gender;
 
+    private String personalIdentificationNumber;
+    private LocalDate dateOfIssue;
+    private String cardPlace;
+
     @Email(message = "Email không hợp lệ")
     private String email;
+
+    private String phone;
+    private String address;
+    private String currentAddress;
 
     @NotNull(message = "Cần có ID lớp hành chính")
     private UUID classId;
