@@ -89,101 +89,101 @@ const LecturerFormModal = ({ isOpen, onClose, data, departments, positions }) =>
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-4xl flex flex-col max-h-[90vh] overflow-hidden">
                 {/* Header */}
-                <div className="px-6 py-4 bg-gradient-to-r from-blue-700 to-indigo-800 text-white flex justify-between items-center shrink-0">
+                <div className="px-6 py-4 bg-white border-b border-gray-100 flex justify-between items-center shrink-0">
                     <div className="flex items-center gap-3">
-                        {isEdit ? <FileEdit size={24} className="text-blue-200" /> : <UserPlus size={24} className="text-blue-200" />}
-                        <h3 className="text-xl font-bold">{isEdit ? 'Cập nhật Cán bộ / Giảng viên' : 'Thêm mới Cán bộ / Giảng viên'}</h3>
+                        {isEdit ? <FileEdit size={22} className="text-gray-700" /> : <UserPlus size={22} className="text-gray-700" />}
+                        <h3 className="text-lg font-semibold text-gray-900">{isEdit ? 'Cập nhật Cán bộ / Giảng viên' : 'Thêm mới Cán bộ / Giảng viên'}</h3>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                    <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
                         <X size={20} />
                     </button>
                 </div>
 
                 {/* Body */}
-                <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
+                <div className="flex-1 overflow-y-auto p-6 bg-[#FAFAFA]">
                     <form id="lecturerForm" onSubmit={handleSubmit} className="space-y-6">
                         
-                        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                            <h4 className="text-sm font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">Thông tin cá nhân</h4>
+                        <div className="bg-white p-5 rounded-xl border border-gray-100">
+                            <h4 className="text-sm font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">Thông tin cá nhân</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Mã Cán bộ (*)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Mã Cán bộ (*)</label>
                                     <input required name="employeeCode" value={formData.employeeCode} onChange={handleChange} disabled={isEdit}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-60" 
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none disabled:opacity-60 transition-all text-sm" 
                                         placeholder="VD: GV1001" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Họ và tên (*)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Họ và tên (*)</label>
                                     <input required name="fullName" value={formData.fullName} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Email (*)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Email (*)</label>
                                     <input required type="email" name="email" value={formData.email} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Số điện thoại</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Số điện thoại</label>
                                     <input name="phone" value={formData.phone} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Giới tính</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Giới tính</label>
                                     <select name="gender" value={formData.gender} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm">
                                         <option value="1">Nam</option>
                                         <option value="2">Nữ</option>
                                         <option value="0">Khác</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Ngày sinh</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Ngày sinh</label>
                                     <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                            <h4 className="text-sm font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">Thông tin công tác & Học vụ</h4>
+                        <div className="bg-white p-5 rounded-xl border border-gray-100">
+                            <h4 className="text-sm font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">Thông tin công tác & Học vụ</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Khoa / Viện (*)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Khoa / Viện (*)</label>
                                     <select required name="departmentId" value={formData.departmentId} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm">
                                         <option value="">-- Chọn Khoa/Viện --</option>
                                         {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Chức danh (*)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Chức danh (*)</label>
                                     <select required name="positionId" value={formData.positionId} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm">
                                         <option value="">-- Chọn Chức danh --</option>
                                         {positions.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Học vị (VD: ThS, TS)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Học vị (VD: ThS, TS)</label>
                                     <input name="academicDegree" value={formData.academicDegree} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Học hàm (VD: GS, PGS)</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Học hàm (VD: GS, PGS)</label>
                                     <input name="academicTitle" value={formData.academicTitle} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Chuyên môn sâu</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Chuyên môn sâu</label>
                                     <input name="specialization" value={formData.specialization} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Loại hợp đồng</label>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1">Loại hợp đồng</label>
                                     <input name="contractType" value={formData.contractType} onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                                        className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm" />
                                 </div>
                             </div>
                         </div>
@@ -192,14 +192,14 @@ const LecturerFormModal = ({ isOpen, onClose, data, departments, positions }) =>
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 bg-white border-t border-slate-200 flex justify-end gap-3 shrink-0">
+                <div className="px-6 py-4 bg-white border-t border-gray-100 flex justify-end gap-3 shrink-0">
                     <button type="button" onClick={onClose} disabled={loading}
-                        className="px-5 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                        className="px-5 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Hủy
                     </button>
                     <button type="submit" form="lecturerForm" disabled={loading}
-                        className="px-5 py-2 flex items-center gap-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-200 transition-all disabled:opacity-50">
-                        {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Save size={18} />}
+                        className="px-5 py-2 flex items-center gap-2 text-sm font-medium text-white bg-gray-900 hover:bg-black rounded-lg transition-all disabled:opacity-50">
+                        {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Save size={16} />}
                         Lưu thông tin
                     </button>
                 </div>

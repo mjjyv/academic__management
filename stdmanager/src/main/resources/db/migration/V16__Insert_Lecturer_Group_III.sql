@@ -176,7 +176,7 @@ IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOI
     INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
     SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'tranthibich' AND r.code = 'GIANGVIEN';
 
-    -- Gán role GIANGVIEN cho user levancuong
+-- Gán role GIANGVIEN cho user levancuong
 IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'levancuong' AND r.code = 'GIANGVIEN')
     INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
     SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'levancuong' AND r.code = 'GIANGVIEN';

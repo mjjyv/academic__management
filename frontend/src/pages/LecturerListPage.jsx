@@ -101,21 +101,21 @@ const LecturerListPage = () => {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <Briefcase className="text-blue-600" /> Quản lý Giảng viên & Cán bộ
+                    <h2 className="text-xl font-semibold text-gray-800 tracking-tight flex items-center gap-2">
+                        Quản lý Giảng viên & Cán bộ
                     </h2>
-                    <p className="text-slate-500 text-sm mt-1">Tổng số: {totalElements} cán bộ</p>
+                    <p className="text-gray-500 text-sm mt-1">Tổng số: {totalElements} cán bộ</p>
                 </div>
                 <button
                     onClick={() => openModal('CREATE')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm shadow-blue-200 flex items-center gap-2"
+                    className="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg font-medium transition-all shadow-sm flex items-center gap-2 text-sm"
                 >
-                    <Plus size={18} /> Thêm Cán bộ
+                    <Plus size={16} /> Thêm Cán bộ
                 </button>
             </div>
 
             {/* Bộ lọc */}
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4">
+            <div className="bg-white p-4 rounded-xl border border-gray-100 flex flex-col md:flex-row gap-4">
                 <form onSubmit={handleSearch} className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
@@ -123,14 +123,14 @@ const LecturerListPage = () => {
                         placeholder="Tìm theo mã CB, tên..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm"
                     />
                 </form>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
                     <Filter className="text-slate-400" size={18} />
                     <select
-                        className="bg-slate-50 border border-slate-200 text-slate-700 py-2.5 px-4 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none flex-1 md:w-48"
+                        className="bg-gray-50 border border-transparent text-gray-700 py-2 px-4 rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none flex-1 md:w-48 text-sm"
                         value={selectedDept}
                         onChange={(e) => { setSelectedDept(e.target.value); setCurrentPage(0); }}
                     >
@@ -141,7 +141,7 @@ const LecturerListPage = () => {
                     </select>
 
                     <select
-                        className="bg-slate-50 border border-slate-200 text-slate-700 py-2.5 px-4 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none flex-1 md:w-40"
+                        className="bg-gray-50 border border-transparent text-gray-700 py-2 px-4 rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none flex-1 md:w-40 text-sm"
                         value={selectedPosition}
                         onChange={(e) => { setSelectedPosition(e.target.value); setCurrentPage(0); }}
                     >
@@ -154,16 +154,16 @@ const LecturerListPage = () => {
             </div>
 
             {/* Bảng dữ liệu */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-                                <th className="p-4 font-bold">Mã CB</th>
-                                <th className="p-4 font-bold">Họ tên</th>
-                                <th className="p-4 font-bold">Đơn vị công tác</th>
-                                <th className="p-4 font-bold">Chức danh / Học vị</th>
-                                <th className="p-4 font-bold text-center">Thao tác</th>
+                            <tr className="bg-gray-50/50 text-gray-500 text-xs font-medium border-b border-gray-100">
+                                <th className="p-4">Mã CB</th>
+                                <th className="p-4">Họ tên</th>
+                                <th className="p-4">Đơn vị công tác</th>
+                                <th className="p-4">Chức danh / Học vị</th>
+                                <th className="p-4 text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody className="text-sm">
@@ -177,31 +177,31 @@ const LecturerListPage = () => {
                                 </tr>
                             ) : (
                                 lecturers.map(lec => (
-                                    <tr key={lec.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                        <td className="p-4 font-bold text-blue-600">{lec.employeeCode}</td>
+                                    <tr key={lec.id} className="group border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                        <td className="p-4 font-medium text-gray-900">{lec.employeeCode}</td>
                                         <td className="p-4">
-                                            <p className="font-bold text-slate-800">{lec.fullName}</p>
-                                            <p className="text-xs text-slate-500">{lec.email}</p>
+                                            <p className="font-medium text-gray-900">{lec.fullName}</p>
+                                            <p className="text-xs text-gray-500">{lec.email}</p>
                                         </td>
                                         <td className="p-4">
-                                            <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs font-semibold">
+                                            <span className="text-gray-600 text-sm">
                                                 {lec.departmentName || 'Chưa xếp'}
                                             </span>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-slate-800 font-medium">{lec.positionName || 'N/A'}</p>
-                                            <p className="text-xs text-slate-500">{lec.academicDegree || ''}</p>
+                                            <p className="text-gray-800 text-sm">{lec.positionName || 'N/A'}</p>
+                                            <p className="text-xs text-gray-500">{lec.academicDegree || ''}</p>
                                         </td>
                                         <td className="p-4 text-center">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <button onClick={() => openModal('VIEW', lec)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Xem chi tiết">
-                                                    <Eye size={18} />
+                                            <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button onClick={() => openModal('VIEW', lec)} className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors" title="Xem chi tiết">
+                                                    <Eye size={16} />
                                                 </button>
-                                                <button onClick={() => openModal('EDIT', lec)} className="p-1.5 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg transition-colors" title="Chỉnh sửa">
-                                                    <Edit2 size={18} />
+                                                <button onClick={() => openModal('EDIT', lec)} className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors" title="Chỉnh sửa">
+                                                    <Edit2 size={16} />
                                                 </button>
-                                                <button onClick={() => handleDelete(lec.id)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Xóa">
-                                                    <Trash2 size={18} />
+                                                <button onClick={() => handleDelete(lec.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Xóa">
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         </td>
@@ -214,20 +214,20 @@ const LecturerListPage = () => {
 
                 {/* Phân trang */}
                 {totalPages > 1 && (
-                    <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm">
-                        <span className="text-slate-500">Trang {currentPage + 1} / {totalPages}</span>
-                        <div className="flex items-center gap-2">
+                    <div className="p-4 border-t border-gray-100 flex items-center justify-between text-sm">
+                        <span className="text-gray-500">Trang {currentPage + 1} / {totalPages}</span>
+                        <div className="flex items-center gap-1">
                             <button
                                 disabled={currentPage === 0}
                                 onClick={() => setCurrentPage(p => p - 1)}
-                                className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                                className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md disabled:opacity-50 transition-colors"
                             >
                                 <ChevronLeft size={16} />
                             </button>
                             <button
                                 disabled={currentPage === totalPages - 1}
                                 onClick={() => setCurrentPage(p => p + 1)}
-                                className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                                className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md disabled:opacity-50 transition-colors"
                             >
                                 <ChevronRight size={16} />
                             </button>

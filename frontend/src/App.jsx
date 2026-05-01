@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 import StudentListPage from './pages/students/StudentListPage';
 import ClassHierarchyPage from './pages/students/ClassHierarchyPage';
 import LecturerListPage from './pages/LecturerListPage';
+import ProfilePage from './pages/ProfilePage';
 import ERDiagramView from './pages/ERDiagramView';
 
 // Placeholder Components cho các Module chưa triển khai
@@ -33,6 +34,7 @@ function App() {
           <Route element={<MainLayout />}>
             {/* Mặc định vào Dashboard */}
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
 
             {/* Thêm vào trong nhóm <Route element={<MainLayout />}> */}
             <Route path="/er-diagram" element={<ERDiagramView />} />

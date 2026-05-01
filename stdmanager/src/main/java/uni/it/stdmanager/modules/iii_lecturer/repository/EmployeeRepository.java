@@ -17,6 +17,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     Optional<Employee> findByEmployeeCode(String employeeCode);
 
+    Optional<Employee> findByUserId(UUID userId);
+
     boolean existsByEmployeeCode(String employeeCode);
 
     @EntityGraph(attributePaths = {"user", "department", "position"})

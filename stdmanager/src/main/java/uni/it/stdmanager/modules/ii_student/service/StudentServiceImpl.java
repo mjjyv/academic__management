@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uni.it.stdmanager.core.exception.AppException;
-import uni.it.stdmanager.core.exception.ErrorCode;
+// import uni.it.stdmanager.core.exception.AppException;
+// import uni.it.stdmanager.core.exception.ErrorCode;
 import uni.it.stdmanager.modules.i_auth.entity.Role;
 import uni.it.stdmanager.modules.i_auth.entity.User;
 import uni.it.stdmanager.modules.i_auth.entity.UserRole;
@@ -50,10 +50,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<StudentResponse> searchStudents(StudentSearchRequest request) {
-        Sort sort = request.getSortDir().equalsIgnoreCase("asc") 
-                ? Sort.by(request.getSortBy()).ascending() 
+        Sort sort = request.getSortDir().equalsIgnoreCase("asc")
+                ? Sort.by(request.getSortBy()).ascending()
                 : Sort.by(request.getSortBy()).descending();
-        
+
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Student> students = studentRepository.searchStudents(
                 request.getKeyword(), request.getClassId(), request.getStatusId(), pageable);
@@ -228,12 +228,14 @@ public class StudentServiceImpl implements StudentService {
                 .departmentName(student.getDepartment() != null ? student.getDepartment().getDepartmentName() : null)
                 .statusName(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusName() : null)
                 .statusCode(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusCode() : null)
-                .admissionYear(student.getAdmissionYear() != null ? student.getAdmissionYear() : calculateAdmissionYear(student.getStudentCode()))
+                .admissionYear(student.getAdmissionYear() != null ? student.getAdmissionYear()
+                        : calculateAdmissionYear(student.getStudentCode()))
                 .build();
     }
 
     private Integer calculateAdmissionYear(String studentCode) {
-        if (studentCode == null || studentCode.length() < 6) return null;
+        if (studentCode == null || studentCode.length() < 6)
+            return null;
         // Example: SV2026111 -> 2026
         try {
             String yearStr = studentCode.replaceAll("[^0-9]", "");

@@ -19,6 +19,8 @@ public class AuthenticationResponse {
     public static class UserResponse {
         private String username;
         private String fullName;
+        private String email;
+        private String avatarUrl;
         private Set<String> roles;
     }
 }

@@ -148,3 +148,16 @@ BEGIN
     VALUES (@StatusId, @Stu_SV20210003, 'STUDYING', N'Đang học', '2021-09-01', 1, GETDATE(), GETDATE());
     UPDATE students SET status_id = @StatusId WHERE id = @Stu_SV20210003;
 END
+
+-- Gán role SINHVIEN cho user
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20200001' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20200001' AND r.code = 'SINHVIEN';
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20210002' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20210002' AND r.code = 'SINHVIEN';
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20210003' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20210003' AND r.code = 'SINHVIEN';
