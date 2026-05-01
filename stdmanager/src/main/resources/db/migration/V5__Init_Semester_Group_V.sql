@@ -61,3 +61,21 @@ CREATE TABLE lecturer_course_sections (
     deleted_by UNIQUEIDENTIFIER -- Người hủy phân công 
 );
 GO
+
+-- 3. Bảng student_course_sections: Quản lý sinh viên trong lớp học phần (MỚI BỔ SUNG)
+CREATE TABLE student_course_sections (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+    student_id UNIQUEIDENTIFIER NOT NULL, -- FK -> students.id
+    course_section_id UNIQUEIDENTIFIER NOT NULL, -- FK -> course_sections.id
+    grade_point DECIMAL(3, 2), -- Điểm hệ 4
+    grade_char NVARCHAR(5), -- Điểm chữ
+    status NVARCHAR(50), -- active / dropped / completed
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2,
+    created_by UNIQUEIDENTIFIER,
+    updated_by UNIQUEIDENTIFIER,
+    deleted_at DATETIME2,
+    deleted_by UNIQUEIDENTIFIER,
+    is_active BIT DEFAULT 1
+);
+GO

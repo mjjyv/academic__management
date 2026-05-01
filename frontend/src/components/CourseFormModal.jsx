@@ -151,7 +151,7 @@ const CourseFormModal = ({ isOpen, onClose, initialData, onUpdate }) => {
                                 >
                                     <option value="">-- Chọn khoa --</option>
                                     {departments.map(dept => (
-                                        <option key={dept.id} value={dept.id}>{dept.departmentName}</option>
+                                        <option key={dept.id} value={dept.id}>{dept.name}</option>
                                     ))}
                                 </select>
                             </div>

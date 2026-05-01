@@ -7,7 +7,7 @@ const ERDiagramView = () => {
         { id: 'II', name: 'Hồ sơ Sinh viên', count: 3, tables: ['students', 'student_status', 'student_classes'], implemented: true },
         { id: 'III', name: 'Nhân sự & Giảng viên', count: 7, tables: ['departments', 'positions', 'employees', 'lecturer_degrees', 'lecturer_positions_history', 'contracts', 'lecturer_specializations'], implemented: true },
         { id: 'IV', name: 'Chương trình & Môn học', count: 5, tables: ['majors', 'training_programs', 'courses', 'training_program_courses', 'course_prerequisites'], implemented: true },
-        { id: 'V', name: 'Học kỳ & Lớp học phần', count: 4, tables: ['semesters', 'course_sections', 'student_course_sections', 'lecturer_course_sections'], implemented: false },
+        { id: 'V', name: 'Học kỳ & Lớp học phần', count: 4, tables: ['semesters', 'course_sections', 'student_course_sections', 'lecturer_course_sections'], implemented: true },
         { id: 'VI', name: 'Đăng ký học phần', count: 3, tables: ['registration_periods', 'course_registrations', 'equivalent_courses'], implemented: false },
         { id: 'VII', name: 'Lịch học & Cơ sở vật chất', count: 4, tables: ['buildings', 'rooms', 'time_slots', 'schedules'], implemented: false },
         { id: 'VIII', name: 'Điểm & Đánh giá', count: 4, tables: ['grade_components', 'student_component_grades', 'student_summaries', 'grade_scales'], implemented: false },

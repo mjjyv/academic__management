@@ -1,8 +1,13 @@
 import axiosClient from './axiosClient';
 
-export const employeeApi = {
+export const lecturerApi = {
     getAll: (params) => {
         return axiosClient.get('/employees', { params });
+    },
+
+    getAllLecturers: () => {
+        // Có thể filter theo role giảng viên nếu cần, tạm thời lấy tất cả
+        return axiosClient.get('/employees');
     },
 
     getById: (id) => {
@@ -29,3 +34,6 @@ export const departmentApi = {
 export const positionApi = {
     getAllActive: () => axiosClient.get('/positions'),
 };
+
+// Alias for backward compatibility
+export const employeeApi = lecturerApi;
