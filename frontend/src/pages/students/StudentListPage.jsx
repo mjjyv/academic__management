@@ -4,7 +4,8 @@ import { studentApi } from '../../api/studentApi';
 import useAuthStore from '../../store/useAuthStore';
 import StudentFormModal from '../../components/StudentFormModal';
 import StudentDetailModal from '../../components/StudentDetailModal';
-import { Plus, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'; // Import thêm icon sắp xếp
+import StudentStatusModal from '../../components/StudentStatusModal';
+import { Plus, ArrowUpDown, ArrowUp, ArrowDown, UserCheck } from 'lucide-react'; // Thêm UserCheck
 
 const StudentListPage = () => {
     const { user } = useAuthStore();
@@ -195,12 +196,21 @@ const StudentListPage = () => {
                                                 Xem
                                             </button>
                                             {canEdit && (
-                                                <button
-                                                    onClick={() => openModal('EDIT', student)}
-                                                    className="text-gray-500 hover:text-amber-600 text-sm font-medium"
-                                                >
-                                                    Sửa
-                                                </button>
+                                                <>
+                                                    <button
+                                                        onClick={() => openModal('EDIT', student)}
+                                                        className="text-gray-500 hover:text-amber-600 text-sm font-medium"
+                                                    >
+                                                        Sửa
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openModal('STATUS', student)}
+                                                        className="text-gray-500 hover:text-indigo-600 text-sm font-medium flex items-center gap-0.5"
+                                                        title="Thay đổi trạng thái"
+                                                    >
+                                                        <UserCheck size={14} /> Trạng thái
+                                                    </button>
+                                                </>
                                             )}
                                         </div>
                                     </td>
@@ -249,6 +259,16 @@ const StudentListPage = () => {
                     closeModal();
                 }}
                 initialData={modalState.type === 'EDIT' ? modalState.data : null}
+            />
+
+            <StudentStatusModal
+                isOpen={modalState.isOpen && modalState.type === 'STATUS'}
+                onClose={closeModal}
+                studentData={modalState.data}
+                onSuccess={() => {
+                    fetchStudents();
+                    closeModal();
+                }}
             />
         </div>
     );

@@ -18,8 +18,10 @@ import uni.it.stdmanager.modules.i_auth.repository.UserRepository;
 import uni.it.stdmanager.modules.i_auth.repository.UserRoleRepository;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentCreationRequest;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentSearchRequest;
+import uni.it.stdmanager.modules.ii_student.dto.request.StudentStatusChangeRequest;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentUpdateRequest;
 import uni.it.stdmanager.modules.ii_student.dto.response.StudentResponse;
+import uni.it.stdmanager.modules.ii_student.dto.response.StudentStatusResponse;
 import uni.it.stdmanager.modules.ii_student.entity.Student;
 import uni.it.stdmanager.modules.ii_student.entity.StudentClass;
 import uni.it.stdmanager.modules.ii_student.entity.StudentStatus;
@@ -29,7 +31,9 @@ import uni.it.stdmanager.modules.ii_student.repository.StudentStatusRepository;
 
 import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -153,6 +157,53 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return mapToResponse(studentRepository.save(student));
+    }
+
+    @Override
+    public StudentResponse changeStatus(UUID id, StudentStatusChangeRequest request) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên"));
+
+        LocalDate startDate = request.getStartDate() != null ? request.getStartDate() : LocalDate.now();
+
+        // 1. Đóng trạng thái hiện tại (nếu có)
+        StudentStatus currentStatus = student.getCurrentStatus();
+        if (currentStatus != null) {
+            // Ngày kết thúc của trạng thái cũ là ngày trước ngày bắt đầu trạng thái mới
+            currentStatus.setEndDate(startDate.minusDays(1));
+            studentStatusRepository.save(currentStatus);
+        }
+
+        // 2. Tạo trạng thái mới (Lưu vào lịch sử)
+        StudentStatus newStatus = StudentStatus.builder()
+                .student(student)
+                .statusCode(request.getStatusCode())
+                .statusName(request.getStatusName())
+                .startDate(startDate)
+                .reason(request.getReason())
+                .description(request.getDescription())
+                .build();
+        studentStatusRepository.save(newStatus);
+
+        // 3. Cập nhật trạng thái hiện tại cho sinh viên
+        student.setCurrentStatus(newStatus);
+        return mapToResponse(studentRepository.save(student));
+    }
+
+    @Override
+    public List<StudentStatusResponse> getStatusHistory(UUID id) {
+        return studentStatusRepository.findAllByStudentIdOrderByStartDateDesc(id).stream()
+                .map(status -> StudentStatusResponse.builder()
+                        .id(status.getId())
+                        .statusCode(status.getStatusCode())
+                        .statusName(status.getStatusName())
+                        .startDate(status.getStartDate())
+                        .endDate(status.getEndDate())
+                        .reason(status.getReason())
+                        .description(status.getDescription())
+                        .createdAt(status.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private StudentResponse mapToResponse(Student student) {

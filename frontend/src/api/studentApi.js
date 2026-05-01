@@ -17,6 +17,13 @@ export const studentApi = {
         return axiosClient.put(`/students/${id}`, data);
     },
 
+    changeStatus: (id, data) => {
+        return axiosClient.put(`/students/${id}/status`, data);
+    },
+
+    getStatusHistory: (id) => {
+        return axiosClient.get(`/students/${id}/status-history`);
+    },
 };
 
 // Thêm vào src/api/studentApi.js

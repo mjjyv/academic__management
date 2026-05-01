@@ -1,4 +1,21 @@
+import { useState, useEffect } from 'react';
+import { studentApi } from '../api/studentApi';
+
 const StudentDetailModal = ({ isOpen, onClose, studentData }) => {
+    const [history, setHistory] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && studentData) {
+            setLoadingHistory(true);
+            studentApi.getStatusHistory(studentData.id)
+                .then(res => {
+                    if (res.success) setHistory(res.data);
+                })
+                .finally(() => setLoadingHistory(false));
+        }
+    }, [isOpen, studentData]);
+
     if (!isOpen || !studentData) return null;
 
     const InfoRow = ({ label, value }) => (
@@ -114,28 +131,30 @@ const StudentDetailModal = ({ isOpen, onClose, studentData }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 bg-white">
-                                    {/* Giả lập map dữ liệu trạng thái nếu Backend có trả về mảng statusHistory */}
-                                    {studentData.statusHistory && studentData.statusHistory.length > 0 ? (
-                                        studentData.statusHistory.map((status, index) => (
+                                    {loadingHistory ? (
+                                        <tr><td colSpan="3" className="p-4 text-center text-gray-400 italic text-xs">Đang tải lịch sử...</td></tr>
+                                    ) : history.length > 0 ? (
+                                        history.map((status, index) => (
                                             <tr key={index} className="hover:bg-gray-50">
                                                 <td className="p-4">
                                                     <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(status.statusCode)}`}>
                                                         {status.statusName}
                                                     </span>
                                                 </td>
-                                                <td className="p-4 text-gray-700">{status.startDate || '---'}</td>
-                                                <td className="p-4 text-gray-500 text-xs italic">{status.reason || status.description || 'Không có ghi chú'}</td>
+                                                <td className="p-4 text-gray-700">
+                                                    {formatDate(status.startDate)}
+                                                    {status.endDate && ` - ${formatDate(status.endDate)}`}
+                                                </td>
+                                                <td className="p-4 text-gray-500 text-xs italic">
+                                                    {status.reason ? `Lý do: ${status.reason}` : ''}
+                                                    {status.description ? (status.reason ? ` (${status.description})` : status.description) : ''}
+                                                    {!status.reason && !status.description && 'Không có ghi chú'}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td className="p-4">
-                                                <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(studentData.statusCode)}`}>
-                                                    {studentData.statusName}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 text-gray-700">Theo hồ sơ gốc</td>
-                                            <td className="p-4 text-gray-400 text-xs italic">Dữ liệu trạng thái hiện tại</td>
+                                            <td colSpan="3" className="p-4 text-center text-gray-400 italic text-xs">Không tìm thấy dữ liệu lịch sử.</td>
                                         </tr>
                                     )}
                                 </tbody>

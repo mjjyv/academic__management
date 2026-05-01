@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import uni.it.stdmanager.core.dto.ApiResponse;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentCreationRequest;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentSearchRequest;
+import uni.it.stdmanager.modules.ii_student.dto.request.StudentStatusChangeRequest;
 import uni.it.stdmanager.modules.ii_student.dto.request.StudentUpdateRequest;
 import uni.it.stdmanager.modules.ii_student.dto.response.StudentResponse;
+import uni.it.stdmanager.modules.ii_student.dto.response.StudentStatusResponse;
 import uni.it.stdmanager.modules.ii_student.service.StudentService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,5 +59,23 @@ public class StudentController {
             @Valid @RequestBody StudentUpdateRequest request) {
         StudentResponse response = studentService.updateStudent(id, request);
         return ApiResponse.success(response, "Cập nhật thông tin sinh viên thành công");
+    }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU')")
+    @Operation(summary = "5. Thay đổi trạng thái", description = "Cập nhật trạng thái mới và lưu vào lịch sử (Đang học, Bảo lưu, Thôi học...)")
+    public ApiResponse<StudentResponse> changeStatus(
+            @PathVariable UUID id,
+            @Valid @RequestBody StudentStatusChangeRequest request) {
+        StudentResponse response = studentService.changeStatus(id, request);
+        return ApiResponse.success(response, "Thay đổi trạng thái sinh viên thành công");
+    }
+
+    @GetMapping("/{id}/status-history")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN')")
+    @Operation(summary = "6. Xem lịch sử trạng thái", description = "Lấy toàn bộ danh sách lịch sử thay đổi trạng thái của sinh viên")
+    public ApiResponse<List<StudentStatusResponse>> getStatusHistory(@PathVariable UUID id) {
+        List<StudentStatusResponse> response = studentService.getStatusHistory(id);
+        return ApiResponse.success(response, "Lấy lịch sử trạng thái thành công");
     }
 }
