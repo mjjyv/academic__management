@@ -15,6 +15,11 @@ export const MENU_ITEMS = [
         roles: ['ADMIN', 'GIAOVU'],
     },
     {
+        title: 'Quản lý Lớp học',
+        path: '/student-classes',
+        roles: ['ADMIN', 'GIAOVU'],
+    },
+    {
         title: 'Quản lý Giảng viên',
         path: '/lecturers',
         roles: ['ADMIN', 'GIAOVU'],

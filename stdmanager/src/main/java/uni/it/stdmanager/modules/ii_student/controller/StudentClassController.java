@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.it.stdmanager.core.dto.ApiResponse;
+import uni.it.stdmanager.modules.ii_student.dto.response.DepartmentHierarchyResponse;
 import uni.it.stdmanager.modules.ii_student.dto.response.StudentClassResponse;
 import uni.it.stdmanager.modules.ii_student.service.StudentClassService;
 
@@ -27,5 +28,13 @@ public class StudentClassController {
     public ApiResponse<List<StudentClassResponse>> getAllClasses() {
         List<StudentClassResponse> response = studentClassService.getAllClasses();
         return ApiResponse.success(response, "Lấy danh sách lớp thành công");
+    }
+
+    @GetMapping("/hierarchy")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU', 'GIANGVIEN')")
+    @Operation(summary = "6. Lấy cây danh mục lớp", description = "Trả về danh sách lớp được phân loại theo Khoa -> Ngành -> Lớp")
+    public ApiResponse<List<DepartmentHierarchyResponse>> getClassHierarchy() {
+        List<DepartmentHierarchyResponse> response = studentClassService.getClassHierarchy();
+        return ApiResponse.success(response, "Lấy cấu trúc cây danh mục lớp thành công");
     }
 }

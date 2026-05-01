@@ -59,4 +59,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
+
+    // Bổ sung method này vào trong class GlobalExceptionHandler
+    @ExceptionHandler(value = ResourceNotFoundException.class)
+    ResponseEntity<ApiResponse<?>> handlingResourceNotFoundException(ResourceNotFoundException exception) {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+
+        apiResponse.setSuccess(false);
+        apiResponse.setCode("404"); // Hoặc định nghĩa mã lỗi trong ErrorCode (vd: 1009)
+        apiResponse.setMessage(exception.getMessage());
+        apiResponse.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    }
 }

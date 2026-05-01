@@ -28,5 +28,6 @@ export const studentApi = {
 
 // Thêm vào src/api/studentApi.js
 export const classApi = {
-    getAll: () => axiosClient.get('/student-classes'), // Giả định endpoint này tồn tại
+    getAll: () => axiosClient.get('/student-classes'),
+    getHierarchy: () => axiosClient.get('/student-classes/hierarchy'),
 };

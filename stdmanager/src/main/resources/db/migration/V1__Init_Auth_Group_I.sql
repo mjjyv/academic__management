@@ -3,6 +3,8 @@
 USE stdmanager_db;
 GO
 
+DELETE FROM flyway_schema_history WHERE success = 0;
+
 -- 2. Bảng roles: Định nghĩa vai trò (ADMIN, GIAOVU, GIANGVIEN, SINHVIEN)
 CREATE TABLE roles (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
