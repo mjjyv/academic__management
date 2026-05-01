@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { classApi } from '../../api/studentApi';
 import { ChevronRight, ChevronDown, GraduationCap, School, Users, Layers, Search } from 'lucide-react';
+import ClassDetailModal from '../../components/ClassDetailModal';
 
 const ClassHierarchyPage = () => {
     const [hierarchy, setHierarchy] = useState([]);
@@ -8,6 +9,8 @@ const ClassHierarchyPage = () => {
     const [expandedDepts, setExpandedDepts] = useState({});
     const [expandedMajors, setExpandedMajors] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedClassId, setSelectedClassId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchHierarchy();
@@ -37,6 +40,11 @@ const ClassHierarchyPage = () => {
 
     const toggleMajor = (id) => {
         setExpandedMajors(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const handleClassClick = (id) => {
+        setSelectedClassId(id);
+        setIsModalOpen(true);
     };
 
     // Lọc dữ liệu theo từ khóa tìm kiếm (lớp, ngành, khoa)
@@ -137,7 +145,7 @@ const ClassHierarchyPage = () => {
                                                     {major.classes.map(cls => (
                                                         <div 
                                                             key={cls.id} 
-                                                            onClick={() => navigate(`/course-sections/${cls.id}`)}
+                                                            onClick={() => handleClassClick(cls.id)}
                                                             className="group bg-white border border-gray-200 p-4 rounded-xl hover:border-blue-300 hover:shadow-md hover:shadow-blue-50 transition-all cursor-pointer relative overflow-hidden"
                                                         >
                                                             <div className="absolute top-0 right-0 p-1">
@@ -168,6 +176,12 @@ const ClassHierarchyPage = () => {
                     ))}
                 </div>
             )}
+
+            <ClassDetailModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                classId={selectedClassId}
+            />
         </div>
     );
 };

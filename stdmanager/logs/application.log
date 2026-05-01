@@ -9508,3 +9508,863 @@ Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'DF__regi
 2026-05-01T19:04:26.157+07:00 DEBUG 51896 --- [stdmanager] [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiResponse(success=false, message=Không tìm thấy lớp học phần với ID: da8443a0-4f25-4416-9312-15e5b (truncated)...]
 2026-05-01T19:04:26.158+07:00 DEBUG 51896 --- [stdmanager] [http-nio-8080-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [uni.it.stdmanager.core.exception.ResourceNotFoundException: Không tìm thấy lớp học phần với ID: da8443a0-4f25-4416-9312-15e5bb922345]
 2026-05-01T19:04:26.158+07:00 DEBUG 51896 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-05-01T19:07:34.653+07:00  INFO 51896 --- [stdmanager] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-01T19:07:34.656+07:00  INFO 51896 --- [stdmanager] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-01T19:07:34.669+07:00  INFO 51896 --- [stdmanager] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-01T19:07:34.672+07:00  INFO 51896 --- [stdmanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-01T19:07:34.675+07:00  INFO 51896 --- [stdmanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-01T19:08:07.702+07:00  INFO 54926 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : Starting StdmanagerApplication using Java 21.0.10 with PID 54926 (/home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager/target/classes started by vxn in /home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager)
+2026-05-01T19:08:07.705+07:00  INFO 54926 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-01T19:08:08.473+07:00  INFO 54926 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-01T19:08:08.525+07:00  INFO 54926 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 44 ms. Found 10 JPA repository interfaces.
+2026-05-01T19:08:09.060+07:00  INFO 54926 --- [stdmanager] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-01T19:08:09.071+07:00  INFO 54926 --- [stdmanager] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-01T19:08:09.071+07:00  INFO 54926 --- [stdmanager] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-01T19:08:09.104+07:00  INFO 54926 --- [stdmanager] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1357 ms
+2026-05-01T19:08:09.225+07:00 DEBUG 54926 --- [stdmanager] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-05-01T19:08:09.458+07:00  INFO 54926 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-01T19:08:09.672+07:00  INFO 54926 --- [stdmanager] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: c57fb49b-4e29-4d35-82d2-01330b321e6f
+2026-05-01T19:08:09.673+07:00  INFO 54926 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-01T19:08:09.935+07:00  INFO 54926 --- [stdmanager] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite; (Microsoft SQL Server 16.0)
+2026-05-01T19:08:09.984+07:00  INFO 54926 --- [stdmanager] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table [stdmanager_db].[dbo].[flyway_schema_history] does not exist yet
+2026-05-01T19:08:09.990+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbValidate     : Successfully validated 19 migrations (execution time 00:00.026s)
+2026-05-01T19:08:10.046+07:00  INFO 54926 --- [stdmanager] [main] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+2026-05-01T19:08:10.051+07:00  INFO 54926 --- [stdmanager] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table [stdmanager_db].[dbo].[flyway_schema_history] ...
+2026-05-01T19:08:10.087+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Current version of schema [dbo]: << Empty Schema >>
+2026-05-01T19:08:10.102+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "1 - Init Auth Group I"
+2026-05-01T19:08:10.106+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.153+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "2 - Init Lecturer Group III"
+2026-05-01T19:08:10.191+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "3 - Init Student Group II"
+2026-05-01T19:08:10.220+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "4 - Init Course Group IV"
+2026-05-01T19:08:10.221+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.226+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.255+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "5 - Init Semester Group V"
+2026-05-01T19:08:10.281+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "6 - Init Registration Group VI"
+2026-05-01T19:08:10.283+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.310+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "7 - Init Schedule Group VII"
+2026-05-01T19:08:10.340+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "8 - Init Grade Group VIII"
+2026-05-01T19:08:10.342+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.382+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "9 - Init Tuition Group IX"
+2026-05-01T19:08:10.405+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "10 - Init Exam Group X"
+2026-05-01T19:08:10.406+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.434+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "11 - Init Graduation Group XI"
+2026-05-01T19:08:10.436+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.460+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "12 - Init Notification Group XII"
+2026-05-01T19:08:10.462+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:10.498+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "13 - Init Email Group XIV"
+2026-05-01T19:08:10.526+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "14 - Fix Database Constraints And Performance"
+2026-05-01T19:08:11.192+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "15 - Insert Auth Group I"
+2026-05-01T19:08:11.194+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:11.321+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "16 - Insert Lecturer Group III"
+2026-05-01T19:08:11.428+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:11.445+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "17 - Insert Course Group IV"
+2026-05-01T19:08:11.447+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:11.518+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "18 - Insert Student Group II"
+2026-05-01T19:08:11.584+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:11.595+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "19 - Add Missing Columns Group VI"
+2026-05-01T19:08:11.596+07:00  WARN 54926 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:11.610+07:00  INFO 54926 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 19 migrations to schema [dbo], now at version v19 (execution time 00:01.215s)
+2026-05-01T19:08:11.716+07:00  INFO 54926 --- [stdmanager] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-01T19:08:11.746+07:00  INFO 54926 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-05-01T19:08:12.026+07:00  INFO 54926 --- [stdmanager] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-01T19:08:12.078+07:00  INFO 54926 --- [stdmanager] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite;]
+	Database driver: Microsoft JDBC Driver 13.2 for SQL Server
+	Database dialect: SQLServerDialect
+	Database version: 16.0
+	Default catalog/schema: stdmanager_db/dbo
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 128
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-01T19:08:12.991+07:00  INFO 54926 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-01T19:08:13.182+07:00 ERROR 54926 --- [stdmanager] [main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [registration_type] in table [course_registrations]; found [tinyint (Types#TINYINT)], but expecting [int (Types#INTEGER)]
+2026-05-01T19:08:13.183+07:00  WARN 54926 --- [stdmanager] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [registration_type] in table [course_registrations]; found [tinyint (Types#TINYINT)], but expecting [int (Types#INTEGER)]
+2026-05-01T19:08:13.183+07:00  INFO 54926 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-01T19:08:13.187+07:00  INFO 54926 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-01T19:08:13.190+07:00  INFO 54926 --- [stdmanager] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-05-01T19:08:13.198+07:00  INFO 54926 --- [stdmanager] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-05-01T19:08:13.208+07:00 ERROR 54926 --- [stdmanager] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [registration_type] in table [course_registrations]; found [tinyint (Types#TINYINT)], but expecting [int (Types#INTEGER)]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:977) ~[spring-context-7.0.7.jar:7.0.7]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar:7.0.7]
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar:4.0.6]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar:4.0.6]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar:4.0.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar:4.0.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar:4.0.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar:4.0.6]
+	at uni.it.stdmanager.StdmanagerApplication.main(StdmanagerApplication.java:10) ~[classes/:na]
+Caused by: jakarta.persistence.PersistenceException: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [registration_type] in table [course_registrations]; found [tinyint (Types#TINYINT)], but expecting [int (Types#INTEGER)]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:448) ~[spring-orm-7.0.7.jar:7.0.7]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411) ~[spring-orm-7.0.7.jar:7.0.7]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419) ~[spring-orm-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864) ~[spring-beans-7.0.7.jar:7.0.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813) ~[spring-beans-7.0.7.jar:7.0.7]
+	... 15 common frames omitted
+Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [registration_type] in table [course_registrations]; found [tinyint (Types#TINYINT)], but expecting [int (Types#INTEGER)]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateColumnType(AbstractSchemaValidator.java:153) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:141) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:42) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:90) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:68) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:278) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429) ~[na:na]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:323) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:437) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1456) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93) ~[spring-orm-7.0.7.jar:7.0.7]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443) ~[spring-orm-7.0.7.jar:7.0.7]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436) ~[spring-orm-7.0.7.jar:7.0.7]
+	... 19 common frames omitted
+
+2026-05-01T19:08:47.538+07:00  INFO 55435 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : Starting StdmanagerApplication using Java 21.0.10 with PID 55435 (/home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager/target/classes started by vxn in /home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager)
+2026-05-01T19:08:47.541+07:00  INFO 55435 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-01T19:08:48.617+07:00  INFO 55435 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-01T19:08:48.669+07:00  INFO 55435 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 45 ms. Found 8 JPA repository interfaces.
+2026-05-01T19:08:49.324+07:00  INFO 55435 --- [stdmanager] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-01T19:08:49.336+07:00  INFO 55435 --- [stdmanager] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-01T19:08:49.336+07:00  INFO 55435 --- [stdmanager] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-01T19:08:49.370+07:00  INFO 55435 --- [stdmanager] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1782 ms
+2026-05-01T19:08:49.492+07:00 DEBUG 55435 --- [stdmanager] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-05-01T19:08:49.737+07:00  INFO 55435 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-01T19:08:49.958+07:00  INFO 55435 --- [stdmanager] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 9f965941-d85f-45cd-8564-175ef1dd6853
+2026-05-01T19:08:49.960+07:00  INFO 55435 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-01T19:08:50.233+07:00  INFO 55435 --- [stdmanager] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite; (Microsoft SQL Server 16.0)
+2026-05-01T19:08:50.289+07:00  INFO 55435 --- [stdmanager] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table [stdmanager_db].[dbo].[flyway_schema_history] does not exist yet
+2026-05-01T19:08:50.294+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbValidate     : Successfully validated 19 migrations (execution time 00:00.026s)
+2026-05-01T19:08:50.318+07:00  INFO 55435 --- [stdmanager] [main] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+2026-05-01T19:08:50.322+07:00  INFO 55435 --- [stdmanager] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table [stdmanager_db].[dbo].[flyway_schema_history] ...
+2026-05-01T19:08:50.363+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Current version of schema [dbo]: << Empty Schema >>
+2026-05-01T19:08:50.376+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "1 - Init Auth Group I"
+2026-05-01T19:08:50.380+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.426+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "2 - Init Lecturer Group III"
+2026-05-01T19:08:50.470+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "3 - Init Student Group II"
+2026-05-01T19:08:50.500+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "4 - Init Course Group IV"
+2026-05-01T19:08:50.502+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.509+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.539+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "5 - Init Semester Group V"
+2026-05-01T19:08:50.566+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "6 - Init Registration Group VI"
+2026-05-01T19:08:50.568+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.597+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "7 - Init Schedule Group VII"
+2026-05-01T19:08:50.630+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "8 - Init Grade Group VIII"
+2026-05-01T19:08:50.631+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.672+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "9 - Init Tuition Group IX"
+2026-05-01T19:08:50.696+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "10 - Init Exam Group X"
+2026-05-01T19:08:50.698+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.730+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "11 - Init Graduation Group XI"
+2026-05-01T19:08:50.731+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.756+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "12 - Init Notification Group XII"
+2026-05-01T19:08:50.758+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:50.796+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "13 - Init Email Group XIV"
+2026-05-01T19:08:50.825+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "14 - Fix Database Constraints And Performance"
+2026-05-01T19:08:51.546+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "15 - Insert Auth Group I"
+2026-05-01T19:08:51.547+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:51.677+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "16 - Insert Lecturer Group III"
+2026-05-01T19:08:51.788+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:51.808+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "17 - Insert Course Group IV"
+2026-05-01T19:08:51.809+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:51.883+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "18 - Insert Student Group II"
+2026-05-01T19:08:51.953+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:51.965+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Migrating schema [dbo] to version "19 - Add Missing Columns Group VI"
+2026-05-01T19:08:51.966+07:00  WARN 55435 --- [stdmanager] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Changed database context to 'stdmanager_db'. (SQL State: S0001 - Error Code: 5701)
+2026-05-01T19:08:51.981+07:00  INFO 55435 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 19 migrations to schema [dbo], now at version v19 (execution time 00:01.302s)
+2026-05-01T19:08:52.091+07:00  INFO 55435 --- [stdmanager] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-01T19:08:52.122+07:00  INFO 55435 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-05-01T19:08:52.470+07:00  INFO 55435 --- [stdmanager] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-01T19:08:52.525+07:00  INFO 55435 --- [stdmanager] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite;]
+	Database driver: Microsoft JDBC Driver 13.2 for SQL Server
+	Database dialect: SQLServerDialect
+	Database version: 16.0
+	Default catalog/schema: stdmanager_db/dbo
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 128
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-01T19:08:53.344+07:00  INFO 55435 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-01T19:08:53.551+07:00  INFO 55435 --- [stdmanager] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-01T19:08:53.631+07:00  INFO 55435 --- [stdmanager] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-01T19:08:54.718+07:00  INFO 55435 --- [stdmanager] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-05-01T19:08:54.718+07:00  WARN 55435 --- [stdmanager] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-05-01T19:08:55.146+07:00 DEBUG 55435 --- [stdmanager] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 17 mappings in 'requestMappingHandlerMapping'
+2026-05-01T19:08:55.183+07:00 DEBUG 55435 --- [stdmanager] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-05-01T19:08:55.211+07:00 DEBUG 55435 --- [stdmanager] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-05-01T19:08:55.253+07:00 DEBUG 55435 --- [stdmanager] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-05-01T19:08:55.564+07:00  INFO 55435 --- [stdmanager] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-05-01T19:08:55.642+07:00  INFO 55435 --- [stdmanager] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-01T19:08:55.651+07:00  INFO 55435 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : Started StdmanagerApplication in 8.599 seconds (process running for 8.915)
+2026-05-01T19:08:55.714+07:00  WARN 55435 --- [stdmanager] [main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-01T19:08:55.714+07:00  WARN 55435 --- [stdmanager] [main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-01T19:09:01.401+07:00  INFO 55435 --- [stdmanager] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-01T19:09:01.401+07:00  INFO 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-01T19:09:01.401+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-05-01T19:09:01.402+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-05-01T19:09:01.403+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@43645c21
+2026-05-01T19:09:01.404+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@7e88ba07
+2026-05-01T19:09:01.404+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-05-01T19:09:01.404+07:00  INFO 55435 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-05-01T19:09:01.465+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/v1/auth/login", parameters={}
+2026-05-01T19:09:01.471+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.i_auth.controller.AuthController#login(LoginRequest)
+2026-05-01T19:09:01.538+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [LoginRequest(username=admin, password=Admin@123)]
+2026-05-01T19:09:02.208+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:09:02.210+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Đăng nhập thành công, data=AuthenticationResponse(token=eyJhbGciOi (truncated)...]
+2026-05-01T19:09:02.247+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:09:03.765+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/students?keyword=&page=0&size=10&classId=&statusId=&sortBy=studentCode&sortDir=asc&sort=studentCode,asc", parameters={masked}
+2026-05-01T19:09:03.766+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentController#searchStudents(StudentSearchRequest)
+2026-05-01T19:09:03.910+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:09:03.910+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy danh sách sinh viên thành công, data=Page 1 of 1 containing un (truncated)...]
+2026-05-01T19:09:03.918+07:00  WARN 55435 --- [stdmanager] [http-nio-8080-exec-4] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2026-05-01T19:09:03.933+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:09:03.955+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/students?keyword=&page=0&size=10&classId=&statusId=&sortBy=studentCode&sortDir=asc&sort=studentCode,asc", parameters={masked}
+2026-05-01T19:09:03.956+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentController#searchStudents(StudentSearchRequest)
+2026-05-01T19:09:03.981+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:09:03.982+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy danh sách sinh viên thành công, data=Page 1 of 1 containing un (truncated)...]
+2026-05-01T19:09:03.983+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:09:04.154+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:09:04.155+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:09:04.193+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:09:04.193+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:09:04.201+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:09:04.221+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:09:04.221+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:09:04.239+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:09:04.239+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:09:04.240+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:48:40.598+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:48:40.599+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:48:40.616+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:48:40.616+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:48:40.617+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:48:40.639+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:48:40.639+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:48:40.660+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:48:40.660+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:48:40.661+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:48:52.823+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:48:52.824+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:48:52.835+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:48:52.836+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:48:52.836+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:48:52.852+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:48:52.852+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:48:52.867+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:48:52.867+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:48:52.868+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:48:56.424+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b", parameters={}
+2026-05-01T19:48:56.427+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2026-05-01T19:48:56.428+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.cors.DefaultCorsProcessor        : Skip: no CORS configuration has been provided
+2026-05-01T19:48:56.432+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found for path [api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b]
+2026-05-01T19:48:56.435+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+2026-05-01T19:48:56.438+07:00  WARN 55435 --- [stdmanager] [http-nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Failure in @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+
+java.lang.IllegalStateException: Could not resolve parameter [0] in org.springframework.http.ResponseEntity<uni.it.stdmanager.core.dto.ApiResponse<?>> uni.it.stdmanager.core.exception.GlobalExceptionHandler.handlingRuntimeException(java.lang.RuntimeException): No suitable resolver
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:221) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:174) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:460) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:72) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:176) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:78) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1227) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1035) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:980) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:493) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:354) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at uni.it.stdmanager.core.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:58) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:337) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:228) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-05-01T19:48:56.448+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b for request '/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b'.]
+2026-05-01T19:48:56.448+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-05-01T19:49:02.827+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce", parameters={}
+2026-05-01T19:49:02.828+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2026-05-01T19:49:02.829+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.cors.DefaultCorsProcessor        : Skip: no CORS configuration has been provided
+2026-05-01T19:49:02.830+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found for path [api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce]
+2026-05-01T19:49:02.832+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+2026-05-01T19:49:02.832+07:00  WARN 55435 --- [stdmanager] [http-nio-8080-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Failure in @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+
+java.lang.IllegalStateException: Could not resolve parameter [0] in org.springframework.http.ResponseEntity<uni.it.stdmanager.core.dto.ApiResponse<?>> uni.it.stdmanager.core.exception.GlobalExceptionHandler.handlingRuntimeException(java.lang.RuntimeException): No suitable resolver
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:221) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:174) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:460) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:72) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:176) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:78) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1227) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1035) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:980) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:493) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:354) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at uni.it.stdmanager.core.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:58) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:337) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:228) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-05-01T19:49:02.834+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce for request '/api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce'.]
+2026-05-01T19:49:02.835+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-05-01T19:49:04.529+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/19f105ca-d983-4962-9ea0-f289233a3c1a", parameters={}
+2026-05-01T19:49:04.531+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2026-05-01T19:49:04.531+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.cors.DefaultCorsProcessor        : Skip: no CORS configuration has been provided
+2026-05-01T19:49:04.533+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found for path [api/v1/student-classes/19f105ca-d983-4962-9ea0-f289233a3c1a]
+2026-05-01T19:49:04.534+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+2026-05-01T19:49:04.534+07:00  WARN 55435 --- [stdmanager] [http-nio-8080-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Failure in @ExceptionHandler uni.it.stdmanager.core.exception.GlobalExceptionHandler#handlingRuntimeException(RuntimeException)
+
+java.lang.IllegalStateException: Could not resolve parameter [0] in org.springframework.http.ResponseEntity<uni.it.stdmanager.core.dto.ApiResponse<?>> uni.it.stdmanager.core.exception.GlobalExceptionHandler.handlingRuntimeException(java.lang.RuntimeException): No suitable resolver
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:221) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:174) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:460) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:72) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:176) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:78) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1227) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1035) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:980) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.7.jar:7.0.7]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.21.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:493) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:354) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:132) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:86) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at uni.it.stdmanager.core.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:58) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:231) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:244) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:337) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:228) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:141) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.5.jar:7.0.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:110) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.7.jar:7.0.7]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.21.jar:11.0.21]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-05-01T19:49:04.537+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/v1/student-classes/19f105ca-d983-4962-9ea0-f289233a3c1a for request '/api/v1/student-classes/19f105ca-d983-4962-9ea0-f289233a3c1a'.]
+2026-05-01T19:49:04.537+07:00 DEBUG 55435 --- [stdmanager] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-05-01T19:49:11.606+07:00  INFO 55435 --- [stdmanager] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-01T19:49:11.610+07:00  INFO 55435 --- [stdmanager] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-01T19:49:11.624+07:00  INFO 55435 --- [stdmanager] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-01T19:49:11.627+07:00  INFO 55435 --- [stdmanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-01T19:49:11.628+07:00  INFO 55435 --- [stdmanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-01T19:49:27.877+07:00  INFO 66776 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : Starting StdmanagerApplication using Java 21.0.10 with PID 66776 (/home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager/target/classes started by vxn in /home/vxn/Documents/100__UNI/uni__it__web-programming/uni__it__web__project/olds/uni__it__web2/stdmanager)
+2026-05-01T19:49:27.880+07:00  INFO 66776 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-01T19:49:28.737+07:00  INFO 66776 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-01T19:49:28.786+07:00  INFO 66776 --- [stdmanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 42 ms. Found 8 JPA repository interfaces.
+2026-05-01T19:49:29.433+07:00  INFO 66776 --- [stdmanager] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-01T19:49:29.448+07:00  INFO 66776 --- [stdmanager] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-01T19:49:29.449+07:00  INFO 66776 --- [stdmanager] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-01T19:49:29.495+07:00  INFO 66776 --- [stdmanager] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1553 ms
+2026-05-01T19:49:29.630+07:00 DEBUG 66776 --- [stdmanager] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-05-01T19:49:29.866+07:00  INFO 66776 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-01T19:49:30.080+07:00  INFO 66776 --- [stdmanager] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: ef45fcc3-19f2-460c-b7cb-0211cd700dbc
+2026-05-01T19:49:30.082+07:00  INFO 66776 --- [stdmanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-01T19:49:30.339+07:00  INFO 66776 --- [stdmanager] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite; (Microsoft SQL Server 16.0)
+2026-05-01T19:49:30.408+07:00  INFO 66776 --- [stdmanager] [main] o.f.core.internal.command.DbValidate     : Successfully validated 19 migrations (execution time 00:00.038s)
+2026-05-01T19:49:30.426+07:00  INFO 66776 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Current version of schema [dbo]: 19
+2026-05-01T19:49:30.430+07:00  INFO 66776 --- [stdmanager] [main] o.f.core.internal.command.DbMigrate      : Schema [dbo] is up to date. No migration necessary.
+2026-05-01T19:49:30.503+07:00  INFO 66776 --- [stdmanager] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-01T19:49:30.547+07:00  INFO 66776 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-05-01T19:49:30.914+07:00  INFO 66776 --- [stdmanager] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-01T19:49:30.973+07:00  INFO 66776 --- [stdmanager] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:sqlserver://localhost:1433;concatNullYieldsNull=ON;quotedIdentifier=ON;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;vectorTypeSupport=v1;cacheBulkCopyMetadata=false;bulkCopyForBatchInsertAllowEncryptedValueModifications=false;bulkCopyForBatchInsertTableLock=false;bulkCopyForBatchInsertKeepNulls=false;bulkCopyForBatchInsertKeepIdentity=false;bulkCopyForBatchInsertFireTriggers=false;bulkCopyForBatchInsertCheckConstraints=false;bulkCopyForBatchInsertBatchSize=0;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=True;disableStatementPooling=true;databaseName=stdmanager_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite;]
+	Database driver: Microsoft JDBC Driver 13.2 for SQL Server
+	Database dialect: SQLServerDialect
+	Database version: 16.0
+	Default catalog/schema: stdmanager_db/dbo
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 128
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-01T19:49:31.770+07:00  INFO 66776 --- [stdmanager] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-01T19:49:31.898+07:00  INFO 66776 --- [stdmanager] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-01T19:49:31.975+07:00  INFO 66776 --- [stdmanager] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-01T19:49:33.066+07:00  INFO 66776 --- [stdmanager] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-05-01T19:49:33.066+07:00  WARN 66776 --- [stdmanager] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-05-01T19:49:33.551+07:00 DEBUG 66776 --- [stdmanager] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 18 mappings in 'requestMappingHandlerMapping'
+2026-05-01T19:49:33.588+07:00 DEBUG 66776 --- [stdmanager] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-05-01T19:49:33.614+07:00 DEBUG 66776 --- [stdmanager] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-05-01T19:49:33.660+07:00 DEBUG 66776 --- [stdmanager] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-05-01T19:49:33.929+07:00  INFO 66776 --- [stdmanager] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-05-01T19:49:33.994+07:00  INFO 66776 --- [stdmanager] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-01T19:49:34.003+07:00  INFO 66776 --- [stdmanager] [main] u.it.stdmanager.StdmanagerApplication    : Started StdmanagerApplication in 6.601 seconds (process running for 6.944)
+2026-05-01T19:49:34.059+07:00  WARN 66776 --- [stdmanager] [main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-01T19:49:34.059+07:00  WARN 66776 --- [stdmanager] [main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-01T19:49:37.496+07:00  INFO 66776 --- [stdmanager] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-01T19:49:37.496+07:00  INFO 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-01T19:49:37.496+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-05-01T19:49:37.496+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-05-01T19:49:37.499+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1229de5e
+2026-05-01T19:49:37.500+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@4d2acd3c
+2026-05-01T19:49:37.500+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-05-01T19:49:37.500+07:00  INFO 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-05-01T19:49:37.571+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/v1/auth/login", parameters={}
+2026-05-01T19:49:37.580+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.i_auth.controller.AuthController#login(LoginRequest)
+2026-05-01T19:49:37.675+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [LoginRequest(username=admin, password=Admin@123)]
+2026-05-01T19:49:38.277+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:38.281+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Đăng nhập thành công, data=AuthenticationResponse(token=eyJhbGciOi (truncated)...]
+2026-05-01T19:49:38.302+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:39.307+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:49:39.308+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:49:39.353+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:39.354+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:49:39.361+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:39.381+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:49:39.382+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:49:39.402+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:39.402+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:49:39.403+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:40.915+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b", parameters={}
+2026-05-01T19:49:40.916+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:49:40.985+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:40.991+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=0b (truncated)...]
+2026-05-01T19:49:40.996+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:48.561+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/students?keyword=&page=0&size=10&classId=&statusId=&sortBy=studentCode&sortDir=asc&sort=studentCode,asc", parameters={masked}
+2026-05-01T19:49:48.562+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentController#searchStudents(StudentSearchRequest)
+2026-05-01T19:49:48.597+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:48.598+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy danh sách sinh viên thành công, data=Page 1 of 1 containing un (truncated)...]
+2026-05-01T19:49:48.603+07:00  WARN 66776 --- [stdmanager] [http-nio-8080-exec-1] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2026-05-01T19:49:48.610+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:48.627+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/students?keyword=&page=0&size=10&classId=&statusId=&sortBy=studentCode&sortDir=asc&sort=studentCode,asc", parameters={masked}
+2026-05-01T19:49:48.628+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentController#searchStudents(StudentSearchRequest)
+2026-05-01T19:49:48.651+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:48.651+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy danh sách sinh viên thành công, data=Page 1 of 1 containing un (truncated)...]
+2026-05-01T19:49:48.653+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:48.890+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:49:48.890+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:49:48.905+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:48.906+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:49:48.906+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:48.924+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:49:48.925+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:49:48.940+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:48.940+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:49:48.941+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:49:50.869+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b", parameters={}
+2026-05-01T19:49:50.870+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:49:50.890+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:49:50.890+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=0b (truncated)...]
+2026-05-01T19:49:50.891+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:38.915+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:38.916+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:38.942+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:38.943+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:38.945+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:38.978+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:38.980+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:39.005+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:39.005+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:39.006+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:42.835+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:42.836+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:42.855+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:42.856+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:42.858+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:42.887+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:42.888+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:42.909+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:42.910+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:42.912+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:46.637+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce", parameters={}
+2026-05-01T19:50:46.638+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:50:46.666+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:46.667+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=44 (truncated)...]
+2026-05-01T19:50:46.667+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:56.005+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:56.006+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:56.027+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:56.028+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:56.029+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:50:56.058+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:50:56.060+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:50:56.087+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:50:56.087+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:50:56.088+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:03.188+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:51:03.189+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:51:03.210+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:03.210+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:51:03.211+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:03.227+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/hierarchy", parameters={}
+2026-05-01T19:51:03.228+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassHierarchy()
+2026-05-01T19:51:03.246+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:03.247+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy cấu trúc cây danh mục lớp thành công, data=[DepartmentHierarch (truncated)...]
+2026-05-01T19:51:03.248+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:04.700+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b", parameters={}
+2026-05-01T19:51:04.701+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:51:04.723+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:04.724+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=0b (truncated)...]
+2026-05-01T19:51:04.725+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:41.163+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce", parameters={}
+2026-05-01T19:51:41.163+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:51:41.180+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:41.180+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=44 (truncated)...]
+2026-05-01T19:51:41.180+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:43.374+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/19f105ca-d983-4962-9ea0-f289233a3c1a", parameters={}
+2026-05-01T19:51:43.376+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:51:43.394+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:43.394+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=19 (truncated)...]
+2026-05-01T19:51:43.395+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:50.988+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/440245e1-b931-4153-81cc-dda1a38a18ce", parameters={}
+2026-05-01T19:51:50.989+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:51:51.008+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:51.008+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=44 (truncated)...]
+2026-05-01T19:51:51.009+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-01T19:51:53.312+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/student-classes/0b6b96f3-20c9-408b-b95f-d51048b1837b", parameters={}
+2026-05-01T19:51:53.313+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to uni.it.stdmanager.modules.ii_student.controller.StudentClassController#getClassDetail(UUID)
+2026-05-01T19:51:53.330+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-05-01T19:51:53.330+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse(success=true, message=Lấy chi tiết lớp thành công, data=StudentClassDetailResponse(id=0b (truncated)...]
+2026-05-01T19:51:53.330+07:00 DEBUG 66776 --- [stdmanager] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK

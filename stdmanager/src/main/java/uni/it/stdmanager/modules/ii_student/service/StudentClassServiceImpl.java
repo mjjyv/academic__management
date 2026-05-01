@@ -3,17 +3,18 @@ package uni.it.stdmanager.modules.ii_student.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uni.it.stdmanager.modules.ii_student.dto.response.DepartmentHierarchyResponse;
-import uni.it.stdmanager.modules.ii_student.dto.response.MajorHierarchyResponse;
-import uni.it.stdmanager.modules.ii_student.dto.response.StudentClassResponse;
+import org.springframework.data.domain.Pageable;
+import uni.it.stdmanager.modules.ii_student.dto.response.*;
+import uni.it.stdmanager.modules.ii_student.entity.Student;
 import uni.it.stdmanager.modules.ii_student.entity.StudentClass;
 import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
+import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.iii_lecturer.entity.Department;
 import uni.it.stdmanager.modules.iv_course.entity.Major;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,17 +23,12 @@ import java.util.stream.Collectors;
 public class StudentClassServiceImpl implements StudentClassService {
 
     private final StudentClassRepository studentClassRepository;
+    private final StudentRepository studentRepository;
 
     @Override
     public List<StudentClassResponse> getAllClasses() {
         return studentClassRepository.findAll().stream()
-                .map(studentClass -> StudentClassResponse.builder()
-                        .id(studentClass.getId())
-                        .classCode(studentClass.getClassCode())
-                        .className(studentClass.getClassName())
-                        .courseYear(studentClass.getCourseYear())
-                        .majorName(studentClass.getMajor() != null ? studentClass.getMajor().getMajorName() : null)
-                        .build())
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -79,6 +75,25 @@ public class StudentClassServiceImpl implements StudentClassService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public StudentClassDetailResponse getClassDetail(UUID id) {
+        StudentClass studentClass = studentClassRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lớp học"));
+
+        List<Student> students = studentRepository.searchStudents(null, id, null, Pageable.unpaged()).getContent();
+
+        return StudentClassDetailResponse.builder()
+                .id(studentClass.getId())
+                .classCode(studentClass.getClassCode())
+                .className(studentClass.getClassName())
+                .courseYear(studentClass.getCourseYear())
+                .majorName(studentClass.getMajor() != null ? studentClass.getMajor().getMajorName() : null)
+                .departmentName(studentClass.getDepartment() != null ? studentClass.getDepartment().getDepartmentName() : null)
+                .advisorName(studentClass.getAdvisor() != null ? studentClass.getAdvisor().getFullName() : "Chưa có")
+                .students(students.stream().map(this::mapToStudentResponse).collect(Collectors.toList()))
+                .build();
+    }
+
     private StudentClassResponse mapToResponse(StudentClass studentClass) {
         return StudentClassResponse.builder()
                 .id(studentClass.getId())
@@ -86,6 +101,32 @@ public class StudentClassServiceImpl implements StudentClassService {
                 .className(studentClass.getClassName())
                 .courseYear(studentClass.getCourseYear())
                 .majorName(studentClass.getMajor() != null ? studentClass.getMajor().getMajorName() : null)
+                .build();
+    }
+
+    private StudentResponse mapToStudentResponse(Student student) {
+        return StudentResponse.builder()
+                .id(student.getId())
+                .studentCode(student.getStudentCode())
+                .fullName(student.getFullName())
+                .dateOfBirth(student.getDateOfBirth())
+                .gender(student.getGender())
+                .email(student.getUser().getEmail())
+                .phone(student.getUser().getPhone())
+                .personalIdentificationNumber(student.getPersonalIdentificationNumber())
+                .dateOfIssue(student.getDateOfIssue())
+                .cardPlace(student.getCardPlace())
+                .address(student.getAddress())
+                .currentAddress(student.getCurrentAddress())
+                .classId(student.getStudentClass() != null ? student.getStudentClass().getId() : null)
+                .className(student.getStudentClass() != null ? student.getStudentClass().getClassName() : null)
+                .majorId(student.getMajor() != null ? student.getMajor().getId() : null)
+                .majorName(student.getMajor() != null ? student.getMajor().getMajorName() : null)
+                .departmentId(student.getDepartment() != null ? student.getDepartment().getId() : null)
+                .departmentName(student.getDepartment() != null ? student.getDepartment().getDepartmentName() : null)
+                .statusName(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusName() : null)
+                .statusCode(student.getCurrentStatus() != null ? student.getCurrentStatus().getStatusCode() : null)
+                .admissionYear(student.getAdmissionYear())
                 .build();
     }
 }
