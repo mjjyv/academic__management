@@ -1,7 +1,6 @@
-.uni-it-web-proj
-.
-├── frontend
-│   └── src
+uni__it__web2/
+├── frontend/
+│   └── src/
 │       ├── api
 │       ├── App.jsx
 │       ├── components

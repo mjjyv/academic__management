@@ -46,10 +46,9 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    // Giả định bạn sẽ tạo bảng positions sau, hiện tại để tạm Comment hoặc tạo
-    // Entity trống
-    @Column(name = "position_id")
-    private java.util.UUID positionId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id")
+    private Position position;
 
     @Column(name = "hire_date")
     private LocalDate hireDate;

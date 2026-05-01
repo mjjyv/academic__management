@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import StudentListPage from './pages/students/StudentListPage';
 import ClassHierarchyPage from './pages/students/ClassHierarchyPage';
+import LecturerListPage from './pages/LecturerListPage';
 import ERDiagramView from './pages/ERDiagramView';
 
 // Placeholder Components cho các Module chưa triển khai
@@ -40,7 +41,7 @@ function App() {
             <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
             <Route path="/students" element={<StudentListPage />} />
             <Route path="/student-classes" element={<ClassHierarchyPage />} />
-            <Route path="/lecturers" element={<Placeholder title="Quản lý Giảng viên & Nhân sự" />} />
+            <Route path="/lecturers" element={<LecturerListPage />} />
             <Route path="/academic" element={<Placeholder title="Chương trình đào tạo & Học phần" />} />
             <Route path="/registration" element={<Placeholder title="Đăng ký học phần trực tuyến" />} />
             <Route path="/schedule" element={<Placeholder title="Thời khóa biểu & Lịch giảng dạy" />} />
