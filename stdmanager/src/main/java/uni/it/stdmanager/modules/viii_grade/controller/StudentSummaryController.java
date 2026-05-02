@@ -29,4 +29,11 @@ public class StudentSummaryController {
     public ApiResponse<List<StudentSummaryResponse>> getStudentSummaries(@PathVariable UUID studentId) {
         return ApiResponse.success(gradeService.getStudentSummaries(studentId), "Lấy danh sách điểm thành công");
     }
+
+    @GetMapping("/summaries")
+    @PreAuthorize("hasAnyRole('GIANGVIEN', 'GIAOVU', 'ADMIN')")
+    @Operation(summary = "Lấy toàn bộ danh sách điểm tổng kết (Admin/Giáo vụ)")
+    public ApiResponse<List<StudentSummaryResponse>> getAllSummaries() {
+        return ApiResponse.success(gradeService.getAllSummaries(), "Lấy toàn bộ danh sách điểm thành công");
+    }
 }

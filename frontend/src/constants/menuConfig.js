@@ -45,14 +45,19 @@ export const MENU_ITEMS = [
         roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
     },
     {
-        title: 'Quản lý Điểm số',
+        title: 'Điểm & Kết quả',
         path: '/grades',
         roles: ['ADMIN', 'GIAOVU', 'GIANGVIEN', 'SINHVIEN'],
     },
     {
-        title: 'Học phí & Thanh toán',
+        title: 'Học phí & Tài chính',
         path: '/finance',
         roles: ['ADMIN', 'GIAOVU', 'SINHVIEN'],
+    },
+    {
+        title: 'Cấu hình Học phí',
+        path: '/tuition-config',
+        roles: ['ADMIN', 'GIAOVU'],
     },
     {
         title: 'Khảo thí & Tốt nghiệp',

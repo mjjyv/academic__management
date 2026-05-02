@@ -4,6 +4,7 @@ import registrationApi from '../api/registrationApi';
 const useRegistrationStore = create((set, get) => ({
     periods: [],
     currentRegistrations: [],
+    retakeableCourses: [],
     loading: false,
     error: null,
 
@@ -25,6 +26,18 @@ const useRegistrationStore = create((set, get) => ({
             const response = await registrationApi.getStudentRegistrations(studentId);
             if (response.success) {
                 set({ currentRegistrations: response.data, loading: false });
+            }
+        } catch (err) {
+            set({ error: err.message, loading: false });
+        }
+    },
+
+    fetchRetakeableCourses: async (studentId) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await registrationApi.getRetakeableCourses(studentId);
+            if (response.success) {
+                set({ retakeableCourses: response.data, loading: false });
             }
         } catch (err) {
             set({ error: err.message, loading: false });

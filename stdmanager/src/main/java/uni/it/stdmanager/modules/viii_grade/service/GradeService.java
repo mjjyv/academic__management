@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface GradeService {
     List<StudentSummaryResponse> getStudentSummaries(UUID studentId);
+    List<StudentSummaryResponse> getAllSummaries();
 }

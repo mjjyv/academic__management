@@ -17,11 +17,11 @@ CREATE TABLE course_registrations (
     registration_type TINYINT NOT NULL, -- 1: Học mới; 2: Học lại; 3: Cải thiện 
     replaced_grade_id UNIQUEIDENTIFIER NULL, -- ID điểm cũ nếu học lại/cải thiện 
     registered_at DATETIME2 DEFAULT GETDATE(), -- Thời điểm thực hiện đăng ký 
-    status TINYINT DEFAULT 1, -- 1: Thành công; 2: Chờ thanh toán; 3: Đã hủy [cite: 22]
-    is_paid BIT DEFAULT 0, -- Trạng thái thanh toán [cite: 22]
-    row_version ROWVERSION, -- Xử lý tranh chấp dữ liệu (concurrency) [cite: 22]
+    status TINYINT DEFAULT 1, -- 1: Thành công; 2: Chờ thanh toán; 3: Đã hủy
+    is_paid BIT DEFAULT 0, -- Trạng thái thanh toán
+    row_version ROWVERSION, -- Xử lý tranh chấp dữ liệu (concurrency)
 
-    -- Các trường thông tin hệ thống [cite: 22]
+    -- Các trường thông tin hệ thống
     created_at DATETIME2 DEFAULT GETDATE(),
     updated_at DATETIME2,
     created_by UNIQUEIDENTIFIER,
@@ -70,17 +70,17 @@ DROP TABLE IF EXISTS registration_periods;
 GO
 
 CREATE TABLE registration_periods (
-    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(), -- Khóa chính [cite: 16]
-    name NVARCHAR(200) NOT NULL, -- Tên đợt đăng ký [cite: 16]
-    semester_id UNIQUEIDENTIFIER NOT NULL, -- FK liên kết bảng semesters [cite: 16]
-    start_time DATETIME2 NOT NULL, -- Thời điểm bắt đầu [cite: 17]
-    end_time DATETIME2 NOT NULL, -- Thời điểm kết thúc [cite: 17]
-    target_config NVARCHAR(MAX), -- Cấu hình đối tượng dạng JSON (Khóa, Khoa...) [cite: 18]
-    max_credits TINYINT DEFAULT 25, -- Số tín chỉ tối đa [cite: 18]
-    min_credits TINYINT DEFAULT 12, -- Số tín chỉ tối thiểu [cite: 19]
-    allow_retake BIT DEFAULT 1, -- Cho phép học lại/cải thiện [cite: 19]
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(), -- Khóa chính
+    name NVARCHAR(200) NOT NULL, -- Tên đợt đăng ký
+    semester_id UNIQUEIDENTIFIER NOT NULL, -- FK liên kết bảng semesters
+    start_time DATETIME2 NOT NULL, -- Thời điểm bắt đầu
+    end_time DATETIME2 NOT NULL, -- Thời điểm kết thúc
+    target_config NVARCHAR(MAX), -- Cấu hình đối tượng dạng JSON (Khóa, Khoa...)
+    max_credits TINYINT DEFAULT 25, -- Số tín chỉ tối đa
+    min_credits TINYINT DEFAULT 12, -- Số tín chỉ tối thiểu
+    allow_retake BIT DEFAULT 1, -- Cho phép học lại/cải thiện
     
-    -- Các trường thông tin hệ thống [cite: 20]
+    -- Các trường thông tin hệ thống
     is_active BIT DEFAULT 1,
     created_at DATETIME2 DEFAULT GETDATE(),
     updated_at DATETIME2,

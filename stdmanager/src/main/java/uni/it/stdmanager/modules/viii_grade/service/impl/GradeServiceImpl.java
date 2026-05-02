@@ -26,6 +26,13 @@ public class GradeServiceImpl implements GradeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<StudentSummaryResponse> getAllSummaries() {
+        return studentSummaryRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private StudentSummaryResponse mapToResponse(StudentSummary summary) {
         return StudentSummaryResponse.builder()
                 .id(summary.getId())

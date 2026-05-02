@@ -13,6 +13,11 @@ import ProfilePage from './pages/ProfilePage';
 import ERDiagramView from './pages/ERDiagramView';
 import RegistrationManagementPage from './pages/registration/RegistrationManagementPage';
 import CourseRegistrationPage from './pages/registration/CourseRegistrationPage';
+import StudentTranscriptPage from './pages/grade/StudentTranscriptPage';
+import GradeManagementPage from './pages/grade/GradeManagementPage';
+import TuitionDashboardPage from './pages/finance/TuitionDashboardPage';
+import TuitionManagementPage from './pages/finance/TuitionManagementPage';
+import TuitionConfigPage from './pages/finance/TuitionConfigPage';
 import useAuthStore from './store/useAuthStore';
 
 // Modules IV & V
@@ -63,9 +68,23 @@ function App() {
                 : <RegistrationManagementPage />
               } 
             />
-            <Route path="/schedule" element={<Placeholder title="Thời khóa biểu & Lịch giảng dạy" />} />
-            <Route path="/grades" element={<Placeholder title="Quản lý Điểm & Kết quả học tập" />} />
-            <Route path="/finance" element={<Placeholder title="Học phí & Giao dịch tài chính" />} />
+            <Route 
+              path="/grades" 
+              element={
+                user?.roles?.includes('SINHVIEN') 
+                ? <StudentTranscriptPage /> 
+                : <GradeManagementPage />
+              } 
+            />
+            <Route 
+              path="/finance" 
+              element={
+                user?.roles?.includes('SINHVIEN') 
+                ? <TuitionDashboardPage /> 
+                : <TuitionManagementPage />
+              } 
+            />
+            <Route path="/tuition-config" element={<TuitionConfigPage />} />
             <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
             <Route path="/settings" element={<Placeholder title="Thông báo & Cấu hình hệ thống" />} />
           </Route>

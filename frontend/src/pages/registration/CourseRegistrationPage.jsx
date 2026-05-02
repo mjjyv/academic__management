@@ -7,7 +7,7 @@ import registrationApi from '../../api/registrationApi';
 import toast from 'react-hot-toast';
 
 const CourseRegistrationPage = () => {
-  const { periods, fetchPeriods, currentRegistrations, fetchStudentRegistrations } = useRegistrationStore();
+  const { periods, fetchPeriods, currentRegistrations, fetchStudentRegistrations, retakeableCourses, fetchRetakeableCourses } = useRegistrationStore();
   const { user } = useAuthStore();
   
   const [selectedPeriod, setSelectedPeriod] = useState(null);
@@ -23,6 +23,7 @@ const CourseRegistrationPage = () => {
   useEffect(() => {
     if (user?.id) {
       fetchStudentRegistrations(user.id);
+      fetchRetakeableCourses(user.id);
     }
   }, [user, fetchStudentRegistrations]);
 
@@ -244,6 +245,36 @@ const CourseRegistrationPage = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Môn học có thể học lại */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <AlertCircle className="text-orange-500" />
+            Môn học có thể học lại
+          </h2>
+          <div className="space-y-3">
+            {retakeableCourses.length === 0 ? (
+              <p className="text-center py-6 text-gray-400 italic text-xs">Không có môn học gợi ý học lại</p>
+            ) : (
+              retakeableCourses.map(course => (
+                <button
+                  key={course.id}
+                  onClick={() => setSearchTerm(course.courseCode)}
+                  className="w-full p-3 text-left bg-orange-50/50 hover:bg-orange-50 border border-orange-100 rounded-xl transition-all group"
+                >
+                  <p className="text-sm font-bold text-gray-800 group-hover:text-orange-600 transition-colors">{course.courseName}</p>
+                  <div className="flex justify-between items-center mt-1">
+                    <span className="text-[10px] font-mono text-orange-600">{course.courseCode}</span>
+                    <span className="text-[10px] text-gray-400">{course.credits} Tín chỉ</span>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+          <p className="mt-4 text-[10px] text-gray-400 leading-relaxed italic">
+            * Danh sách bao gồm các môn học bạn đã trượt hoặc có điểm tích lũy thấp cần cải thiện.
+          </p>
         </div>
 
         <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-2xl text-white shadow-xl shadow-blue-500/20">

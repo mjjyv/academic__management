@@ -156,7 +156,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
                 .id(course.getId())
                 .courseCode(course.getCourseCode())
                 .courseName(course.getCourseName())
-                .credits(course.getCredits().doubleValue())
+                .credits(course.getCredits())
                 .build();
     }
 
