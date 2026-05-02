@@ -37,12 +37,12 @@ springdoc:
   packages-to-scan: uni.it.stdmanager.modules # Giới hạn vùng quét để tránh lỗi 500
 
 
-logging:
-  file:
-    name: logs/application.log # Specify the log file location
-  level:
-    root: INFO
-    org.springdoc: DEBUG
-    io.swagger: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.web: DEBUG
+# logging:
+#   file:
+#     name: logs/application.log # Specify the log file location
+#   level:
+#     root: INFO
+#     org.springdoc: DEBUG
+#     io.swagger: DEBUG
+#     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#     org.springframework.web: DEBUG
