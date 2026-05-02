@@ -4,6 +4,7 @@ import { semesterApi } from '../../api/semesterApi';
 import useAuthStore from '../../store/useAuthStore';
 import SemesterFormModal from '../../components/SemesterFormModal';
 import SectionFormModal from '../../components/SectionFormModal';
+import SectionDetailModal from '../../components/SectionDetailModal';
 import toast from 'react-hot-toast';
 
 const AcademicOverviewPage = () => {
@@ -19,6 +20,9 @@ const AcademicOverviewPage = () => {
     
     const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
     const [selectedSectionForEdit, setSelectedSectionForEdit] = useState(null);
+
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedSectionForDetail, setSelectedSectionForDetail] = useState(null);
 
     const user = useAuthStore((state) => state.user);
     const canManage = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
@@ -127,6 +131,11 @@ const AcademicOverviewPage = () => {
                 toast.error("Lỗi khi xóa lớp học phần");
             }
         }
+    };
+
+    const handleViewDetail = (section) => {
+        setSelectedSectionForDetail(section);
+        setIsDetailModalOpen(true);
     };
 
     return (
@@ -257,12 +266,14 @@ const AcademicOverviewPage = () => {
                                                     <button 
                                                         onClick={() => handleEditSection(section)}
                                                         className="p-1.5 bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-600 rounded-lg transition-all"
+                                                        title="Chỉnh sửa"
                                                     >
                                                         <Edit2 size={14} />
                                                     </button>
                                                     <button 
                                                         onClick={() => handleDeleteSection(section.id)}
                                                         className="p-1.5 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-all"
+                                                        title="Xóa"
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
@@ -298,7 +309,10 @@ const AcademicOverviewPage = () => {
                                                 ></div>
                                             </div>
                                         </div>
-                                        <button className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                                        <button 
+                                            onClick={() => handleViewDetail(section)}
+                                            className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                                        >
                                             Chi tiết <ArrowRight size={14} />
                                         </button>
                                     </div>
@@ -329,6 +343,12 @@ const AcademicOverviewPage = () => {
                 semesterId={selectedSemester?.id}
                 initialData={selectedSectionForEdit}
                 onUpdate={() => fetchSections(selectedSemester.id)}
+            />
+
+            <SectionDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                section={selectedSectionForDetail}
             />
         </div>
     );

@@ -26,8 +26,8 @@ CREATE TABLE course_sections (
     semester_id UNIQUEIDENTIFIER NOT NULL, -- Liên kết tới học kỳ (FK -> semesters.id) 
     academic_year NVARCHAR(20), -- Năm học 
     lecturer_id UNIQUEIDENTIFIER, -- Giảng viên chính phụ trách 
-    room_id UNIQUEIDENTIFIER, -- Phòng học của lớp 
-    building_id UNIQUEIDENTIFIER, -- Tòa nhà nơi đặt phòng học 
+    room_id NVARCHAR(50), -- Phòng học của lớp 
+    building_id NVARCHAR(50), -- Tòa nhà nơi đặt phòng học 
     max_students INT, -- Sĩ số tối đa 
     min_students INT, -- Sĩ số tối thiểu 
     class_type NVARCHAR(50), -- Loại lớp (theory / lab / hybrid) 

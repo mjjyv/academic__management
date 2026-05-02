@@ -132,16 +132,23 @@ public class CourseSectionServiceImpl implements CourseSectionService {
         return CourseSectionResponse.builder()
                 .id(section.getId())
                 .classCode(section.getClassCode())
+                .courseId(section.getCourse() != null ? section.getCourse().getId() : null)
                 .courseCode(section.getCourse() != null ? section.getCourse().getCourseCode() : null)
                 .courseName(section.getCourse() != null ? section.getCourse().getCourseName() : null)
+                .semesterId(section.getSemester() != null ? section.getSemester().getId() : null)
                 .semesterName(section.getSemester() != null ? section.getSemester().getSemesterName() : null)
+                .lecturerId(section.getLecturer() != null ? section.getLecturer().getId() : null)
                 .lecturerName(section.getLecturer() != null ? section.getLecturer().getFullName() : "Chưa phân công")
+                .roomId(section.getRoomId())
+                .buildingId(section.getBuildingId())
                 .maxStudents(section.getMaxStudents())
-                .currentStudents(0) // Placeholder, logic đếm sinh viên sẽ ở module Registration
+                .minStudents(section.getMinStudents())
+                .currentStudents(0) // Logic đăng ký sẽ xử lý phần này
                 .classType(section.getClassType())
                 .status(section.getStatus())
                 .registrationStart(section.getRegistrationStart())
                 .registrationEnd(section.getRegistrationEnd())
+                .note(section.getNote())
                 .build();
     }
 }
