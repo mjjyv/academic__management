@@ -1,4 +1,4 @@
--- stdmanager/src/main/resources/db/migration/V10__Update_Tuition_Fee_Type.sql
+-- stdmanager/src/main/resources/db/migration/V21__Update_Tuition_Fee_Type.sql
 
 USE [stdmanager_db]
 GO

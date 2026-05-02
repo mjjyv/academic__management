@@ -173,6 +173,8 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
                 .registeredAt(registration.getRegisteredAt())
                 .status(registration.getStatus())
                 .isPaid(registration.getIsPaid())
+                .credits(registration.getCourseSection().getCourse().getCredits().intValue())
+                .lecturerName(registration.getCourseSection().getLecturer() != null ? registration.getCourseSection().getLecturer().getFullName() : "Chưa cập nhật")
                 .build();
     }
 }

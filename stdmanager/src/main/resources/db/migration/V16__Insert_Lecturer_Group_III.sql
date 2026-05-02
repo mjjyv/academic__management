@@ -233,3 +233,130 @@ IF NOT EXISTS (SELECT 1 FROM lecturer_specializations WHERE lecturer_id = @Emp_G
 IF NOT EXISTS (SELECT 1 FROM lecturer_specializations WHERE lecturer_id = @Emp_GV003)
     INSERT INTO lecturer_specializations (id, lecturer_id, specialization, is_active, created_at, updated_at)
     VALUES (NEWID(), @Emp_GV003, N'Phân tích tài chính', 1, GETDATE(), GETDATE());
+
+
+    -- ======================================================================
+-- 8. INSERT USERS & EMPLOYEES (Tiếp tục thêm Giảng viên Khoa NN & GVTH)
+-- ======================================================================
+
+DECLARE @Dept_NN UNIQUEIDENTIFIER;
+DECLARE @Pos_GVTH UNIQUEIDENTIFIER;
+
+SET @Dept_NN = (SELECT id FROM departments WHERE code = 'NN');
+SET @Pos_GVTH = (SELECT id FROM positions WHERE code = 'GVTH');
+
+IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'phamthidung')
+    INSERT INTO users (id, username, password_hash, full_name, email, phone, avatar_url, last_login_at, is_active, created_at, updated_at)
+    OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name, INSERTED.email, INSERTED.phone INTO @GeneratedUsers
+    VALUES (NEWID(), 'phamthidung', @PassHash, N'Phạm Thị Dũng', 'dung.pt@stdmanager.edu.vn', '0987654321', '/avatars/dung.jpg', NULL, 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedUsers (username, user_id, full_name, email, phone) 
+    SELECT username, id, full_name, email, phone FROM users WHERE username = 'phamthidung';
+
+IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'hoangvanem')
+    INSERT INTO users (id, username, password_hash, full_name, email, phone, avatar_url, last_login_at, is_active, created_at, updated_at)
+    OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name, INSERTED.email, INSERTED.phone INTO @GeneratedUsers
+    VALUES (NEWID(), 'hoangvanem', @PassHash, N'Hoàng Văn Em', 'em.hv@stdmanager.edu.vn', '0987654322', '/avatars/em.jpg', GETDATE(), 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedUsers (username, user_id, full_name, email, phone) 
+    SELECT username, id, full_name, email, phone FROM users WHERE username = 'hoangvanem';
+
+IF NOT EXISTS (SELECT 1 FROM employees WHERE employee_code = 'GV004')
+BEGIN
+    INSERT INTO employees (id, user_id, employee_code, full_name, date_of_birth, gender, email, phone, address, department_id, position_id, hire_date, contract_type, salary_coefficient, academic_degree, academic_title, specialization, is_active, created_at, updated_at)
+    OUTPUT INSERTED.employee_code, INSERTED.id, INSERTED.user_id INTO @GeneratedEmployees
+    SELECT NEWID(), user_id, 'GV004', full_name, '1988-11-05', N'2', email, phone, N'Số 4, Đại học ABC', @Dept_NN, @Pos_GV, '2015-02-01', N'Biên chế', 4.00, N'Thạc sĩ', NULL, N'Ngôn ngữ học Anh văn', 1, GETDATE(), GETDATE()
+    FROM @GeneratedUsers WHERE username = 'phamthidung';
+END
+ELSE
+BEGIN
+    INSERT INTO @GeneratedEmployees (employee_code, employee_id, user_id)
+    SELECT employee_code, id, user_id FROM employees WHERE employee_code = 'GV004';
+END
+
+IF NOT EXISTS (SELECT 1 FROM employees WHERE employee_code = 'GV005')
+BEGIN
+    INSERT INTO employees (id, user_id, employee_code, full_name, date_of_birth, gender, email, phone, address, department_id, position_id, hire_date, contract_type, salary_coefficient, academic_degree, academic_title, specialization, is_active, created_at, updated_at)
+    OUTPUT INSERTED.employee_code, INSERTED.id, INSERTED.user_id INTO @GeneratedEmployees
+    SELECT NEWID(), user_id, 'GV005', full_name, '1995-04-12', N'1', email, phone, N'Đường XYZ, Quận 1', @Dept_CNTT, @Pos_GVTH, '2023-09-01', N'Hợp đồng', 2.50, N'Cử nhân', NULL, N'Lập trình Web Fullstack', 1, GETDATE(), GETDATE()
+    FROM @GeneratedUsers WHERE username = 'hoangvanem';
+END
+ELSE
+BEGIN
+    INSERT INTO @GeneratedEmployees (employee_code, employee_id, user_id)
+    SELECT employee_code, id, user_id FROM employees WHERE employee_code = 'GV005';
+END
+
+-- ======================================================================
+-- 9. GÁN ROLE & THÊM BẰNG CẤP CHO TẬP GIẢNG VIÊN MỚI
+-- ======================================================================
+
+DECLARE @Emp_GV004 UNIQUEIDENTIFIER = (SELECT employee_id FROM @GeneratedEmployees WHERE employee_code = 'GV004');
+DECLARE @Emp_GV005 UNIQUEIDENTIFIER = (SELECT employee_id FROM @GeneratedEmployees WHERE employee_code = 'GV005');
+
+IF NOT EXISTS (SELECT 1 FROM lecturer_degrees WHERE lecturer_id = @Emp_GV004)
+BEGIN
+    INSERT INTO lecturer_degrees (id, lecturer_id, degree, major, university, graduation_year, is_highest, is_active, created_at, updated_at)
+    VALUES 
+    (NEWID(), @Emp_GV004, N'Cử nhân', N'Ngôn ngữ Anh', N'ĐH Ngoại ngữ', 2010, 0, 1, GETDATE(), GETDATE()),
+    (NEWID(), @Emp_GV004, N'Thạc sĩ', N'Teaching English to Speakers of Other Languages (TESOL)', N'ĐH Hà Nội', 2014, 1, 1, GETDATE(), GETDATE());
+END
+
+IF NOT EXISTS (SELECT 1 FROM lecturer_degrees WHERE lecturer_id = @Emp_GV005)
+BEGIN
+    INSERT INTO lecturer_degrees (id, lecturer_id, degree, major, university, graduation_year, is_highest, is_active, created_at, updated_at)
+    VALUES 
+    (NEWID(), @Emp_GV005, N'Cử nhân', N'Công nghệ Thông tin', N'ĐH FPT', 2017, 1, 1, GETDATE(), GETDATE());
+END
+
+-- Gán role GIANGVIEN
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'phamthidung' AND r.code = 'GIANGVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'phamthidung' AND r.code = 'GIANGVIEN';
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'hoangvanem' AND r.code = 'GIANGVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'hoangvanem' AND r.code = 'GIANGVIEN';
+
+-- ======================================================================
+-- 10. INSERT LECTURER_POSITIONS_HISTORY (Tiếp tục lịch sử cho GV mới)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM lecturer_positions_history WHERE lecturer_id = @Emp_GV004)
+BEGIN
+    INSERT INTO lecturer_positions_history (id, lecturer_id, position_id, start_date, end_date, is_active, created_at, updated_at)
+    VALUES 
+    (NEWID(), @Emp_GV004, (SELECT id FROM positions WHERE code = 'GV'), '2015-02-01', NULL, 1, GETDATE(), GETDATE());
+END
+
+-- ======================================================================
+-- 11. INSERT CONTRACTS (Tiếp tục hợp đồng cho GV mới)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM contracts WHERE lecturer_id = @Emp_GV004)
+    INSERT INTO contracts (id, lecturer_id, contract_type, start_date, end_date, salary_coefficient, is_active, created_at, updated_at)
+    VALUES (NEWID(), @Emp_GV004, N'Hợp đồng lao động không xác định thời hạn', '2015-02-01', NULL, 4.00, 1, GETDATE(), GETDATE());
+
+IF NOT EXISTS (SELECT 1 FROM contracts WHERE lecturer_id = @Emp_GV005)
+    INSERT INTO contracts (id, lecturer_id, contract_type, start_date, end_date, salary_coefficient, is_active, created_at, updated_at)
+    VALUES (NEWID(), @Emp_GV005, N'Hợp đồng thuê dịch vụ giảng viên thỉnh giảng', '2023-09-01', '2024-08-31', 2.50, 1, GETDATE(), GETDATE());
+
+-- ======================================================================
+-- 12. INSERT LECTURER_SPECIALIZATIONS (Tiếp tục chuyên môn cho GV mới)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM lecturer_specializations WHERE lecturer_id = @Emp_GV004)
+BEGIN
+    INSERT INTO lecturer_specializations (id, lecturer_id, specialization, is_active, created_at, updated_at)
+    VALUES 
+    (NEWID(), @Emp_GV004, N'IELTS Training', 1, GETDATE(), GETDATE()),
+    (NEWID(), @Emp_GV004, N'Ngữ pháp Tiếng Anh chuyên ngành', 1, GETDATE(), GETDATE());
+END
+
+IF NOT EXISTS (SELECT 1 FROM lecturer_specializations WHERE lecturer_id = @Emp_GV005)
+BEGIN
+    INSERT INTO lecturer_specializations (id, lecturer_id, specialization, is_active, created_at, updated_at)
+    VALUES 
+    (NEWID(), @Emp_GV005, N'ReactJS & NodeJS', 1, GETDATE(), GETDATE()),
+    (NEWID(), @Emp_GV005, N'Phát triển ứng dụng di động (Mobile App)', 1, GETDATE(), GETDATE());
+END

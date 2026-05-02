@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface TrainingProgramCourseRepository extends JpaRepository<TrainingProgramCourse, UUID> {
     List<TrainingProgramCourse> findAllByTrainingProgramId(UUID trainingProgramId);
+    List<TrainingProgramCourse> findAllByTrainingProgramIdAndIsRequiredTrue(UUID trainingProgramId);
 }

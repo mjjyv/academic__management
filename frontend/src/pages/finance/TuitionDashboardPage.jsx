@@ -1,54 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { Wallet, CreditCard, History, AlertCircle, TrendingDown, DollarSign, ArrowRight } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Wallet, CheckCircle2, BookOpen, Calendar, CreditCard, History, AlertCircle, TrendingDown, ArrowRight } from 'lucide-react';
 import useFinanceStore from '../../store/useFinanceStore';
 import useAuthStore from '../../store/useAuthStore';
-import useSemesterStore from '../../store/useSemesterStore';
-import useRegistrationStore from '../../store/useRegistrationStore';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const TuitionDashboardPage = () => {
-  const { tuitionData, studentTuitions, calculateCurrentTuition, fetchStudentTuitions, loading } = useFinanceStore();
-  const { currentRegistrations, fetchStudentRegistrations } = useRegistrationStore();
-  const { semesters, fetchSemesters } = useSemesterStore();
-  const { user } = useAuthStore();
+  const { 
+    tuitionData, 
+    studentTuitions, 
+    fetchCurrentTuition, 
+    fetchDebtSummary, 
+    calculateCurrentTuition, 
+    loading 
+  } = useFinanceStore();
   
-  const [selectedSemesterId, setSelectedSemesterId] = useState('');
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    fetchSemesters();
-    if (user?.id) {
-      fetchStudentRegistrations(user.id);
-      fetchStudentTuitions(user.id);
+    if (user) {
+      fetchCurrentTuition();
+      fetchDebtSummary();
     }
-  }, [fetchSemesters, user, fetchStudentRegistrations]);
-
-  useEffect(() => {
-    if (semesters.length > 0 && !selectedSemesterId) {
-      setSelectedSemesterId(semesters[0].id);
-    }
-  }, [semesters, selectedSemesterId]);
+  }, [user, fetchCurrentTuition, fetchDebtSummary]);
 
   const handleCalculate = async () => {
-    if (!selectedSemesterId) return;
+    if (!tuitionData?.semesterId && !user?.id) return;
     try {
-      await calculateCurrentTuition(user.id, selectedSemesterId);
-      await fetchStudentTuitions(user.id);
-      toast.success("Đã cập nhật dữ liệu học phí kỳ này");
+      // If we don't have tuitionData yet, we might need a default semester or just wait
+      const semesterId = tuitionData?.semesterId;
+      if (semesterId) {
+        await calculateCurrentTuition(user.id, semesterId);
+        await fetchCurrentTuition();
+        await fetchDebtSummary();
+        toast.success("Đã cập nhật dữ liệu học phí kỳ này");
+      }
     } catch (error) {
       toast.error("Không thể tính toán học phí");
     }
   };
 
-  const currentTuition = studentTuitions.find(t => t.semesterId === selectedSemesterId) || {};
+  const currentTuition = tuitionData || {};
+  const paidPercent = currentTuition.netAmount > 0 
+    ? Math.round((currentTuition.paidAmount / currentTuition.netAmount) * 100) 
+    : 0;
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
   };
 
   const getTuitionBreakdown = () => {
-    const newCourses = currentRegistrations.filter(r => r.registrationType === 1 && r.status !== 3);
-    const retakeCourses = currentRegistrations.filter(r => (r.registrationType === 2 || r.registrationType === 3) && r.status !== 3);
-    
+    const details = currentTuition.details || [];
+    const newCourses = details.filter(d => d.registrationType === 1);
+    const retakeCourses = details.filter(d => d.registrationType === 2 || d.registrationType === 3);
+
     return {
       new: newCourses,
       retake: retakeCourses,
@@ -60,247 +64,215 @@ const TuitionDashboardPage = () => {
   const breakdown = getTuitionBreakdown();
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Tài chính & Học phí</h1>
-          <p className="text-sm text-gray-500">Quản lý các khoản phí và lịch sử thanh toán của bạn.</p>
-        </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <select 
-            value={selectedSemesterId}
-            onChange={(e) => setSelectedSemesterId(e.target.value)}
-            className="flex-1 md:w-48 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-semibold"
-          >
-            {semesters.map(s => (
-              <option key={s.id} value={s.id}>{s.semesterName}</option>
-            ))}
-          </select>
-          <button 
-            onClick={handleCalculate}
-            disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-bold text-sm shadow-lg shadow-blue-500/20 disabled:opacity-50"
-          >
-            {loading ? 'Đang tính...' : 'Tính học phí'}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Stats Cards */}
-      {/* Main Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-          <div className="flex-1 p-6 bg-gradient-to-br from-indigo-600 to-blue-700 text-white relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                <Wallet size={20} />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider opacity-70">Tổng học phí kỳ này</p>
-              <h3 className="text-4xl font-black mt-1">{formatCurrency(currentTuition.netAmount || tuitionData)}</h3>
-              <div className="mt-4 flex items-center gap-2 text-[10px] font-bold bg-white/10 w-fit px-2 py-1 rounded">
-                <CheckCircle2 size={12} />
-                Số liệu đã cập nhật theo đăng ký mới nhất
-              </div>
-            </div>
-            <DollarSign className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 group-hover:scale-110 transition-transform duration-500" />
-          </div>
-          
-          <div className="w-full md:w-72 p-6 bg-gray-50 flex flex-col justify-center space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500 font-medium">Học phí gốc:</span>
-              <span className="text-sm font-bold text-gray-700">{formatCurrency(currentTuition.rawAmount)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-green-600 font-medium">Miễn giảm:</span>
-              <span className="text-sm font-bold text-green-600">-{formatCurrency((currentTuition.scholarshipDeduction || 0) + (currentTuition.exemptionAmount || 0))}</span>
-            </div>
-            <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
-              <span className="text-xs text-gray-800 font-bold uppercase">Thực nộp:</span>
-              <span className="text-lg font-black text-blue-600">{formatCurrency(currentTuition.netAmount)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Số dư còn nợ</p>
-                <h3 className="text-3xl font-black text-red-600 mt-1">{formatCurrency(currentTuition.debtAmount)}</h3>
-              </div>
-              <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
-                <AlertCircle size={20} />
-              </div>
-            </div>
-            <div className="mt-6 flex items-center gap-2">
-              <button className="flex-1 bg-red-600 text-white py-3 rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 active:scale-95">
-                Thanh toán ngay
-              </button>
-            </div>
-          </div>
-          <History className="absolute -right-4 -bottom-4 w-24 h-24 text-gray-50" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
-            <BookOpen size={24} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tổng tín chỉ</p>
-            <p className="text-xl font-black text-gray-800">{currentTuition.totalCredits || 0} TC</p>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center shrink-0">
-            <TrendingDown size={24} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Học bổng</p>
-            <p className="text-xl font-black text-green-600">{formatCurrency(currentTuition.scholarshipDeduction)}</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4 md:col-span-2">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center shrink-0">
-            <Calendar size={24} />
-          </div>
-          <div className="flex-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hạn chót thanh toán</p>
-            <div className="flex justify-between items-center">
-              <p className="text-lg font-black text-gray-800">
-                {currentTuition.deadline ? new Date(currentTuition.deadline).toLocaleDateString('vi-VN') : 'Chưa xác định'}
-              </p>
-              {currentTuition.deadline && (
-                <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
-                  Còn {Math.ceil((new Date(currentTuition.deadline) - new Date()) / (1000 * 60 * 60 * 24))} ngày
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Breakdown Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2">
-              <TrendingDown className="text-blue-600" size={18} />
-              Chi tiết các khoản phí
-            </h2>
-          </div>
-          <div className="p-6 space-y-4">
-            <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Môn học lần đầu</h4>
-              {breakdown.new.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">Không có môn đăng ký mới</p>
-              ) : (
-                breakdown.new.map(reg => (
-                  <div key={reg.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
-                    <span className="text-sm font-semibold text-gray-700">{reg.courseName}</span>
-                    <span className="text-xs font-bold text-blue-600">{reg.credits} TC</span>
-                  </div>
-                ))
-              )}
-            </div>
-            
-            <div className="pt-4 border-t border-gray-50 space-y-3">
-              <h4 className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Môn học lại / Cải thiện</h4>
-              {breakdown.retake.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">Không có môn đăng ký học lại</p>
-              ) : (
-                breakdown.retake.map(reg => (
-                  <div key={reg.id} className="flex justify-between items-center p-3 bg-orange-50 border border-orange-100 rounded-xl">
-                    <span className="text-sm font-semibold text-gray-700">{reg.courseName}</span>
-                    <span className="text-xs font-bold text-orange-600">{reg.credits} TC</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* History / Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-          <div className="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2">
-              <History className="text-indigo-600" size={18} />
-              Giao dịch gần đây
-            </h2>
-            <button className="text-[10px] font-bold text-blue-600 hover:underline">Xem tất cả</button>
-          </div>
-          <div className="flex-1 flex flex-col justify-center items-center py-10 opacity-40">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <History size={24} />
-            </div>
-            <p className="text-sm font-bold">Chưa có giao dịch nào</p>
-            <p className="text-xs">Lịch sử thanh toán của bạn sẽ xuất hiện tại đây.</p>
-          </div>
-          <div className="p-6 bg-indigo-50/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white">
-                  <DollarSign size={20} />
-                </div>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* 1. PREMIUM HERO SECTION */}
+      <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col xl:flex-row gap-8 items-stretch">
+        {/* Main Glassmorphism Card */}
+        <div className="flex-[2] bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-600/30">
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs font-bold text-gray-800">Thông tin chuyển khoản</p>
-                  <p className="text-[10px] text-gray-500">Ngân hàng TMCP Ngoại Thương (VCB)</p>
+                  <h1 className="text-xl font-bold opacity-80 mb-1">Tổng học phí kỳ này</h1>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] bg-white/20 w-fit px-3 py-1 rounded-full backdrop-blur-md">
+                    {currentTuition.semesterName || 'Học kỳ hiện tại'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  {loading && <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />}
+                  <button 
+                    onClick={handleCalculate}
+                    disabled={loading || !currentTuition.semesterId}
+                    className="bg-white/10 hover:bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/10 transition-colors"
+                    title="Cập nhật học phí"
+                  >
+                    <Wallet size={24} />
+                  </button>
                 </div>
               </div>
-              <ArrowRight className="text-indigo-600" size={18} />
+              <div className="mt-10">
+                <h2 className="text-5xl font-black tracking-tighter">
+                  {formatCurrency(currentTuition.netAmount || 0)}
+                </h2>
+                <div className="flex items-center gap-4 mt-6">
+                  <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/5 flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full animate-pulse ${currentTuition.status === 1 ? 'bg-green-400' : 'bg-red-400'}`} />
+                    <span className="text-xs font-bold">
+                      Trạng thái: {currentTuition.status === 1 ? 'Hoàn tất' : (currentTuition.debtAmount > 0 ? 'Đang nợ' : 'Chưa có dữ liệu')}
+                    </span>
+                  </div>
+                  {currentTuition.deadline && (
+                    <div className="bg-orange-500/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-orange-500/20 flex items-center gap-3">
+                      <Calendar size={14} className="text-orange-300" />
+                      <span className="text-xs font-bold text-orange-100">Hạn: {new Date(currentTuition.deadline).toLocaleDateString('vi-VN')}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 flex items-center gap-6 border-t border-white/10 pt-8">
+              <div className="flex-1">
+                <p className="text-[10px] font-black uppercase opacity-60 mb-2">Tiến độ thanh toán</p>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-green-400 rounded-full transition-all duration-1000" style={{ width: `${paidPercent}%` }} />
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-black">{paidPercent}%</p>
+              </div>
+            </div>
+          </div>
+          {/* Decorative elements */}
+          <div className="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl" />
+        </div>
+
+        {/* Action & Stats Panel */}
+        <div className="flex-1 flex flex-col gap-6">
+          <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex-1 flex flex-col justify-center">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Số dư còn nợ</p>
+            <h3 className="text-3xl font-black text-red-600 mb-6">{formatCurrency(currentTuition.debtAmount)}</h3>
+            <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3">
+              <CreditCard size={20} />
+              THANH TOÁN QUA VNPAY
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white p-5 rounded-3xl border border-gray-100">
+              <p className="text-[10px] font-black text-gray-400 uppercase mb-1">Đã nộp</p>
+              <p className="text-lg font-black text-green-600">{formatCurrency(currentTuition.paidAmount)}</p>
+            </div>
+            <div className="bg-white p-5 rounded-3xl border border-gray-100">
+              <p className="text-[10px] font-black text-gray-400 uppercase mb-1">Miễn giảm</p>
+              <p className="text-lg font-black text-amber-500">-{formatCurrency((currentTuition.scholarshipDeduction || 0) + (currentTuition.exemptionAmount || 0))}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bảng tổng hợp học phí tất cả học kỳ */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-50 flex items-center gap-2">
-          <DollarSign className="text-blue-600" size={20} />
-          <h2 className="font-bold text-gray-800">Lịch sử học phí qua các kỳ</h2>
+      {/* 2. BREAKDOWN & ANALYSIS */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Detailed Breakdown */}
+        <div className="xl:col-span-2 bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-8 border-b border-gray-50 flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-black text-gray-800 flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                  <TrendingDown size={20} />
+                </div>
+                Chi tiết các khoản phí
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black bg-gray-100 px-4 py-2 rounded-xl text-gray-500">Tổng: {currentTuition.totalCredits || 0} TC</span>
+            </div>
+          </div>
+
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                <CheckCircle2 size={12} className="text-blue-500" />
+                Môn học học mới (500k/TC)
+              </h4>
+              {breakdown.new.length === 0 ? (
+                <div className="py-10 flex flex-col items-center opacity-20">
+                  <BookOpen size={32} />
+                  <p className="text-[10px] font-black mt-2 italic">Không có môn học mới</p>
+                </div>
+              ) : (
+                breakdown.new.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl group hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
+                        <BookOpen size={14} />
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 leading-tight">{item.courseName}</span>
+                    </div>
+                    <span className="text-xs font-black text-blue-600">{item.credits} TC</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                <AlertCircle size={12} />
+                Học lại / Cải thiện (750k/TC)
+              </h4>
+              {breakdown.retake.length === 0 ? (
+                <div className="py-10 flex flex-col items-center opacity-20">
+                  <TrendingDown size={32} />
+                  <p className="text-[10px] font-black mt-2 italic">Không có môn học lại</p>
+                </div>
+              ) : (
+                breakdown.retake.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-4 bg-orange-50/50 rounded-2xl group hover:bg-white hover:shadow-lg transition-all border border-orange-100/20 hover:border-orange-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-orange-500 shadow-sm">
+                        <AlertCircle size={14} />
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 leading-tight">{item.courseName}</span>
+                    </div>
+                    <span className="text-xs font-black text-orange-600">{item.credits} TC</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-[10px] uppercase font-bold">
-              <tr>
-                <th className="px-6 py-3">Học kỳ</th>
-                <th className="px-6 py-3 text-right">Tổng phải nộp</th>
-                <th className="px-6 py-3 text-right">Đã nộp</th>
-                <th className="px-6 py-3 text-right">Còn nợ</th>
-                <th className="px-6 py-3 text-center">Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 text-sm">
+
+        {/* Quick Summary & History */}
+        <div className="space-y-8">
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 h-full">
+            <h2 className="text-lg font-black text-gray-800 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                <History size={20} />
+              </div>
+              Lịch sử các kỳ
+            </h2>
+            <div className="space-y-4">
               {studentTuitions.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 italic">Chưa có dữ liệu học phí</td>
-                </tr>
+                <p className="text-xs text-gray-400 italic text-center py-4">Chưa có lịch sử học phí</p>
               ) : (
                 studentTuitions.map(t => (
-                  <tr key={t.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-bold text-gray-700">{t.semesterName}</td>
-                    <td className="px-6 py-4 text-right font-bold">{formatCurrency(t.netAmount)}</td>
-                    <td className="px-6 py-4 text-right font-bold text-green-600">{formatCurrency(t.paidAmount)}</td>
-                    <td className="px-6 py-4 text-right font-bold text-red-600">{formatCurrency(t.debtAmount)}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-center">
-                        {t.status === 1 ? (
-                          <span className="px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-[10px] font-bold">HOÀN TẤT</span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-bold">CÒN NỢ</span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
+                  <div key={t.id} className={`p-4 rounded-2xl border transition-all ${t.semesterId === currentTuition.semesterId ? 'border-blue-200 bg-blue-50/50' : 'border-gray-50 hover:bg-gray-50'}`}>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm font-black text-gray-700">{t.semesterName}</p>
+                      <span className={`text-[9px] font-black px-2 py-1 rounded-lg ${t.status === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {t.status === 1 ? 'ĐÃ NỘP' : 'CÒN NỢ'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-end mt-3">
+                      <p className="text-xs text-gray-400 font-bold tracking-wider">{t.totalCredits} Tín chỉ</p>
+                      <p className="text-sm font-black text-gray-800">{formatCurrency(t.netAmount)}</p>
+                    </div>
+                  </div>
                 ))
               )}
-            </tbody>
-          </table>
+            </div>
+
+            <button
+              onClick={() => window.location.href = '/registration'}
+              className="w-full mt-8 py-4 text-xs font-black text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all uppercase tracking-widest flex items-center justify-center gap-2"
+            >
+              Tiếp tục đăng ký môn học
+              <ArrowRight size={12} />
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Floating Action Bar (Responsive Mobile Only) */}
+      <div className="md:hidden fixed bottom-6 left-6 right-6 bg-white/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-white/20 z-50 flex justify-between items-center gap-4">
+        <div>
+          <p className="text-[10px] font-black text-gray-400 uppercase">Còn nợ</p>
+          <p className="text-sm font-black text-red-600">{formatCurrency(currentTuition.debtAmount)}</p>
+        </div>
+        <button className="bg-blue-600 text-white px-6 py-3 rounded-2xl text-xs font-black shadow-lg shadow-blue-500/30">
+          THANH TOÁN
+        </button>
       </div>
     </div>
   );

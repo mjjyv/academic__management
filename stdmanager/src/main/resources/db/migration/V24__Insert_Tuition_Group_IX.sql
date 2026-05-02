@@ -4,117 +4,222 @@ USE stdmanager_db;
 GO
 
 -- ======================================================================
--- 1. LẤY THÔNG TIN TỪ CÁC NHÓM TRƯỚC
+-- 1. KHỞI TẠO BIẾN TRUNG GIAN
 -- ======================================================================
 DECLARE @AdminId UNIQUEIDENTIFIER = (SELECT id FROM users WHERE username = 'admin');
-DECLARE @GiaovuId UNIQUEIDENTIFIER = (SELECT id FROM users WHERE username = 'giaovu');
+DECLARE @SemesterId UNIQUEIDENTIFIER = (SELECT id FROM semesters WHERE semester_code = 'HK1_2024_2025');
 
-DECLARE @Prog_KTPM UNIQUEIDENTIFIER = (SELECT id FROM training_programs WHERE program_code = 'CT_KTPM_2022');
-DECLARE @Prog_QTKD UNIQUEIDENTIFIER = (SELECT id FROM training_programs WHERE program_code = 'CT_QTKD_2023');
-
-DECLARE @SemesterId UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM semesters WHERE semester_code = 'HK1_2024_2025');
+-- Nếu không tìm thấy HK1_2024_2025, thử tìm bất kỳ HK nào có hiệu lực
+IF @SemesterId IS NULL
+    SET @SemesterId = (SELECT TOP 1 id FROM semesters WHERE is_active = 1 ORDER BY start_date DESC);
 
 -- ======================================================================
--- 2. INSERT TUITION_FEES (Định mức học phí cho từng ngành)
+-- 2. INSERT TUITION_FEES (Cấu hình đơn giá)
 -- ======================================================================
-DECLARE @Fee_KTPM UNIQUEIDENTIFIER = NEWID();
-DECLARE @Fee_QTKD UNIQUEIDENTIFIER = NEWID();
-
-IF NOT EXISTS (SELECT 1 FROM tuition_fees WHERE program_id = @Prog_KTPM AND course_year = 'K22')
+IF NOT EXISTS (SELECT 1 FROM tuition_fees WHERE course_year = 'K2020')
 BEGIN
-    INSERT INTO tuition_fees (id, program_id, course_year, price_per_credit, base_tuition, effective_date, is_active, created_at, created_by)
+    INSERT INTO tuition_fees (id, course_year, fee_type, price_per_credit, is_active, created_at, created_by)
     VALUES 
-    (@Fee_KTPM, @Prog_KTPM, 'K22', 550000.00, 1000000.00, '2024-01-01', 1, GETDATE(), @AdminId),
-    (@Fee_QTKD, @Prog_QTKD, 'K23', 480000.00, 800000.00,  '2024-01-01', 1, GETDATE(), @AdminId);
+    (NEWID(), 'K2020', 'NEW',    500000.00, 1, GETDATE(), @AdminId),
+    (NEWID(), 'K2020', 'RETAKE', 750000.00, 1, GETDATE(), @AdminId);
 END
-ELSE 
+
+IF NOT EXISTS (SELECT 1 FROM tuition_fees WHERE course_year = 'K2021')
 BEGIN
-    SET @Fee_KTPM = (SELECT id FROM tuition_fees WHERE program_id = @Prog_KTPM);
-    SET @Fee_QTKD = (SELECT id FROM tuition_fees WHERE program_id = @Prog_QTKD);
+    INSERT INTO tuition_fees (id, course_year, fee_type, price_per_credit, is_active, created_at, created_by)
+    VALUES 
+    (NEWID(), 'K2021', 'NEW',    550000.00, 1, GETDATE(), @AdminId),
+    (NEWID(), 'K2021', 'RETAKE', 825000.00, 1, GETDATE(), @AdminId);
 END
 
 -- ======================================================================
--- 3. INSERT STUDENT_TUITION (Hóa đơn học kỳ cho sinh viên)
+-- 3. INSERT STUDENT_TUITION (Tổng hợp học phí sinh viên)
 -- ======================================================================
 DECLARE @Stu_Duc UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20200001');
 DECLARE @Stu_Hanh UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20210002');
 
-DECLARE @Tuition_Duc UNIQUEIDENTIFIER = NEWID();
-DECLARE @Tuition_Hanh UNIQUEIDENTIFIER = NEWID();
+-- Nếu không có SV mẫu cụ thể, lấy TOP 2 SV bất kỳ
+IF @Stu_Duc IS NULL SET @Stu_Duc = (SELECT TOP 1 id FROM students);
+IF @Stu_Hanh IS NULL SET @Stu_Hanh = (SELECT TOP 1 id FROM students WHERE id <> @Stu_Duc);
 
--- Sinh viên Đức: Đăng ký 15 tín chỉ, có học bổng 2tr
-IF @Stu_Duc IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Duc AND semester_id = @SemesterId)
+-- Phạm Minh Đức (Học mới 3 tín chỉ)
+IF @Stu_Duc IS NOT NULL AND @SemesterId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Duc AND semester_id = @SemesterId)
 BEGIN
     INSERT INTO student_tuition (
-        id, student_id, semester_id, tuition_fee_id, total_credits, 
-        raw_amount, scholarship_deduction, exemption_amount, net_amount, 
+        id, student_id, semester_id, total_credits, raw_amount, 
+        scholarship_deduction, exemption_amount, net_amount, 
         paid_amount, debt_amount, status, deadline, is_active, created_at, created_by
     )
     VALUES (
-        @Tuition_Duc, @Stu_Duc, @SemesterId, @Fee_KTPM, 15, 
-        (15 * 550000 + 1000000), 2000000.00, 0.00, (15 * 550000 + 1000000 - 2000000), 
-        0.00, (15 * 550000 + 1000000 - 2000000), 3, '2024-10-30', 1, GETDATE(), @GiaovuId
+        NEWID(), @Stu_Duc, @SemesterId, 3, 1500000.00, 
+        0, 0, 1500000.00, 
+        0, 1500000.00, 3, '2024-10-31', 1, GETDATE(), @AdminId
     );
 END
 
--- Sinh viên Hạnh: Đăng ký 12 tín chỉ, không giảm
-IF @Stu_Hanh IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Hanh AND semester_id = @SemesterId)
+-- Nguyễn Thị Hạnh (Học lại 3 tín chỉ)
+IF @Stu_Hanh IS NOT NULL AND @SemesterId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Hanh AND semester_id = @SemesterId)
 BEGIN
     INSERT INTO student_tuition (
-        id, student_id, semester_id, tuition_fee_id, total_credits, 
-        raw_amount, scholarship_deduction, exemption_amount, net_amount, 
+        id, student_id, semester_id, total_credits, raw_amount, 
+        scholarship_deduction, exemption_amount, net_amount, 
         paid_amount, debt_amount, status, deadline, is_active, created_at, created_by
     )
     VALUES (
-        @Tuition_Hanh, @Stu_Hanh, @SemesterId, @Fee_KTPM, 12, 
-        (12 * 550000 + 1000000), 0.00, 0.00, (12 * 550000 + 1000000), 
-        0.00, (12 * 550000 + 1000000), 3, '2024-10-30', 1, GETDATE(), @GiaovuId
+        NEWID(), @Stu_Hanh, @SemesterId, 3, 2250000.00, 
+        500000.00, 0, 1750000.00, 
+        0, 1750000.00, 3, '2024-10-31', 1, GETDATE(), @AdminId
     );
 END
 
 -- ======================================================================
--- 4. INSERT PAYMENTS (Lịch sử giao dịch)
+-- 4. INSERT STUDENT_TUITION (Bổ sung thêm sinh viên có học bổng và đã thanh toán)
+-- ======================================================================
+DECLARE @Stu_Tuan UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20210005');
+DECLARE @Stu_Mai UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20200010');
+
+IF @Stu_Tuan IS NULL SET @Stu_Tuan = (SELECT TOP 1 id FROM students WHERE id NOT IN (@Stu_Duc, @Stu_Hanh));
+IF @Stu_Mai IS NULL SET @Stu_Mai = (SELECT TOP 1 id FROM students WHERE id NOT IN (@Stu_Duc, @Stu_Hanh, @Stu_Tuan));
+
+-- Võ Minh Tuấn (Học mới 18 tín chỉ, Có học bổng 30%, Miễn giảm chính sách 500k)
+IF @Stu_Tuan IS NOT NULL AND @SemesterId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Tuan AND semester_id = @SemesterId)
+BEGIN
+    INSERT INTO student_tuition (
+        id, student_id, semester_id, tuition_fee_id, total_credits, raw_amount, 
+        scholarship_deduction, exemption_amount, net_amount, 
+        paid_amount, debt_amount, status, deadline, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @Stu_Tuan, @SemesterId, (SELECT TOP 1 id FROM tuition_fees WHERE course_year = 'K2021' AND fee_type = 'NEW'), 18, 9900000.00, 
+        2970000.00, 500000.00, 6430000.00, 
+        6430000.00, 0, 1, '2024-10-15', 
+        1, GETDATE(), GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- Trần Thị Mai (Học mới 15 tín chỉ, Nợ học phí quá hạn)
+IF @Stu_Mai IS NOT NULL AND @SemesterId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @Stu_Mai AND semester_id = @SemesterId)
+BEGIN
+    INSERT INTO student_tuition (
+        id, student_id, semester_id, tuition_fee_id, total_credits, raw_amount, 
+        scholarship_deduction, exemption_amount, net_amount, 
+        paid_amount, debt_amount, status, deadline, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @Stu_Mai, @SemesterId, (SELECT TOP 1 id FROM tuition_fees WHERE course_year = 'K2020' AND fee_type = 'NEW'), 15, 7500000.00, 
+        0, 0, 7500000.00, 
+        2000000.00, 5500000.00, 4, '2024-09-30', 
+        1, '2024-09-15', GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- ======================================================================
+-- 5. INSERT PAYMENTS (Lịch sử thanh toán chi tiết)
+-- ======================================================================
+DECLARE @TuitionId_Duc UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM student_tuition WHERE student_id = @Stu_Duc AND semester_id = @SemesterId);
+DECLARE @TuitionId_Hanh UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM student_tuition WHERE student_id = @Stu_Hanh AND semester_id = @SemesterId);
+DECLARE @TuitionId_Tuan UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM student_tuition WHERE student_id = @Stu_Tuan AND semester_id = @SemesterId);
+DECLARE @TuitionId_Mai UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM student_tuition WHERE student_id = @Stu_Mai AND semester_id = @SemesterId);
+DECLARE @CashierId UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM users WHERE username = 'giaovu');
+
+-- 5.1. Giao dịch thanh toán của Phạm Minh Đức (Chuyển khoản thành công)
+IF @TuitionId_Duc IS NOT NULL AND NOT EXISTS (SELECT 1 FROM payments WHERE tuition_id = @TuitionId_Duc)
+BEGIN
+    INSERT INTO payments (
+        id, tuition_id, amount_paid, payment_date, payment_method, payment_status, 
+        transaction_ref, cashier_id, notes, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @TuitionId_Duc, 1500000.00, '2024-10-20 14:30:00', 1, 'SUCCESS', 
+        'BANK-VNP-20241020143000-9988', @CashierId, N'Sinh viên chuyển khoản qua VNPAY', 
+        1, '2024-10-20 14:30:00', GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- 5.2. Giao dịch thanh toán của Nguyễn Thị Hạnh (Nộp tiền mặt tại quầy 1 lần)
+IF @TuitionId_Hanh IS NOT NULL AND NOT EXISTS (SELECT 1 FROM payments WHERE tuition_id = @TuitionId_Hanh)
+BEGIN
+    INSERT INTO payments (
+        id, tuition_id, amount_paid, payment_date, payment_method, payment_status, 
+        transaction_ref, cashier_id, notes, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @TuitionId_Hanh, 1750000.00, '2024-10-25 09:15:00', 2, 'SUCCESS', 
+        'CASH-REC-202410250915', @CashierId, N'Nộp tiền mặt tại phòng kế toán', 
+        1, '2024-10-25 09:15:00', GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- 5.3. Giao dịch thanh toán của Võ Minh Tuán (Thanh toán qua ví điện tử Momo)
+IF @TuitionId_Tuan IS NOT NULL AND NOT EXISTS (SELECT 1 FROM payments WHERE tuition_id = @TuitionId_Tuan)
+BEGIN
+    INSERT INTO payments (
+        id, tuition_id, amount_paid, payment_date, payment_method, payment_status, 
+        transaction_ref, cashier_id, notes, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @TuitionId_Tuan, 6430000.00, '2024-10-10 11:05:00', 3, 'SUCCESS', 
+        'MOMO-54321678901234', @CashierId, N'Thanh toán đầy đủ qua ví MoMo', 
+        1, '2024-10-10 11:05:00', GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- 5.4. Giao dịch thanh toán của Trần Thị Mai (Nộp 1 phần tiền mặt, còn nợ)
+IF @TuitionId_Mai IS NOT NULL AND NOT EXISTS (SELECT 1 FROM payments WHERE tuition_id = @TuitionId_Mai)
+BEGIN
+    INSERT INTO payments (
+        id, tuition_id, amount_paid, payment_date, payment_method, payment_status, 
+        transaction_ref, cashier_id, notes, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @TuitionId_Mai, 2000000.00, '2024-09-28 16:45:00', 2, 'SUCCESS', 
+        'CASH-REC-202409281645', @CashierId, N'Nộp tạm ứng 2 triệu, hẹn tuần sau nốt', 
+        1, '2024-09-28 16:45:00', GETDATE(), @AdminId, @AdminId, NULL, NULL
+    );
+END
+
+-- 5.5. Giao dịch lỗi mạng của Trần Thị Mai (Thử chuyển khoản nhưng lỗi, bị hủy)
+IF @TuitionId_Mai IS NOT NULL AND NOT EXISTS (SELECT 1 FROM payments WHERE tuition_id = @TuitionId_Mai AND transaction_ref = 'BANK-TCB-FAIL-001')
+BEGIN
+    INSERT INTO payments (
+        id, tuition_id, amount_paid, payment_date, payment_method, payment_status, 
+        transaction_ref, cashier_id, notes, 
+        is_active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by
+    )
+    VALUES (
+        NEWID(), @TuitionId_Mai, 5500000.00, '2024-10-05 08:00:00', 1, 'CANCELLED', 
+        'BANK-TCB-FAIL-001', @CashierId, N'Lỗi timeout kết nối ngân hàng Techcombank, giao dịch tự động hủy', 
+        1, '2024-10-05 08:05:00', '2024-10-05 08:05:00', @AdminId, @AdminId, NULL, NULL
+    );
+END
+-- ======================================================================
+-- 6. BỔ SUNG HỌC PHÍ CHO HK1 2026-2027
 -- ======================================================================
 
--- Giao dịch 1: Đức thanh toán toàn bộ qua Ngân hàng
-IF EXISTS (SELECT 1 FROM student_tuition WHERE id = @Tuition_Duc)
+DECLARE @Sem_2627 UNIQUEIDENTIFIER = (SELECT id FROM semesters WHERE semester_code = 'HK1_2026_2027');
+DECLARE @Price_K2021 UNIQUEIDENTIFIER = (SELECT TOP 1 id FROM tuition_fees WHERE course_year = 'K2021' AND fee_type = 'NEW');
+
+-- Thêm học phí cho SV Đức ở HK1 2026-2027 (Dựa trên đăng ký ở V20: Mobile + AI = 6 tín chỉ)
+DECLARE @SV_Duc UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV001');
+
+IF @SV_Duc IS NOT NULL AND @Sem_2627 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM student_tuition WHERE student_id = @SV_Duc AND semester_id = @Sem_2627)
 BEGIN
-    DECLARE @PayAmt_Duc DECIMAL(15,2) = (SELECT net_amount FROM student_tuition WHERE id = @Tuition_Duc);
-    
-    INSERT INTO payments (
-        id, tuition_id, amount_paid, payment_date, payment_method, 
-        payment_status, transaction_ref, notes, is_active, created_at, created_by
+    INSERT INTO student_tuition (
+        id, student_id, semester_id, tuition_fee_id, total_credits, raw_amount, 
+        scholarship_deduction, exemption_amount, net_amount, 
+        paid_amount, debt_amount, status, deadline, is_active, created_at, created_by
     )
     VALUES (
-        NEWID(), @Tuition_Duc, @PayAmt_Duc, GETDATE(), 1, 
-        'SUCCESS', 'VNPAY123456789', N'Thanh toán học phí qua cổng VNPAY', 1, GETDATE(), @Stu_Duc
+        NEWID(), @SV_Duc, @Sem_2627, @Price_K2021, 6, 3300000.00, 
+        0, 0, 3300000.00, 
+        0, 3300000.00, 3, '2026-10-31', 1, GETDATE(), @AdminId
     );
-
-    -- Cập nhật trạng thái hóa đơn của Đức thành Đã nộp (PAID - 1)
-    UPDATE student_tuition 
-    SET paid_amount = @PayAmt_Duc, debt_amount = 0, status = 1 
-    WHERE id = @Tuition_Duc;
 END
 
--- Giao dịch 2: Hạnh thanh toán một phần bằng Tiền mặt tại quầy
-IF EXISTS (SELECT 1 FROM student_tuition WHERE id = @Tuition_Hanh)
-BEGIN
-    DECLARE @PartialPay DECIMAL(15,2) = 3000000.00;
-    
-    INSERT INTO payments (
-        id, tuition_id, amount_paid, payment_date, payment_method, 
-        payment_status, transaction_ref, cashier_id, notes, is_active, created_at, created_by
-    )
-    VALUES (
-        NEWID(), @Tuition_Hanh, @PartialPay, GETDATE(), 2, 
-        'SUCCESS', 'CASH-2024-001', @GiaovuId, N'Nộp trước một phần tại phòng tài vụ', 1, GETDATE(), @GiaovuId
-    );
-
-    -- Cập nhật trạng thái hóa đơn của Hạnh thành Nộp một phần (PARTIAL - 2)
-    UPDATE student_tuition 
-    SET paid_amount = @PartialPay, 
-        debt_amount = net_amount - @PartialPay, 
-        status = 2 
-    WHERE id = @Tuition_Hanh;
-END
 GO

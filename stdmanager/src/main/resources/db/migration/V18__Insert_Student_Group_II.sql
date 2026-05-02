@@ -161,3 +161,143 @@ IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOI
 IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20210003' AND r.code = 'SINHVIEN')
     INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
     SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20210003' AND r.code = 'SINHVIEN';
+
+
+
+
+-- ======================================================================
+-- 4. INSERT STUDENT_CLASSES (Tiếp tục thêm Lớp hành chính)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM student_classes WHERE class_code = 'CNTT-K20B')
+    INSERT INTO student_classes (id, class_code, class_name, course_year, major_id, department_id, advisor_id, is_active, created_at, updated_at)
+    OUTPUT INSERTED.class_code, INSERTED.id INTO @GeneratedClasses
+    VALUES (NEWID(), 'CNTT-K20B', N'Công nghệ Thông tin K20B', '2020', @Major_CNTT, @Dept_CNTT, @Advisor_GV001, 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedClasses (class_code, class_id) SELECT class_code, id FROM student_classes WHERE class_code = 'CNTT-K20B';
+
+IF NOT EXISTS (SELECT 1 FROM student_classes WHERE class_code = 'KT-K20A')
+    INSERT INTO student_classes (id, class_code, class_name, course_year, major_id, department_id, advisor_id, is_active, created_at, updated_at)
+    OUTPUT INSERTED.class_code, INSERTED.id INTO @GeneratedClasses
+    VALUES (NEWID(), 'KT-K20A', N'Quản trị Kinh doanh K20A', '2020', @Major_KT, @Dept_KT, NULL, 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedClasses (class_code, class_id) SELECT class_code, id FROM student_classes WHERE class_code = 'KT-K20A';
+
+-- ======================================================================
+-- 5. INSERT USERS & STUDENTS (Tiếp tục thêm Sinh viên mới)
+-- ======================================================================
+
+DECLARE @Class_CNTT20B UNIQUEIDENTIFIER = (SELECT class_id FROM @GeneratedClasses WHERE class_code = 'CNTT-K20B');
+DECLARE @Class_KT20A UNIQUEIDENTIFIER = (SELECT class_id FROM @GeneratedClasses WHERE class_code = 'KT-K20A');
+
+-- 5.1 Tạo User cho SV
+IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20200004')
+    INSERT INTO users (id, username, password_hash, full_name, email, phone, avatar_url, last_login_at, is_active, created_at, updated_at)
+    OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
+    VALUES (NEWID(), 'sv20200004', @PassHash, N'Lê Thu Phương', 'phuong.lt20200004@stdmanager.edu.vn', '0978111222', '/avatars/phuong.jpg', GETDATE(), 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedUsers (username, user_id, full_name) SELECT username, id, full_name FROM users WHERE username = 'sv20200004';
+
+IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20200005')
+    INSERT INTO users (id, username, password_hash, full_name, email, phone, avatar_url, last_login_at, is_active, created_at, updated_at)
+    OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
+    VALUES (NEWID(), 'sv20200005', @PassHash, N'Đỗ Hoàng Nam', 'nam.dh20200005@stdmanager.edu.vn', '0978222333', '/avatars/nam.jpg', NULL, 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedUsers (username, user_id, full_name) SELECT username, id, full_name FROM users WHERE username = 'sv20200005';
+
+IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20200006')
+    INSERT INTO users (id, username, password_hash, full_name, email, phone, avatar_url, last_login_at, is_active, created_at, updated_at)
+    OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
+    VALUES (NEWID(), 'sv20200006', @PassHash, N'Vũ Thị Mai Anh', 'anh.vtm20200006@stdmanager.edu.vn', '0978333444', '/avatars/anh.jpg', NULL, 1, GETDATE(), GETDATE());
+ELSE
+    INSERT INTO @GeneratedUsers (username, user_id, full_name) SELECT username, id, full_name FROM users WHERE username = 'sv20200006';
+
+-- 5.2 Tạo Student và map với User
+IF NOT EXISTS (SELECT 1 FROM students WHERE student_code = 'SV20200004')
+    INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, personal_identification_number, date_of_issue, card_place, address, current_address, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
+    OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
+    SELECT NEWID(), user_id, 'SV20200004', full_name, '2002-01-10', N'2', '001202002365', '2020-07-10', N'Công an TP. Hải Phòng', N'Số 25, Lạch Tray, Hải Phòng', N'Số 10, Ngõ 5, Cầu Giấy, Hà Nội', @Dept_CNTT, @Major_CNTT, @Program_CNTT, @Class_CNTT20B, 2020, 1, GETDATE(), GETDATE()
+    FROM @GeneratedUsers WHERE username = 'sv20200004';
+ELSE
+    INSERT INTO @GeneratedStudents (student_code, student_id, user_id) SELECT student_code, id, user_id FROM students WHERE student_code = 'SV20200004';
+
+IF NOT EXISTS (SELECT 1 FROM students WHERE student_code = 'SV20200005')
+    INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, personal_identification_number, date_of_issue, card_place, address, current_address, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
+    OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
+    SELECT NEWID(), user_id, 'SV20200005', full_name, '2002-08-25', N'1', '001202004512', '2020-08-20', N'Công an TP. Đà Nẵng', N'45 Nguyễn Văn Linh, Đà Nẵng', N'Số 45, Nguyễn Văn Linh, Đà Nẵng', @Dept_CNTT, @Major_CNTT, @Program_CNTT, @Class_CNTT20B, 2020, 1, GETDATE(), GETDATE()
+    FROM @GeneratedUsers WHERE username = 'sv20200005';
+ELSE
+    INSERT INTO @GeneratedStudents (student_code, student_id, user_id) SELECT student_code, id, user_id FROM students WHERE student_code = 'SV20200005';
+
+IF NOT EXISTS (SELECT 1 FROM students WHERE student_code = 'SV20200006')
+    INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, personal_identification_number, date_of_issue, card_place, address, current_address, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
+    OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
+    SELECT NEWID(), user_id, 'SV20200006', full_name, '2002-05-30', N'2', '002202005678', '2020-06-05', N'Công an TP. Hà Nội', N'Ngõ 88, Nguyễn Trãi, Hà Nội', N'Ký túc xá khu A, Hà Nội', @Dept_KT, @Major_KT, @Program_KT, @Class_KT20A, 2020, 1, GETDATE(), GETDATE()
+    FROM @GeneratedUsers WHERE username = 'sv20200006';
+ELSE
+    INSERT INTO @GeneratedStudents (student_code, student_id, user_id) SELECT student_code, id, user_id FROM students WHERE student_code = 'SV20200006';
+
+-- ======================================================================
+-- 6. INSERT STUDENT_STATUS (Tiếp tục lịch sử trạng thái sinh viên mới)
+-- ======================================================================
+
+DECLARE @Stu_SV20200004 UNIQUEIDENTIFIER = (SELECT student_id FROM @GeneratedStudents WHERE student_code = 'SV20200004');
+DECLARE @Stu_SV20200005 UNIQUEIDENTIFIER = (SELECT student_id FROM @GeneratedStudents WHERE student_code = 'SV20200005');
+DECLARE @Stu_SV20200006 UNIQUEIDENTIFIER = (SELECT student_id FROM @GeneratedStudents WHERE student_code = 'SV20200006');
+
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200004)
+BEGIN
+    SET @StatusId = NEWID();
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, is_active, created_at, updated_at)
+    VALUES (@StatusId, @Stu_SV20200004, 'STUDYING', N'Đang học', '2020-09-01', 1, GETDATE(), GETDATE());
+    UPDATE students SET status_id = @StatusId WHERE id = @Stu_SV20200004;
+END
+
+-- Sinh viên SV20200005 có lịch sử: Đang học -> Bảo lưu -> Đang học -> Cảnh báo học vụ
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200005 AND status_code = 'STUDYING' AND start_date = '2020-09-01')
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, end_date, description, reason, is_active, created_at, updated_at)
+    VALUES (NEWID(), @Stu_SV20200005, 'STUDYING', N'Đang học', '2020-09-01', '2021-12-31', N'Học bình thường kỳ 1, 2', NULL, 1, GETDATE(), GETDATE());
+
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200005 AND status_code = 'RESERVED')
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, end_date, description, reason, is_active, created_at, updated_at)
+    VALUES (NEWID(), @Stu_SV20200005, 'RESERVED', N'Bảo lưu', '2022-01-01', '2022-08-31', N'Điều trị bệnh dài ngày', N'Vấn đề sức khỏe', 1, GETDATE(), GETDATE());
+
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200005 AND status_code = 'STUDYING' AND start_date = '2022-09-01')
+BEGIN
+    SET @StatusId = NEWID();
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, is_active, created_at, updated_at)
+    VALUES (@StatusId, @Stu_SV20200005, 'STUDYING', N'Đang học', '2022-09-01', 1, GETDATE(), GETDATE());
+    UPDATE students SET status_id = @StatusId WHERE id = @Stu_SV20200005;
+END
+
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200005 AND status_code = 'ACADEMIC_WARNING')
+BEGIN
+    SET @StatusId = NEWID();
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, end_date, description, reason, is_active, created_at, updated_at)
+    VALUES (@StatusId, @Stu_SV20200005, 'ACADEMIC_WARNING', N'Cảnh báo học vụ', '2023-02-01', '2023-08-31', N'GPA kỳ trước dưới 1.5', N'Tích lũy điểm thấp', 1, GETDATE(), GETDATE());
+    UPDATE students SET status_id = @StatusId WHERE id = @Stu_SV20200005;
+END
+
+IF NOT EXISTS (SELECT 1 FROM student_status WHERE student_id = @Stu_SV20200006)
+BEGIN
+    SET @StatusId = NEWID();
+    INSERT INTO student_status (id, student_id, status_code, status_name, start_date, is_active, created_at, updated_at)
+    VALUES (@StatusId, @Stu_SV20200006, 'STUDYING', N'Đang học', '2020-09-01', 1, GETDATE(), GETDATE());
+    UPDATE students SET status_id = @StatusId WHERE id = @Stu_SV20200006;
+END
+
+-- ======================================================================
+-- 7. GÁN ROLE SINHVIEN (Tiếp tục cho các user vừa tạo)
+-- ======================================================================
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20200004' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20200004' AND r.code = 'SINHVIEN';
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20200005' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20200005' AND r.code = 'SINHVIEN';
+
+IF NOT EXISTS (SELECT 1 FROM user_roles ur JOIN users u ON ur.user_id = u.id JOIN roles r ON ur.role_id = r.id WHERE u.username = 'sv20200006' AND r.code = 'SINHVIEN')
+    INSERT INTO user_roles (id, user_id, role_id, is_active, created_at, updated_at)
+    SELECT NEWID(), u.id, r.id, 1, GETDATE(), GETDATE() FROM users u CROSS JOIN roles r WHERE u.username = 'sv20200006' AND r.code = 'SINHVIEN';

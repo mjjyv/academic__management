@@ -22,4 +22,8 @@ public class CourseRegistrationResponse {
     private LocalDateTime registeredAt;
     private Integer status;
     private Boolean isPaid;
+    private Integer credits;
+    private String lecturerName;
+    private String roomName;
+    private String buildingName;
 }
