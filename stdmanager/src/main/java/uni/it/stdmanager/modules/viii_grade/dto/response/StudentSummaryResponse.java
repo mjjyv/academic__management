@@ -16,6 +16,9 @@ public class StudentSummaryResponse {
     private UUID registrationId;
     private UUID courseId;
     private String courseName;
+    private UUID studentId;
+    private String studentCode;
+    private String studentName;
     private Double totalScore;
     private String letterGrade;
     private Double gpaValue;

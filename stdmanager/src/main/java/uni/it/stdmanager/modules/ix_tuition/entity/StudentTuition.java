@@ -52,7 +52,7 @@ public class StudentTuition extends BaseEntity {
     @Column(name = "debt_amount")
     private BigDecimal debtAmount;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "tinyint")
     private Integer status; // 1-PAID, 2-PARTIAL, 3-DEBT, 4-OVERDUE
 
     @Column(name = "deadline")

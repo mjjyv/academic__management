@@ -7,6 +7,9 @@ const StudentTranscriptPage = () => {
   const { summaries, loading, fetchStudentSummaries, calculateGPA } = useGradeStore();
   const { user } = useAuthStore();
 
+  console.log('user', user);
+  console.log('gpa', calculateGPA);
+
   useEffect(() => {
     if (user?.id) {
       fetchStudentSummaries(user.id);

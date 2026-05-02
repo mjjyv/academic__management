@@ -7,7 +7,7 @@ import useRegistrationStore from '../../store/useRegistrationStore';
 import toast from 'react-hot-toast';
 
 const TuitionDashboardPage = () => {
-  const { tuitionData, calculateCurrentTuition, loading } = useFinanceStore();
+  const { tuitionData, studentTuitions, calculateCurrentTuition, fetchStudentTuitions, loading } = useFinanceStore();
   const { currentRegistrations, fetchStudentRegistrations } = useRegistrationStore();
   const { semesters, fetchSemesters } = useSemesterStore();
   const { user } = useAuthStore();
@@ -18,6 +18,7 @@ const TuitionDashboardPage = () => {
     fetchSemesters();
     if (user?.id) {
       fetchStudentRegistrations(user.id);
+      fetchStudentTuitions(user.id);
     }
   }, [fetchSemesters, user, fetchStudentRegistrations]);
 
@@ -31,11 +32,14 @@ const TuitionDashboardPage = () => {
     if (!selectedSemesterId) return;
     try {
       await calculateCurrentTuition(user.id, selectedSemesterId);
+      await fetchStudentTuitions(user.id);
       toast.success("Đã cập nhật dữ liệu học phí kỳ này");
     } catch (error) {
       toast.error("Không thể tính toán học phí");
     }
   };
+
+  const currentTuition = studentTuitions.find(t => t.semesterId === selectedSemesterId) || {};
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
@@ -91,7 +95,7 @@ const TuitionDashboardPage = () => {
               <Wallet size={20} />
             </div>
             <p className="text-xs font-bold uppercase tracking-wider opacity-70">Tổng học phí kỳ này</p>
-            <h3 className="text-3xl font-black mt-1">{formatCurrency(tuitionData)}</h3>
+            <h3 className="text-3xl font-black mt-1">{formatCurrency(currentTuition.netAmount || tuitionData)}</h3>
             <div className="mt-4 flex items-center gap-2 text-xs font-bold bg-white/10 w-fit px-2 py-1 rounded">
               <TrendingDown size={14} />
               Đã bao gồm các khoản miễn giảm
@@ -104,7 +108,7 @@ const TuitionDashboardPage = () => {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Số dư công nợ</p>
-              <h3 className="text-2xl font-black text-red-600 mt-1">{formatCurrency(tuitionData)}</h3>
+              <h3 className="text-2xl font-black text-red-600 mt-1">{formatCurrency(currentTuition.debtAmount || tuitionData)}</h3>
             </div>
             <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
               <AlertCircle size={20} />
@@ -210,6 +214,52 @@ const TuitionDashboardPage = () => {
               <ArrowRight className="text-indigo-600" size={18} />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Bảng tổng hợp học phí tất cả học kỳ */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-50 flex items-center gap-2">
+          <DollarSign className="text-blue-600" size={20} />
+          <h2 className="font-bold text-gray-800">Lịch sử học phí qua các kỳ</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 text-gray-500 text-[10px] uppercase font-bold">
+              <tr>
+                <th className="px-6 py-3">Học kỳ</th>
+                <th className="px-6 py-3 text-right">Tổng phải nộp</th>
+                <th className="px-6 py-3 text-right">Đã nộp</th>
+                <th className="px-6 py-3 text-right">Còn nợ</th>
+                <th className="px-6 py-3 text-center">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50 text-sm">
+              {studentTuitions.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 italic">Chưa có dữ liệu học phí</td>
+                </tr>
+              ) : (
+                studentTuitions.map(t => (
+                  <tr key={t.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-gray-700">{t.semesterName}</td>
+                    <td className="px-6 py-4 text-right font-bold">{formatCurrency(t.netAmount)}</td>
+                    <td className="px-6 py-4 text-right font-bold text-green-600">{formatCurrency(t.paidAmount)}</td>
+                    <td className="px-6 py-4 text-right font-bold text-red-600">{formatCurrency(t.debtAmount)}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center">
+                        {t.status === 1 ? (
+                          <span className="px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-[10px] font-bold">HOÀN TẤT</span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-bold">CÒN NỢ</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

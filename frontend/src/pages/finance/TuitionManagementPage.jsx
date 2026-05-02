@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Landmark, Search, DollarSign, Calendar, CheckCircle2, Clock } from 'lucide-react';
+import { Landmark, Search, DollarSign, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import useFinanceStore from '../../store/useFinanceStore';
 import toast from 'react-hot-toast';
 
@@ -12,8 +12,8 @@ const TuitionManagementPage = () => {
   }, [fetchAllTuitions]);
 
   const filteredTuitions = studentTuitions.filter(t => 
-    t.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    t.studentCode.toLowerCase().includes(searchTerm.toLowerCase())
+    (t.studentName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (t.studentCode?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const getStatusBadge = (status) => {

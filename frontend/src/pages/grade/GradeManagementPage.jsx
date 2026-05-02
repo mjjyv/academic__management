@@ -12,8 +12,8 @@ const GradeManagementPage = () => {
   }, [fetchAllSummaries]);
 
   const filteredSummaries = summaries.filter(s => 
-    s.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+    (s.studentName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (s.courseName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   return (

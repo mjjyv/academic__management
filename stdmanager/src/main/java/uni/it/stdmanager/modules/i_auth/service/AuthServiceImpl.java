@@ -14,7 +14,9 @@ import uni.it.stdmanager.modules.i_auth.entity.User;
 import uni.it.stdmanager.modules.i_auth.entity.UserRole;
 import uni.it.stdmanager.modules.i_auth.repository.UserRepository;
 import uni.it.stdmanager.modules.i_auth.repository.UserRoleRepository;
-import org.springframework.transaction.annotation.Transactional; // Thêm import này
+import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
+import uni.it.stdmanager.modules.iii_lecturer.repository.EmployeeRepository;
+import org.springframework.transaction.annotation.Transactional; 
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -30,6 +32,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final StudentRepository studentRepository;
+    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
@@ -65,10 +69,23 @@ public class AuthServiceImpl implements AuthService {
         CustomUserDetails userDetails = new CustomUserDetails(user, roles);
         String token = jwtService.generateToken(extraClaims, userDetails);
 
+        // Xác định ID đại diện (Ưu tiên StudentID nếu là SINHVIEN)
+        java.util.UUID profileId = user.getId();
+        if (roles.contains("SINHVIEN")) {
+            profileId = studentRepository.findByUserId(user.getId())
+                    .map(s -> s.getId())
+                    .orElse(user.getId());
+        } else if (roles.contains("GIANGVIEN") || roles.contains("GIAOVU") || roles.contains("ADMIN")) {
+            profileId = employeeRepository.findByUserId(user.getId())
+                    .map(e -> e.getId())
+                    .orElse(user.getId());
+        }
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
                 .user(AuthenticationResponse.UserResponse.builder()
+                        .id(profileId)
                         .username(user.getUsername())
                         .fullName(user.getFullName())
                         .email(user.getEmail())

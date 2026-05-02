@@ -8,10 +8,12 @@ const financeApi = {
     getTuitionSummary: (studentId) => axiosClient.get(`/tuition/student/${studentId}/summary`),
     getPaymentHistory: (studentId) => axiosClient.get(`/tuition/student/${studentId}/payments`),
 
-    // Admin - Tuition Config
+    // Admin - Tuition Management
     getTuitionFees: () => axiosClient.get("/tuition-fees"),
     createTuitionFee: (data) => axiosClient.post("/tuition-fees", data),
     updateTuitionFee: (id, data) => axiosClient.put(`/tuition-fees/${id}`, data),
+    getAllTuitions: () => axiosClient.get("/tuition/all"),
+    getStudentTuitions: (studentId) => axiosClient.get(`/tuition/student/${studentId}`),
 };
 
 export default financeApi;

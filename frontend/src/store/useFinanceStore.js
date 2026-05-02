@@ -33,6 +33,18 @@ const useFinanceStore = create((set) => ({
         }
     },
 
+    fetchStudentTuitions: async (studentId) => {
+        set({ loading: true });
+        try {
+            const response = await financeApi.getStudentTuitions(studentId);
+            if (response.success) {
+                set({ studentTuitions: response.data, loading: false });
+            }
+        } catch (err) {
+            set({ loading: false });
+        }
+    },
+
     saveTuitionFee: async (data) => {
         set({ loading: true });
         try {

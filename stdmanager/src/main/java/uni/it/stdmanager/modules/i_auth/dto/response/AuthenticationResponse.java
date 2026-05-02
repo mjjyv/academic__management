@@ -17,6 +17,7 @@ public class AuthenticationResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserResponse {
+        private java.util.UUID id;
         private String username;
         private String fullName;
         private String email;
