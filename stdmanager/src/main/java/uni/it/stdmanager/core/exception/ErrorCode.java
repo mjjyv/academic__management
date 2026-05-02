@@ -15,6 +15,15 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Tuổi của bạn phải ít nhất là {min}", HttpStatus.BAD_REQUEST),
+    
+    // Group VI: Registration
+    REGISTRATION_PERIOD_NOT_FOUND(6001, "Không tìm thấy đợt đăng ký", HttpStatus.NOT_FOUND),
+    REGISTRATION_PERIOD_CLOSED(6002, "Đợt đăng ký đã kết thúc hoặc chưa bắt đầu", HttpStatus.BAD_REQUEST),
+    COURSE_SECTION_NOT_FOUND(6003, "Không tìm thấy lớp học phần", HttpStatus.NOT_FOUND),
+    COURSE_SECTION_FULL(6004, "Lớp học phần đã đầy", HttpStatus.BAD_REQUEST),
+    STUDENT_NOT_FOUND(6005, "Không tìm thấy sinh viên", HttpStatus.NOT_FOUND),
+    CREDIT_LIMIT_EXCEEDED(6006, "Số tín chỉ đăng ký vượt quá giới hạn", HttpStatus.BAD_REQUEST),
+    SCHEDULE_CONFLICT(6007, "Lịch học bị trùng", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
