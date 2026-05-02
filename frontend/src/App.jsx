@@ -11,6 +11,9 @@ import ClassHierarchyPage from './pages/students/ClassHierarchyPage';
 import LecturerListPage from './pages/LecturerListPage';
 import ProfilePage from './pages/ProfilePage';
 import ERDiagramView from './pages/ERDiagramView';
+import RegistrationManagementPage from './pages/registration/RegistrationManagementPage';
+import CourseRegistrationPage from './pages/registration/CourseRegistrationPage';
+import useAuthStore from './store/useAuthStore';
 
 // Modules IV & V
 import CourseListPage from './pages/academic/CourseListPage';
@@ -25,6 +28,8 @@ const Placeholder = ({ title }) => (
 );
 
 function App() {
+  const { user } = useAuthStore();
+
   return (
     <BrowserRouter>
       <Routes>
@@ -32,17 +37,17 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
         </Route>
-
+ 
         {/* NHÓM 2: PROTECTED ROUTES - Yêu cầu Token & MainLayout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             {/* Mặc định vào Dashboard */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-
+ 
             {/* Thêm vào trong nhóm <Route element={<MainLayout />}> */}
             <Route path="/er-diagram" element={<ERDiagramView />} />
-
+ 
             {/* Đăng ký các Route tương ứng với menuConfig.js */}
             <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
             <Route path="/students" element={<StudentListPage />} />
@@ -50,7 +55,14 @@ function App() {
             <Route path="/lecturers" element={<LecturerListPage />} />
             <Route path="/academic" element={<CourseListPage />} />
             <Route path="/academic-management" element={<AcademicOverviewPage />} />
-            <Route path="/registration" element={<Placeholder title="Đăng ký học phần trực tuyến" />} />
+            <Route 
+              path="/registration" 
+              element={
+                user?.roles?.includes('SINHVIEN') 
+                ? <CourseRegistrationPage /> 
+                : <RegistrationManagementPage />
+              } 
+            />
             <Route path="/schedule" element={<Placeholder title="Thời khóa biểu & Lịch giảng dạy" />} />
             <Route path="/grades" element={<Placeholder title="Quản lý Điểm & Kết quả học tập" />} />
             <Route path="/finance" element={<Placeholder title="Học phí & Giao dịch tài chính" />} />

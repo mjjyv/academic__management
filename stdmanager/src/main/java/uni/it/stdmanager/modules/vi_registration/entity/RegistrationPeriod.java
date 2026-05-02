@@ -36,11 +36,11 @@ public class RegistrationPeriod extends BaseEntity {
     private String targetConfig; // Cấu hình đối tượng dạng JSON (Khóa, Khoa...)
 
     @Builder.Default
-    @Column(name = "max_credits")
+    @Column(name = "max_credits", columnDefinition = "tinyint")
     private Integer maxCredits = 25;
 
     @Builder.Default
-    @Column(name = "min_credits")
+    @Column(name = "min_credits", columnDefinition = "tinyint")
     private Integer minCredits = 12;
 
     @Builder.Default

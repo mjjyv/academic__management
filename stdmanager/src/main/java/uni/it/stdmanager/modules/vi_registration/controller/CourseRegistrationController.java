@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uni.it.stdmanager.core.dto.ApiResponse;
+import uni.it.stdmanager.modules.iv_course.dto.response.CourseResponse;
 import uni.it.stdmanager.modules.vi_registration.dto.request.CourseRegistrationRequest;
 import uni.it.stdmanager.modules.vi_registration.dto.response.CourseRegistrationResponse;
 import uni.it.stdmanager.modules.vi_registration.service.CourseRegistrationService;
@@ -49,5 +50,12 @@ public class CourseRegistrationController {
     @Operation(summary = "Lấy danh sách đăng ký của một lớp học phần")
     public ApiResponse<List<CourseRegistrationResponse>> getBySection(@PathVariable UUID sectionId) {
         return ApiResponse.success(courseRegistrationService.getBySection(sectionId), "Lấy danh sách đăng ký của lớp học phần thành công");
+    }
+
+    @GetMapping("/student/{studentId}/retakeable")
+    @PreAuthorize("hasAnyRole('SINHVIEN', 'GIAOVU', 'ADMIN')")
+    @Operation(summary = "Lấy danh sách các môn học có thể đăng ký học lại")
+    public ApiResponse<List<CourseResponse>> getRetakeableCourses(@PathVariable UUID studentId) {
+        return ApiResponse.success(courseRegistrationService.getRetakeableCourses(studentId), "Lấy danh sách môn học lại thành công");
     }
 }

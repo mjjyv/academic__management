@@ -16,6 +16,11 @@ import uni.it.stdmanager.modules.vi_registration.entity.RegistrationPeriod;
 import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
 import uni.it.stdmanager.modules.vi_registration.repository.RegistrationPeriodRepository;
 import uni.it.stdmanager.modules.vi_registration.service.CourseRegistrationService;
+import uni.it.stdmanager.modules.iv_course.dto.response.CourseResponse;
+import uni.it.stdmanager.modules.iv_course.entity.Course;
+import uni.it.stdmanager.modules.iv_course.repository.CourseRepository;
+import uni.it.stdmanager.modules.viii_grade.dto.response.StudentSummaryResponse;
+import uni.it.stdmanager.modules.viii_grade.service.GradeService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -32,6 +37,8 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
     private final RegistrationPeriodRepository registrationPeriodRepository;
     private final StudentRepository studentRepository;
     private final CourseSectionRepository courseSectionRepository;
+    private final GradeService gradeService;
+    private final CourseRepository courseRepository;
 
     @Override
     @Transactional
@@ -123,6 +130,34 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         return courseRegistrationRepository.findAllByCourseSectionId(sectionId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponse> getRetakeableCourses(UUID studentId) {
+        // 1. Lấy danh sách điểm tổng kết của sinh viên
+        List<StudentSummaryResponse> summaries = gradeService.getStudentSummaries(studentId);
+
+        // 2. Lọc các môn có điểm thấp (ví dụ GPA < 2.0 hoặc điểm chữ D/F)
+        // Ở đây giả định result là "FAIL" hoặc điểm tích lũy thấp
+        List<UUID> retakeableCourseIds = summaries.stream()
+                .filter(s -> "FAIL".equals(s.getResult()) || s.getGpaValue() < 2.0)
+                .map(StudentSummaryResponse::getCourseId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. Lấy thông tin chi tiết môn học
+        return courseRepository.findAllById(retakeableCourseIds).stream()
+                .map(this::mapToCourseResponse)
+                .collect(Collectors.toList());
+    }
+
+    private CourseResponse mapToCourseResponse(Course course) {
+        return CourseResponse.builder()
+                .id(course.getId())
+                .courseCode(course.getCourseCode())
+                .courseName(course.getCourseName())
+                .credits(course.getCredits().doubleValue())
+                .build();
     }
 
     private CourseRegistrationResponse mapToResponse(CourseRegistration registration) {

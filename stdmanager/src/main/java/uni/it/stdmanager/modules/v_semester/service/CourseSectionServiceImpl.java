@@ -135,6 +135,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
                 .courseId(section.getCourse() != null ? section.getCourse().getId() : null)
                 .courseCode(section.getCourse() != null ? section.getCourse().getCourseCode() : null)
                 .courseName(section.getCourse() != null ? section.getCourse().getCourseName() : null)
+                .credits(section.getCourse() != null ? section.getCourse().getCredits().doubleValue() : 0.0)
                 .semesterId(section.getSemester() != null ? section.getSemester().getId() : null)
                 .semesterName(section.getSemester() != null ? section.getSemester().getSemesterName() : null)
                 .lecturerId(section.getLecturer() != null ? section.getLecturer().getId() : null)

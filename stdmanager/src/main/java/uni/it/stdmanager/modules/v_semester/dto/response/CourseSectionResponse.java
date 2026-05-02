@@ -14,6 +14,7 @@ public class CourseSectionResponse {
     private UUID courseId;
     private String courseCode;
     private String courseName;
+    private Double credits;
     private UUID semesterId;
     private String semesterName;
     private UUID lecturerId;

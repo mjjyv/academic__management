@@ -27,7 +27,7 @@ public class EquivalentCourse extends BaseEntity {
     @JoinColumn(name = "equivalent_course_id", nullable = false)
     private Course equivalentCourse;
 
-    @Column(name = "equivalence_type", nullable = false)
+    @Column(name = "equivalence_type", nullable = false, columnDefinition = "tinyint")
     private Integer equivalenceType; // 1: Thay thế hoàn toàn; 2: Tương đương song song
 
     @Column(name = "effect_date")

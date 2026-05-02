@@ -33,7 +33,7 @@ public class CourseRegistration extends BaseEntity {
     @JoinColumn(name = "registration_period_id", nullable = false)
     private RegistrationPeriod registrationPeriod;
 
-    @Column(name = "registration_type", nullable = false)
+    @Column(name = "registration_type", nullable = false, columnDefinition = "tinyint")
     private Integer registrationType; // 1: Học mới; 2: Học lại; 3: Cải thiện
 
     @Column(name = "replaced_grade_id")
@@ -43,7 +43,7 @@ public class CourseRegistration extends BaseEntity {
     @Builder.Default
     private LocalDateTime registeredAt = LocalDateTime.now();
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "tinyint")
     @Builder.Default
     private Integer status = 1; // 1: Thành công; 2: Chờ thanh toán; 3: Đã hủy
 

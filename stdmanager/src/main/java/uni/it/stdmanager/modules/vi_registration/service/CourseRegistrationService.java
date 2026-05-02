@@ -1,5 +1,6 @@
 package uni.it.stdmanager.modules.vi_registration.service;
 
+import uni.it.stdmanager.modules.iv_course.dto.response.CourseResponse;
 import uni.it.stdmanager.modules.vi_registration.dto.request.CourseRegistrationRequest;
 import uni.it.stdmanager.modules.vi_registration.dto.response.CourseRegistrationResponse;
 
@@ -11,4 +12,5 @@ public interface CourseRegistrationService {
     void cancel(UUID id);
     List<CourseRegistrationResponse> getByStudent(UUID studentId);
     List<CourseRegistrationResponse> getBySection(UUID sectionId);
+    List<CourseResponse> getRetakeableCourses(UUID studentId);
 }
