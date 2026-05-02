@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Search, BookOpen, Clock, AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import useRegistrationStore from '../../store/useRegistrationStore';
 import useAuthStore from '../../store/useAuthStore';
+import useFinanceStore from '../../store/useFinanceStore';
 import { semesterApi } from '../../api/semesterApi';
 import registrationApi from '../../api/registrationApi';
 import toast from 'react-hot-toast';
 
 const CourseRegistrationPage = () => {
   const { periods, fetchPeriods, currentRegistrations, fetchStudentRegistrations, retakeableCourses, fetchRetakeableCourses } = useRegistrationStore();
+  const { calculateCurrentTuition } = useFinanceStore();
   const { user } = useAuthStore();
   
   const [selectedPeriod, setSelectedPeriod] = useState(null);
@@ -49,16 +51,27 @@ const CourseRegistrationPage = () => {
 
   const handleRegister = async (sectionId) => {
     try {
+      // Tìm section trong danh sách available
+      const section = availableSections.find(s => s.id === sectionId);
+      
+      // Kiểm tra xem môn này có nằm trong danh sách học lại không
+      const isRetake = retakeableCourses.some(c => c.id === section.courseId);
+      
       const data = {
         studentId: user.id,
         courseSectionId: sectionId,
         registrationPeriodId: selectedPeriod.id,
-        registrationType: 1 // Đăng ký mới
+        registrationType: isRetake ? 2 : 1 // 1: Mới, 2: Học lại
       };
+      
       const response = await registrationApi.register(data);
       if (response.success) {
-        toast.success("Đăng ký thành công!");
-        fetchStudentRegistrations(user.id); // Tải lại danh sách đã đăng ký
+        toast.success(isRetake ? "Đăng ký học lại thành công!" : "Đăng ký thành công!");
+        fetchStudentRegistrations(user.id); 
+        
+        if (selectedPeriod?.semesterId) {
+          calculateCurrentTuition(user.id, selectedPeriod.semesterId);
+        }
       }
     } catch (error) {
       const msg = error.response?.data?.message || "Đăng ký thất bại";
@@ -73,6 +86,10 @@ const CourseRegistrationPage = () => {
         if (response.success) {
           toast.success("Hủy đăng ký thành công");
           fetchStudentRegistrations(user.id);
+          // Tự động tính lại học phí ngay lập tức
+          if (selectedPeriod?.semesterId) {
+            calculateCurrentTuition(user.id, selectedPeriod.semesterId);
+          }
         }
       } catch (error) {
         toast.error("Hủy đăng ký thất bại");

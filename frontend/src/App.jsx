@@ -42,17 +42,17 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
         </Route>
- 
+
         {/* NHÓM 2: PROTECTED ROUTES - Yêu cầu Token & MainLayout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             {/* Mặc định vào Dashboard */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
- 
+
             {/* Thêm vào trong nhóm <Route element={<MainLayout />}> */}
             <Route path="/er-diagram" element={<ERDiagramView />} />
- 
+
             {/* Đăng ký các Route tương ứng với menuConfig.js */}
             <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
             <Route path="/students" element={<StudentListPage />} />
@@ -60,32 +60,33 @@ function App() {
             <Route path="/lecturers" element={<LecturerListPage />} />
             <Route path="/academic" element={<CourseListPage />} />
             <Route path="/academic-management" element={<AcademicOverviewPage />} />
-            <Route 
-              path="/registration" 
+            <Route
+              path="/registration"
               element={
-                user?.roles?.includes('SINHVIEN') 
-                ? <CourseRegistrationPage /> 
-                : <RegistrationManagementPage />
-              } 
+                user?.roles?.includes('SINHVIEN')
+                  ? <CourseRegistrationPage />
+                  : <RegistrationManagementPage />
+              }
             />
-            <Route 
-              path="/grades" 
+            <Route
+              path="/grades"
               element={
-                user?.roles?.includes('SINHVIEN') 
-                ? <StudentTranscriptPage /> 
-                : <GradeManagementPage />
-              } 
+                user?.roles?.includes('SINHVIEN')
+                  ? <StudentTranscriptPage />
+                  : <GradeManagementPage />
+              }
             />
-            <Route 
-              path="/finance" 
+            <Route
+              path="/finance"
               element={
-                user?.roles?.includes('SINHVIEN') 
-                ? <TuitionDashboardPage /> 
-                : <TuitionManagementPage />
-              } 
+                user?.roles?.includes('SINHVIEN')
+                  ? <TuitionDashboardPage />
+                  : <TuitionManagementPage />
+              }
             />
             <Route path="/tuition-config" element={<TuitionConfigPage />} />
             <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
+            <Route path="/schedule" element={<Placeholder title="Lịch học & Giảng dạy" />} />
             <Route path="/settings" element={<Placeholder title="Thông báo & Cấu hình hệ thống" />} />
           </Route>
         </Route>

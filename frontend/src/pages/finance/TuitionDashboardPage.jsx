@@ -88,57 +88,97 @@ const TuitionDashboardPage = () => {
       </div>
 
       {/* Main Stats Cards */}
+      {/* Main Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
+        <div className="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
+          <div className="flex-1 p-6 bg-gradient-to-br from-indigo-600 to-blue-700 text-white relative overflow-hidden group">
+            <div className="relative z-10">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                <Wallet size={20} />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-wider opacity-70">Tổng học phí kỳ này</p>
+              <h3 className="text-4xl font-black mt-1">{formatCurrency(currentTuition.netAmount || tuitionData)}</h3>
+              <div className="mt-4 flex items-center gap-2 text-[10px] font-bold bg-white/10 w-fit px-2 py-1 rounded">
+                <CheckCircle2 size={12} />
+                Số liệu đã cập nhật theo đăng ký mới nhất
+              </div>
+            </div>
+            <DollarSign className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          
+          <div className="w-full md:w-72 p-6 bg-gray-50 flex flex-col justify-center space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-500 font-medium">Học phí gốc:</span>
+              <span className="text-sm font-bold text-gray-700">{formatCurrency(currentTuition.rawAmount)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-green-600 font-medium">Miễn giảm:</span>
+              <span className="text-sm font-bold text-green-600">-{formatCurrency((currentTuition.scholarshipDeduction || 0) + (currentTuition.exemptionAmount || 0))}</span>
+            </div>
+            <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+              <span className="text-xs text-gray-800 font-bold uppercase">Thực nộp:</span>
+              <span className="text-lg font-black text-blue-600">{formatCurrency(currentTuition.netAmount)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
           <div className="relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-              <Wallet size={20} />
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Số dư còn nợ</p>
+                <h3 className="text-3xl font-black text-red-600 mt-1">{formatCurrency(currentTuition.debtAmount)}</h3>
+              </div>
+              <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+                <AlertCircle size={20} />
+              </div>
             </div>
-            <p className="text-xs font-bold uppercase tracking-wider opacity-70">Tổng học phí kỳ này</p>
-            <h3 className="text-3xl font-black mt-1">{formatCurrency(currentTuition.netAmount || tuitionData)}</h3>
-            <div className="mt-4 flex items-center gap-2 text-xs font-bold bg-white/10 w-fit px-2 py-1 rounded">
-              <TrendingDown size={14} />
-              Đã bao gồm các khoản miễn giảm
+            <div className="mt-6 flex items-center gap-2">
+              <button className="flex-1 bg-red-600 text-white py-3 rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 active:scale-95">
+                Thanh toán ngay
+              </button>
             </div>
           </div>
-          <DollarSign className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 group-hover:scale-110 transition-transform duration-500" />
+          <History className="absolute -right-4 -bottom-4 w-24 h-24 text-gray-50" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+            <BookOpen size={24} />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tổng tín chỉ</p>
+            <p className="text-xl font-black text-gray-800">{currentTuition.totalCredits || 0} TC</p>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center shrink-0">
+            <TrendingDown size={24} />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Học bổng</p>
+            <p className="text-xl font-black text-green-600">{formatCurrency(currentTuition.scholarshipDeduction)}</p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Số dư công nợ</p>
-              <h3 className="text-2xl font-black text-red-600 mt-1">{formatCurrency(currentTuition.debtAmount || tuitionData)}</h3>
-            </div>
-            <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
-              <AlertCircle size={20} />
-            </div>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4 md:col-span-2">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center shrink-0">
+            <Calendar size={24} />
           </div>
-          <div className="mt-6 flex items-center gap-2">
-            <button className="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-red-700 transition-all">
-              Thanh toán ngay
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Tổng tín chỉ đăng ký</p>
-              <h3 className="text-2xl font-black text-indigo-600 mt-1">{breakdown.newCredits + breakdown.retakeCredits} TC</h3>
-            </div>
-            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-              <CreditCard size={20} />
-            </div>
-          </div>
-          <div className="mt-6 space-y-2">
-            <div className="flex justify-between text-[10px] font-bold">
-              <span className="text-gray-400">Học mới:</span>
-              <span className="text-gray-700">{breakdown.newCredits} TC</span>
-            </div>
-            <div className="flex justify-between text-[10px] font-bold">
-              <span className="text-gray-400">Học lại:</span>
-              <span className="text-orange-600">{breakdown.retakeCredits} TC</span>
+          <div className="flex-1">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hạn chót thanh toán</p>
+            <div className="flex justify-between items-center">
+              <p className="text-lg font-black text-gray-800">
+                {currentTuition.deadline ? new Date(currentTuition.deadline).toLocaleDateString('vi-VN') : 'Chưa xác định'}
+              </p>
+              {currentTuition.deadline && (
+                <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
+                  Còn {Math.ceil((new Date(currentTuition.deadline) - new Date()) / (1000 * 60 * 60 * 24))} ngày
+                </span>
+              )}
             </div>
           </div>
         </div>
