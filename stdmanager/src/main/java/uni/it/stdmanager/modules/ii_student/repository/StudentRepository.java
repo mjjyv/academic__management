@@ -20,6 +20,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     boolean existsByStudentCode(String studentCode);
 
+    java.util.List<Student> findByStudentClassId(UUID classId);
+
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"user", "studentClass", "department", "major", "program", "currentStatus"})
     @Query("SELECT s FROM Student s WHERE " +
             "(:keyword IS NULL OR LOWER(s.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND "

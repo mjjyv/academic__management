@@ -22,7 +22,7 @@ public class Building extends BaseEntity {
     @Column(name = "address", length = 200)
     private String address;
 
-    @Column(name = "total_floors")
+    @Column(name = "total_floors", columnDefinition = "tinyint")
     private Integer totalFloors;
 
     @Column(name = "building_type", length = 10)

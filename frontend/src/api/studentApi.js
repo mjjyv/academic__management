@@ -30,4 +30,5 @@ export const classApi = {
     getAll: () => axiosClient.get('/student-classes'),
     getHierarchy: () => axiosClient.get('/student-classes/hierarchy'),
     getById: (id) => axiosClient.get(`/student-classes/${id}`),
+    getClassCourseHistory: (id) => axiosClient.get(`/student-classes/${id}/course-history`),
 };

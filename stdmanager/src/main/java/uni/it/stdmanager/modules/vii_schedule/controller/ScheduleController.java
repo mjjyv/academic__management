@@ -1,0 +1,45 @@
+package uni.it.stdmanager.modules.vii_schedule.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import uni.it.stdmanager.core.dto.ApiResponse;
+import uni.it.stdmanager.modules.vii_schedule.dto.request.ScheduleRequest;
+import uni.it.stdmanager.modules.vii_schedule.dto.response.ScheduleResponse;
+import uni.it.stdmanager.modules.vii_schedule.service.ScheduleService;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/schedules")
+@RequiredArgsConstructor
+public class ScheduleController {
+
+    private final ScheduleService scheduleService;
+
+    @GetMapping("/sections/{sectionId}")
+    public ApiResponse<List<ScheduleResponse>> getBySection(@PathVariable UUID sectionId) {
+        return ApiResponse.success(scheduleService.getSchedulesBySection(sectionId), "Lấy lịch học thành công");
+    }
+
+    @GetMapping("/student/{studentId}")
+    public ApiResponse<List<ScheduleResponse>> getForStudent(@PathVariable UUID studentId) {
+        return ApiResponse.success(scheduleService.getStudentSchedule(studentId), "Lấy lịch học thành công");
+    }
+
+    @GetMapping("/lecturer/{userId}")
+    public ApiResponse<List<ScheduleResponse>> getForLecturer(@PathVariable UUID userId) {
+        return ApiResponse.success(scheduleService.getLecturerSchedule(userId), "Lấy lịch dạy thành công");
+    }
+
+    @PostMapping
+    public ApiResponse<ScheduleResponse> create(@RequestBody ScheduleRequest request) {
+        return ApiResponse.success(scheduleService.createSchedule(request), "Tạo lịch học thành công");
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ApiResponse<Void> delete(@PathVariable UUID scheduleId) {
+        scheduleService.deleteSchedule(scheduleId);
+        return ApiResponse.success(null, "Xóa lịch học thành công");
+    }
+}

@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uni.it.stdmanager.core.dto.ApiResponse;
 import uni.it.stdmanager.core.security.SecurityUtils;
 import uni.it.stdmanager.modules.i_auth.entity.User;
-import uni.it.stdmanager.modules.i_auth.entity.UserRole;
 import uni.it.stdmanager.modules.i_auth.repository.UserRepository;
-import uni.it.stdmanager.modules.i_auth.repository.UserRoleRepository;
 import uni.it.stdmanager.modules.viii_grade.dto.request.GradeUpdateRequest;
 import uni.it.stdmanager.modules.viii_grade.dto.response.GradeDetailResponse;
 import uni.it.stdmanager.modules.viii_grade.dto.response.SectionGradeManagementResponse;
@@ -27,7 +25,6 @@ public class GradeManagementController {
 
     private final GradeService gradeService;
     private final UserRepository userRepository;
-    private final UserRoleRepository userRoleRepository;
 
     @GetMapping("/sections")
     @PreAuthorize("hasAnyRole('GIANGVIEN', 'GIAOVU', 'ADMIN')")
@@ -35,17 +32,18 @@ public class GradeManagementController {
     public ApiResponse<List<SectionGradeManagementResponse>> getSections() {
         String username = SecurityUtils.getCurrentUserLogin()
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<UserRole> userRoles = userRoleRepository.findAllByUser(user);
-        boolean isStaff = userRoles.stream()
-                .anyMatch(ur -> ur.getRole().getCode().equals("GIAOVU") || ur.getRole().getCode().equals("ADMIN"));
+        
+        // Kiểm tra quyền từ SecurityContext (Authorities)
+        boolean isAdmin = SecurityUtils.hasRole("ADMIN");
+        boolean isStaff = SecurityUtils.hasRole("GIAOVU") || isAdmin;
 
         List<SectionGradeManagementResponse> response;
         if (isStaff) {
             response = gradeService.getAllSectionsForStaff();
         } else {
+            // Đối với Giảng viên, cần lấy UserId để tìm EmployeeId
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
             response = gradeService.getSectionsForLecturer(user.getId());
         }
 

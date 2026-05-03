@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
 import { classApi } from '../api/studentApi';
-import { X, Users, User, Info, School, Calendar, BookOpen, UserCheck, Search, ChevronRight } from 'lucide-react';
+import { X, Users, User, Info, School, Calendar, BookOpen, UserCheck, Search, ChevronRight, History, CheckCircle2, Clock } from 'lucide-react';
 
 const ClassDetailModal = ({ isOpen, onClose, classId }) => {
     const [classDetail, setClassDetail] = useState(null);
+    const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [historyLoading, setHistoryLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState('students'); // 'students' | 'history'
 
     useEffect(() => {
         if (isOpen && classId) {
             fetchClassDetail();
+            fetchClassHistory();
         }
     }, [isOpen, classId]);
 
@@ -24,6 +28,20 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
             console.error('Lỗi khi tải chi tiết lớp:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchClassHistory = async () => {
+        setHistoryLoading(true);
+        try {
+            const response = await classApi.getClassCourseHistory(classId);
+            if (response.success) {
+                setHistory(response.data);
+            }
+        } catch (error) {
+            console.error('Lỗi khi tải lịch sử học phần lớp:', error);
+        } finally {
+            setHistoryLoading(false);
         }
     };
 
@@ -44,6 +62,15 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
         }
     };
 
+    const getSectionStatusBadge = (status) => {
+        switch (status) {
+            case 'finished': return 'bg-green-100 text-green-700 border-green-200';
+            case 'open': return 'bg-blue-100 text-blue-700 border-blue-200';
+            case 'planned': return 'bg-gray-100 text-gray-600 border-gray-200';
+            default: return 'bg-gray-100 text-gray-700 border-gray-200';
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
@@ -61,9 +88,25 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
                             </p>
                         )}
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
-                        <X size={24} />
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <div className="flex bg-white/10 p-1 rounded-xl backdrop-blur-md">
+                            <button 
+                                onClick={() => setActiveTab('students')}
+                                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'students' ? 'bg-white text-blue-700 shadow-sm' : 'text-blue-100 hover:text-white'}`}
+                            >
+                                Sinh viên
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('history')}
+                                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'history' ? 'bg-white text-blue-700 shadow-sm' : 'text-blue-100 hover:text-white'}`}
+                            >
+                                Lịch sử học tập
+                            </button>
+                        </div>
+                        <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                            <X size={24} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Body */}
@@ -117,69 +160,143 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
                         )}
                     </div>
 
-                    {/* Right: Students List */}
-                    <div className="flex-1 flex flex-col bg-white">
-                        <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <h4 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <User size={20} className="text-blue-600" /> Danh sách sinh viên
-                            </h4>
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                                <input
-                                    type="text"
-                                    placeholder="Tìm sinh viên trong lớp..."
-                                    className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none w-full sm:w-64 transition-all"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-                        </div>
+                    {/* Right Content Area */}
+                    <div className="flex-1 flex flex-col bg-white overflow-hidden">
+                        {activeTab === 'students' ? (
+                            <>
+                                <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <h4 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                        <User size={20} className="text-blue-600" /> Danh sách sinh viên
+                                    </h4>
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                                        <input
+                                            type="text"
+                                            placeholder="Tìm sinh viên trong lớp..."
+                                            className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none w-full sm:w-64 transition-all"
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
 
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {loading ? (
-                                <div className="space-y-3">
-                                    {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse"></div>)}
-                                </div>
-                            ) : filteredStudents.length === 0 ? (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-400 italic">
-                                    <User size={48} className="mb-4 opacity-20" />
-                                    <p>Không có dữ liệu sinh viên phù hợp.</p>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 gap-3">
-                                    {filteredStudents.map((student, idx) => (
-                                        <div key={student.id} className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/30 transition-all">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                                                    {idx + 1}
-                                                </div>
-                                                <div>
-                                                    <h5 className="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors">{student.fullName}</h5>
-                                                    <p className="text-xs text-gray-500 font-medium">MSSV: <span className="text-gray-900">{student.studentCode}</span></p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <div className="hidden sm:block text-right">
-                                                    <p className="text-[10px] text-gray-400 font-bold uppercase">Trạng thái</p>
-                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${getStatusBadgeClass(student.statusCode)}`}>
-                                                        {student.statusName}
-                                                    </span>
-                                                </div>
-                                                <button className="p-2 text-gray-300 hover:text-blue-600 hover:bg-white rounded-lg transition-all shadow-sm">
-                                                    <ChevronRight size={18} />
-                                                </button>
-                                            </div>
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    {loading ? (
+                                        <div className="space-y-3">
+                                            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse"></div>)}
                                         </div>
-                                    ))}
+                                    ) : filteredStudents.length === 0 ? (
+                                        <div className="h-full flex flex-col items-center justify-center text-gray-400 italic">
+                                            <User size={48} className="mb-4 opacity-20" />
+                                            <p>Không có dữ liệu sinh viên phù hợp.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {filteredStudents.map((student, idx) => (
+                                                <div key={student.id} className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors">{student.fullName}</h5>
+                                                            <p className="text-xs text-gray-500 font-medium">MSSV: <span className="text-gray-900">{student.studentCode}</span></p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="hidden sm:block text-right">
+                                                            <p className="text-[10px] text-gray-400 font-bold uppercase">Trạng thái</p>
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${getStatusBadgeClass(student.statusCode)}`}>
+                                                                {student.statusName}
+                                                            </span>
+                                                        </div>
+                                                        <button className="p-2 text-gray-300 hover:text-blue-600 hover:bg-white rounded-lg transition-all shadow-sm">
+                                                            <ChevronRight size={18} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
+                            </>
+                        ) : (
+                            <div className="flex-1 flex flex-col overflow-hidden">
+                                <div className="p-6 border-b border-gray-100">
+                                    <h4 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                        <History size={20} className="text-blue-600" /> Lịch sử học tập lớp hành chính
+                                    </h4>
+                                    <p className="text-xs text-gray-400 mt-1">Danh sách các lớp học phần mà sinh viên lớp này đã/đang tham gia</p>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    {historyLoading ? (
+                                        <div className="space-y-4">
+                                            {[1, 2, 3].map(i => <div key={i} className="h-32 bg-gray-50 rounded-2xl animate-pulse"></div>)}
+                                        </div>
+                                    ) : history.length === 0 ? (
+                                        <div className="h-full flex flex-col items-center justify-center text-gray-400 italic">
+                                            <History size={48} className="mb-4 opacity-20" />
+                                            <p>Chưa có dữ liệu lịch sử học tập.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {history.map((item) => (
+                                                <div key={item.sectionId} className="bg-white border border-gray-100 rounded-2xl p-5 hover:border-blue-200 hover:shadow-md hover:shadow-blue-50/50 transition-all group">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                                <BookOpen size={18} />
+                                                            </div>
+                                                            <div>
+                                                                <h5 className="font-bold text-gray-800 group-hover:text-blue-700 transition-colors">{item.courseName}</h5>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{item.courseCode}</span>
+                                                                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                                                                    <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">{item.classCode}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="text-right">
+                                                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Trạng thái lớp</p>
+                                                                <div className={`mt-1 flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[10px] font-black uppercase ${getSectionStatusBadge(item.status)}`}>
+                                                                    {item.status === 'finished' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+                                                                    {item.status === 'finished' ? 'Đã kết thúc' : item.status === 'open' ? 'Đang học' : 'Dự kiến'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl">
+                                                        <div>
+                                                            <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Học kỳ</p>
+                                                            <p className="text-xs font-bold text-gray-700">{item.semesterName}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Giảng viên</p>
+                                                            <p className="text-xs font-bold text-gray-700">{item.lecturerName}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Số SV tham gia</p>
+                                                            <p className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                                                                <Users size={12} className="text-blue-500" /> {item.studentCount} sinh viên
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Footer */}
                 <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
-                    <button onClick={onClose} className="px-6 py-2 text-sm font-bold text-gray-600 hover:text-gray-900">
+                    <button onClick={onClose} className="px-6 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">
                         Đóng cửa sổ
                     </button>
                 </div>

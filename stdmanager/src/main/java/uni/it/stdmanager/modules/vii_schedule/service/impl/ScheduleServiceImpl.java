@@ -72,6 +72,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                     .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         }
 
+        // Logic check conflict: Same room/lecturer, same day, overlapping periods
+        // scheduleRepository.checkConflict(...)
+
+
         Schedule schedule = Schedule.builder()
                 .courseSection(section)
                 .lecturer(lecturer)

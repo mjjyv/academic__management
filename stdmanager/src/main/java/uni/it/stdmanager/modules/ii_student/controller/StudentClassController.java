@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uni.it.stdmanager.core.dto.ApiResponse;
+import uni.it.stdmanager.modules.ii_student.dto.response.ClassCourseHistoryResponse;
 import uni.it.stdmanager.modules.ii_student.dto.response.DepartmentHierarchyResponse;
 import uni.it.stdmanager.modules.ii_student.dto.response.StudentClassDetailResponse;
 import uni.it.stdmanager.modules.ii_student.dto.response.StudentClassResponse;
@@ -44,5 +45,13 @@ public class StudentClassController {
     public ApiResponse<StudentClassDetailResponse> getClassDetail(@PathVariable UUID id) {
         StudentClassDetailResponse response = studentClassService.getClassDetail(id);
         return ApiResponse.success(response, "Lấy chi tiết lớp thành công");
+    }
+
+    @GetMapping("/{id}/course-history")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU', 'GIANGVIEN')")
+    @Operation(summary = "8. Lấy lịch sử học phần của lớp", description = "Trả về danh sách các lớp học phần mà sinh viên trong lớp này đã/đang tham gia")
+    public ApiResponse<List<ClassCourseHistoryResponse>> getClassCourseHistory(@PathVariable UUID id) {
+        List<ClassCourseHistoryResponse> response = studentClassService.getClassCourseHistory(id);
+        return ApiResponse.success(response, "Lấy lịch sử học phần lớp thành công");
     }
 }

@@ -11,10 +11,11 @@ import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.iii_lecturer.entity.Department;
 import uni.it.stdmanager.modules.iv_course.entity.Major;
+import uni.it.stdmanager.modules.vi_registration.entity.CourseRegistration;
+import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
+import uni.it.stdmanager.modules.v_semester.entity.CourseSection;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,7 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     private final StudentClassRepository studentClassRepository;
     private final StudentRepository studentRepository;
+    private final CourseRegistrationRepository courseRegistrationRepository;
 
     @Override
     public List<StudentClassResponse> getAllClasses() {
@@ -92,6 +94,40 @@ public class StudentClassServiceImpl implements StudentClassService {
                 .advisorName(studentClass.getAdvisor() != null ? studentClass.getAdvisor().getFullName() : "Chưa có")
                 .students(students.stream().map(this::mapToStudentResponse).collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public List<ClassCourseHistoryResponse> getClassCourseHistory(UUID classId) {
+        List<Student> students = studentRepository.findByStudentClassId(classId);
+        if (students.isEmpty()) return Collections.emptyList();
+
+        List<UUID> studentIds = students.stream().map(Student::getId).collect(Collectors.toList());
+        
+        // Lấy tất cả đăng ký của các sinh viên trong lớp này
+        List<CourseRegistration> registrations = courseRegistrationRepository.findAllByStudentIdIn(studentIds);
+        
+        // Nhóm các đăng ký theo Lớp học phần (CourseSection)
+        Map<CourseSection, List<CourseRegistration>> registrationsBySection = registrations.stream()
+                .collect(Collectors.groupingBy(CourseRegistration::getCourseSection));
+
+        return registrationsBySection.entrySet().stream()
+                .map(entry -> {
+                    CourseSection section = entry.getKey();
+                    List<CourseRegistration> sectionRegs = entry.getValue();
+                    
+                    return ClassCourseHistoryResponse.builder()
+                            .sectionId(section.getId())
+                            .semesterName(section.getSemester().getSemesterName())
+                            .courseCode(section.getCourse().getCourseCode())
+                            .courseName(section.getCourse().getCourseName())
+                            .classCode(section.getClassCode())
+                            .lecturerName(section.getLecturer() != null ? section.getLecturer().getFullName() : "Chưa phân công")
+                            .studentCount(sectionRegs.size()) // Số lượng SV của lớp hành chính này tham gia lớp học phần này
+                            .status(section.getStatus())
+                            .build();
+                })
+                .sorted(Comparator.comparing(ClassCourseHistoryResponse::getSemesterName).reversed())
+                .collect(Collectors.toList());
     }
 
     private StudentClassResponse mapToResponse(StudentClass studentClass) {

@@ -83,7 +83,7 @@ const GradeManagementPage = () => {
               onChange={(e) => setSelectedSectionId(e.target.value)}
               className="bg-transparent text-sm text-gray-600 outline-none min-w-[200px]"
             >
-              <option value="">Chọn lớp học phần...</option>
+              <option value="">{managementSections.length > 0 ? "Chọn lớp học phần..." : "Không có lớp học phần nào"}</option>
               {managementSections.map(section => (
                 <option key={section.sectionId} value={section.sectionId}>
                   {section.classCode} - {section.courseName} ({section.semesterName})

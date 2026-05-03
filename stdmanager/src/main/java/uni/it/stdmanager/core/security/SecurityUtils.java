@@ -29,4 +29,16 @@ public class SecurityUtils {
         }
         return null;
     }
+
+    /**
+     * Kiểm tra người dùng hiện tại có vai trò cụ thể hay không.
+     */
+    public static boolean hasRole(String role) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) return false;
+        
+        String roleName = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
+    }
 }

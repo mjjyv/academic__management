@@ -10,7 +10,9 @@ import uni.it.stdmanager.modules.i_auth.repository.UserRepository;
 import uni.it.stdmanager.modules.iii_lecturer.entity.Employee;
 import uni.it.stdmanager.modules.iii_lecturer.repository.EmployeeRepository;
 import uni.it.stdmanager.modules.v_semester.entity.CourseSection;
+import uni.it.stdmanager.modules.v_semester.entity.LecturerCourseSection;
 import uni.it.stdmanager.modules.v_semester.repository.CourseSectionRepository;
+import uni.it.stdmanager.modules.v_semester.repository.LecturerCourseSectionRepository;
 import uni.it.stdmanager.modules.vi_registration.entity.CourseRegistration;
 import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
 import uni.it.stdmanager.modules.viii_grade.dto.request.GradeUpdateRequest;
@@ -29,9 +31,7 @@ import uni.it.stdmanager.modules.viii_grade.service.GradeService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +47,7 @@ public class GradeServiceImpl implements GradeService {
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
+    private final LecturerCourseSectionRepository lecturerCourseSectionRepository;
 
     @Override
     public List<StudentSummaryResponse> getStudentSummaries(UUID studentId) {
@@ -73,8 +74,22 @@ public class GradeServiceImpl implements GradeService {
         Employee lecturer = employeeRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         
-        return courseSectionRepository.findAllByLecturerId(lecturer.getId()).stream()
+        // Lấy từ cột lecturer_id trong course_sections
+        List<CourseSection> sectionsByColumn = courseSectionRepository.findAllByLecturerId(lecturer.getId());
+        
+        // Lấy từ bảng phụ lecturer_course_sections
+        List<LecturerCourseSection> assignments = lecturerCourseSectionRepository.findAllByLecturerId(lecturer.getId());
+        List<CourseSection> sectionsByTable = assignments.stream()
+                .map(LecturerCourseSection::getCourseSection)
+                .toList();
+
+        // Gộp lại và loại bỏ trùng lặp
+        Set<CourseSection> allSections = new HashSet<>(sectionsByColumn);
+        allSections.addAll(sectionsByTable);
+
+        return allSections.stream()
                 .map(this::mapToSectionResponse)
+                .sorted(Comparator.comparing(SectionGradeManagementResponse::getClassCode))
                 .collect(Collectors.toList());
     }
 
@@ -82,6 +97,7 @@ public class GradeServiceImpl implements GradeService {
     public List<SectionGradeManagementResponse> getAllSectionsForStaff() {
         return courseSectionRepository.findAll().stream()
                 .map(this::mapToSectionResponse)
+                .sorted(Comparator.comparing(SectionGradeManagementResponse::getClassCode))
                 .collect(Collectors.toList());
     }
 
@@ -158,17 +174,16 @@ public class GradeServiceImpl implements GradeService {
             totalScore = totalScore.add(score.multiply(weight));
         }
 
-        totalScore = totalScore.setScale(2, RoundingMode.HALF_UP);
-
-        GradeScale scale = gradeScaleRepository.findByScore(totalScore)
-                .orElseThrow(() -> new RuntimeException("No grade scale found for score: " + totalScore));
+        final BigDecimal finalTotalScore = totalScore.setScale(2, RoundingMode.HALF_UP);
+        GradeScale scale = gradeScaleRepository.findByScore(finalTotalScore)
+                .orElseThrow(() -> new RuntimeException("No grade scale found for score: " + finalTotalScore));
 
         StudentSummary summary = studentSummaryRepository.findByRegistrationId(registration.getId())
                 .orElseGet(() -> StudentSummary.builder()
                         .registration(registration)
                         .build());
 
-        summary.setTotalScore(totalScore);
+        summary.setTotalScore(finalTotalScore);
         summary.setLetterGrade(scale.getLetterGrade());
         summary.setGpaValue(scale.getGpaValue());
         summary.setResult(scale.getIsPass() ? "PASS" : "FAIL");
@@ -198,8 +213,8 @@ public class GradeServiceImpl implements GradeService {
         return SectionGradeManagementResponse.builder()
                 .sectionId(section.getId())
                 .classCode(section.getClassCode())
-                .courseName(section.getCourse().getCourseName())
-                .semesterName(section.getSemester().getSemesterName())
+                .courseName(section.getCourse() != null ? section.getCourse().getCourseName() : "Unknown Course")
+                .semesterName(section.getSemester() != null ? section.getSemester().getSemesterName() : "Unknown Semester")
                 .studentCount((int) count)
                 .build();
     }

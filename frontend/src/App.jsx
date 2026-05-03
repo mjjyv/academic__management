@@ -23,6 +23,7 @@ import useAuthStore from './store/useAuthStore';
 // Modules IV & V
 import CourseListPage from './pages/academic/CourseListPage';
 import AcademicOverviewPage from './pages/academic/AcademicOverviewPage';
+import SchedulePage from './pages/academic/SchedulePage';
 
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
@@ -86,7 +87,7 @@ function App() {
             />
             <Route path="/tuition-config" element={<TuitionConfigPage />} />
             <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
-            <Route path="/schedule" element={<Placeholder title="Lịch học & Giảng dạy" />} />
+            <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/settings" element={<Placeholder title="Thông báo & Cấu hình hệ thống" />} />
           </Route>
         </Route>
