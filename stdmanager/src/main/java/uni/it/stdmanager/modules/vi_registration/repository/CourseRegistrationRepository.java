@@ -23,4 +23,6 @@ public interface CourseRegistrationRepository extends JpaRepository<CourseRegist
 
     @EntityGraph(attributePaths = { "student", "courseSection", "courseSection.course", "registrationPeriod" })
     List<CourseRegistration> findAllByStudentIdAndCourseSectionSemesterId(UUID studentId, UUID semesterId);
+    
+    long countByCourseSectionId(UUID courseSectionId);
 }

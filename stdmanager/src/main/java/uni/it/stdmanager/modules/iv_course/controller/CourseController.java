@@ -23,9 +23,9 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    @Operation(summary = "1. Lấy danh sách môn học", description = "Lấy toàn bộ danh sách môn học trong hệ thống")
-    public ApiResponse<List<CourseResponse>> getAllCourses() {
-        return ApiResponse.success(courseService.getAllCourses(), "Lấy danh sách môn học thành công");
+    @Operation(summary = "1. Lấy danh sách môn học", description = "Lấy toàn bộ danh sách môn học trong hệ thống, có thể lọc theo khoa")
+    public ApiResponse<List<CourseResponse>> getAllCourses(@RequestParam(required = false) UUID departmentId) {
+        return ApiResponse.success(courseService.getAllCourses(departmentId), "Lấy danh sách môn học thành công");
     }
 
     @GetMapping("/{id}")

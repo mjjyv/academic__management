@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface StudentTuitionRepository extends JpaRepository<StudentTuition, UUID> {
     List<StudentTuition> findAllByStudentId(UUID studentId);
+    List<StudentTuition> findAllByStudentDepartmentId(UUID departmentId);
 }

@@ -30,8 +30,14 @@ public class CourseServiceImpl implements CourseService {
     private final StudentRepository studentRepository;
 
     @Override
-    public List<CourseResponse> getAllCourses() {
-        return courseRepository.findAll().stream()
+    public List<CourseResponse> getAllCourses(UUID departmentId) {
+        List<Course> courses;
+        if (departmentId != null) {
+            courses = courseRepository.findAllByDepartmentId(departmentId);
+        } else {
+            courses = courseRepository.findAll();
+        }
+        return courses.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }

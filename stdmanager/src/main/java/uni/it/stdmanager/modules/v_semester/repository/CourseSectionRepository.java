@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface CourseSectionRepository extends JpaRepository<CourseSection, UUID> {
     Optional<CourseSection> findByClassCode(String classCode);
     List<CourseSection> findAllBySemesterId(UUID semesterId);
+    List<CourseSection> findAllByLecturerId(UUID lecturerId);
 }

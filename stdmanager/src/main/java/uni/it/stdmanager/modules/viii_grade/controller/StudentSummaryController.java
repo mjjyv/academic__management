@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uni.it.stdmanager.core.dto.ApiResponse;
 import uni.it.stdmanager.modules.viii_grade.dto.response.StudentSummaryResponse;
 import uni.it.stdmanager.modules.viii_grade.service.GradeService;
@@ -32,8 +29,8 @@ public class StudentSummaryController {
 
     @GetMapping("/summaries")
     @PreAuthorize("hasAnyRole('GIANGVIEN', 'GIAOVU', 'ADMIN')")
-    @Operation(summary = "Lấy toàn bộ danh sách điểm tổng kết (Admin/Giáo vụ)")
-    public ApiResponse<List<StudentSummaryResponse>> getAllSummaries() {
-        return ApiResponse.success(gradeService.getAllSummaries(), "Lấy toàn bộ danh sách điểm thành công");
+    @Operation(summary = "Lấy toàn bộ danh sách điểm tổng kết, có thể lọc theo khoa (Admin/Giáo vụ)")
+    public ApiResponse<List<StudentSummaryResponse>> getAllSummaries(@RequestParam(required = false) UUID departmentId) {
+        return ApiResponse.success(gradeService.getAllSummaries(departmentId), "Lấy toàn bộ danh sách điểm thành công");
     }
 }

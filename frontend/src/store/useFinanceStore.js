@@ -21,10 +21,10 @@ const useFinanceStore = create((set) => ({
         }
     },
 
-    fetchAllTuitions: async () => {
+    fetchAllTuitions: async (departmentId) => {
         set({ loading: true });
         try {
-            const response = await financeApi.getAllTuitions();
+            const response = await financeApi.getAllTuitions(departmentId);
             if (response.success) {
                 set({ studentTuitions: response.data, loading: false });
             }

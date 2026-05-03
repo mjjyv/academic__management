@@ -49,6 +49,26 @@ public class TuitionServiceImpl implements TuitionService {
         Semester semester = semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy học kỳ"));
 
+        // Fetch or create StudentTuition
+        StudentTuition studentTuition = studentTuitionRepository.findAllByStudentId(studentId).stream()
+                .filter(t -> t.getSemester().getId().equals(semesterId))
+                .findFirst()
+                .orElseGet(() -> {
+                    StudentTuition newTuition = StudentTuition.builder()
+                            .student(student)
+                            .semester(semester)
+                            .scholarshipDeduction(BigDecimal.ZERO)
+                            .exemptionAmount(BigDecimal.ZERO)
+                            .paidAmount(BigDecimal.ZERO)
+                            .build();
+                    return newTuition;
+                });
+
+        // Bảo vệ dữ liệu: Nếu học kỳ đã đóng, không tính toán lại để tránh xóa dữ liệu lịch sử
+        if (semester.getIsActive() == null || !semester.getIsActive()) {
+            return mapToTuitionResponse(studentTuition);
+        }
+
         // Lấy khóa học của sinh viên (Ví dụ: K23, K24) để lấy đơn giá phù hợp
         String courseYear = student.getAdmissionYear() != null ? "K" + student.getAdmissionYear() : "K24";
 
@@ -88,21 +108,6 @@ public class TuitionServiceImpl implements TuitionService {
                     .amount(itemAmount)
                     .build());
         }
-
-        // Fetch or create StudentTuition
-        StudentTuition studentTuition = studentTuitionRepository.findAllByStudentId(studentId).stream()
-                .filter(t -> t.getSemester().getId().equals(semesterId))
-                .findFirst()
-                .orElseGet(() -> {
-                    StudentTuition newTuition = StudentTuition.builder()
-                            .student(student)
-                            .semester(semester)
-                            .scholarshipDeduction(BigDecimal.ZERO)
-                            .exemptionAmount(BigDecimal.ZERO)
-                            .paidAmount(BigDecimal.ZERO)
-                            .build();
-                    return newTuition;
-                });
 
         studentTuition.setTotalCredits(totalCredits);
         studentTuition.setRawAmount(rawAmount);
@@ -156,8 +161,14 @@ public class TuitionServiceImpl implements TuitionService {
     }
 
     @Override
-    public List<StudentTuitionResponse> getAllTuitions() {
-        return studentTuitionRepository.findAll().stream()
+    public List<StudentTuitionResponse> getAllTuitions(UUID departmentId) {
+        List<StudentTuition> tuitions;
+        if (departmentId != null) {
+            tuitions = studentTuitionRepository.findAllByStudentDepartmentId(departmentId);
+        } else {
+            tuitions = studentTuitionRepository.findAll();
+        }
+        return tuitions.stream()
                 .map(this::mapToTuitionResponse)
                 .collect(Collectors.toList());
     }
@@ -233,6 +244,16 @@ public class TuitionServiceImpl implements TuitionService {
         // Update status
         if (tuition.getDebtAmount().compareTo(BigDecimal.ZERO) <= 0) {
             tuition.setStatus(1); // PAID
+            
+            // Đồng bộ sang CourseRegistration
+            List<CourseRegistration> registrations = courseRegistrationRepository
+                    .findAllByStudentIdAndCourseSectionSemesterId(tuition.getStudent().getId(), tuition.getSemester().getId());
+            for (CourseRegistration reg : registrations) {
+                if (reg.getStatus() != 3) {
+                    reg.setIsPaid(true);
+                }
+            }
+            courseRegistrationRepository.saveAll(registrations);
         } else {
             tuition.setStatus(2); // PARTIAL
         }

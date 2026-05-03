@@ -24,6 +24,7 @@ public enum ErrorCode {
     STUDENT_NOT_FOUND(6005, "Không tìm thấy sinh viên", HttpStatus.NOT_FOUND),
     CREDIT_LIMIT_EXCEEDED(6006, "Số tín chỉ đăng ký vượt quá giới hạn", HttpStatus.BAD_REQUEST),
     SCHEDULE_CONFLICT(6007, "Lịch học bị trùng", HttpStatus.BAD_REQUEST),
+    RESOURCE_NOT_FOUND(404, "Không tìm thấy tài nguyên yêu cầu", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

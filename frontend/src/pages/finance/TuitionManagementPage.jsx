@@ -1,26 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { Landmark, Search, DollarSign, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { Landmark, Search, Filter, DollarSign, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import useFinanceStore from '../../store/useFinanceStore';
+import { departmentApi } from '../../api/departmentApi';
 import toast from 'react-hot-toast';
 
 const TuitionManagementPage = () => {
   const { studentTuitions, fetchAllTuitions, loading } = useFinanceStore();
   const [searchTerm, setSearchTerm] = useState('');
+  const [departments, setDepartments] = useState([]);
+  const [selectedDeptId, setSelectedDeptId] = useState('');
 
   useEffect(() => {
-    fetchAllTuitions();
-  }, [fetchAllTuitions]);
+    fetchDepartments();
+  }, []);
 
-  const filteredTuitions = studentTuitions.filter(t => 
+  useEffect(() => {
+    fetchAllTuitions(selectedDeptId || null);
+  }, [fetchAllTuitions, selectedDeptId]);
+
+  const fetchDepartments = async () => {
+    try {
+      const res = await departmentApi.getAllActive();
+      if (res.success) setDepartments(res.data);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách khoa", error);
+    }
+  };
+
+  const filteredTuitions = studentTuitions.filter(t =>
     (t.studentName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (t.studentCode?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><CheckCircle2 size={12}/> ĐÃ NỘP</span>;
-      case 2: return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><Clock size={12}/> NỘP MỘT PHẦN</span>;
-      case 3: return <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><AlertCircle size={12}/> CÒN NỢ</span>;
+    switch (status) {
+      case 1: return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><CheckCircle2 size={12} /> ĐÃ NỘP</span>;
+      case 2: return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><Clock size={12} /> NỘP MỘT PHẦN</span>;
+      case 3: return <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"><AlertCircle size={12} /> CÒN NỢ</span>;
       default: return <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-bold">KHÔNG XÁC ĐỊNH</span>;
     }
   };
@@ -39,15 +55,30 @@ const TuitionManagementPage = () => {
           </h1>
           <p className="text-sm text-gray-500">Theo dõi công nợ và trạng thái thanh toán của toàn bộ sinh viên.</p>
         </div>
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Tìm MSSV, tên SV..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
-          />
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+          <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 w-full md:w-auto">
+            <Filter size={16} className="text-gray-400" />
+            <select
+              value={selectedDeptId}
+              onChange={(e) => setSelectedDeptId(e.target.value)}
+              className="bg-transparent text-sm text-gray-600 outline-none min-w-[150px]"
+            >
+              <option value="">Tất cả các khoa</option>
+              {departments.map(dept => (
+                <option key={dept.id} value={dept.id}>{dept.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Tìm MSSV, tên SV..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
+            />
+          </div>
         </div>
       </div>
 

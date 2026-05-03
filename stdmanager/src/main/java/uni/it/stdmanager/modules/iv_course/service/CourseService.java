@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CourseService {
-    List<CourseResponse> getAllCourses();
+    List<CourseResponse> getAllCourses(UUID departmentId);
     CourseResponse getCourseById(UUID id);
     CourseResponse createCourse(CourseRequest request);
     CourseResponse updateCourse(UUID id, CourseRequest request);

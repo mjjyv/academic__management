@@ -1,8 +1,8 @@
 import axiosClient from './axiosClient';
 
 export const courseApi = {
-    getAllCourses: () => {
-        return axiosClient.get('/courses');
+    getAllCourses: (departmentId) => {
+        return axiosClient.get('/courses', { params: { departmentId } });
     },
     getCourseById: (id) => {
         return axiosClient.get(`/courses/${id}`);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Filter, Edit2, Trash2, Book, MoreVertical, Loader2 } from 'lucide-react';
 import { courseApi } from '../../api/courseApi';
+import { departmentApi } from '../../api/departmentApi';
 import useAuthStore from '../../store/useAuthStore';
 import CourseFormModal from '../../components/CourseFormModal';
 import toast from 'react-hot-toast';
@@ -12,13 +13,25 @@ const CourseListPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [departments, setDepartments] = useState([]);
+    const [selectedDeptId, setSelectedDeptId] = useState('');
 
     const user = useAuthStore((state) => state.user);
     const canManage = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
 
     useEffect(() => {
+        fetchDepartments();
         fetchCourses();
-    }, []);
+    }, [selectedDeptId]);
+
+    const fetchDepartments = async () => {
+        try {
+            const res = await departmentApi.getAllActive();
+            if (res.success) setDepartments(res.data);
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách khoa", error);
+        }
+    };
 
     useEffect(() => {
         const results = courses.filter(course => 
@@ -31,7 +44,7 @@ const CourseListPage = () => {
     const fetchCourses = async () => {
         setLoading(true);
         try {
-            const res = await courseApi.getAllCourses();
+            const res = await courseApi.getAllCourses(selectedDeptId || null);
             if (res.success) {
                 setCourses(res.data);
                 setFilteredCourses(res.data);
@@ -104,7 +117,20 @@ const CourseListPage = () => {
                         className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
                     />
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-all">
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                    <span className="text-sm font-medium text-gray-500 whitespace-nowrap">Theo khoa:</span>
+                    <select 
+                        value={selectedDeptId}
+                        onChange={(e) => setSelectedDeptId(e.target.value)}
+                        className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all min-w-[200px]"
+                    >
+                        <option value="">Tất cả các khoa</option>
+                        {departments.map(dept => (
+                            <option key={dept.id} value={dept.id}>{dept.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-all ml-auto">
                     <Filter size={18} />
                     <span>Lọc nâng cao</span>
                 </button>

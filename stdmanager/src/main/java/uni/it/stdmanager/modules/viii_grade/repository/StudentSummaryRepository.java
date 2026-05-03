@@ -20,4 +20,8 @@ public interface StudentSummaryRepository extends JpaRepository<StudentSummary, 
            "AND r.replacedGradeId IS NULL " +
            "AND s.isActive = true")
     List<StudentSummary> findActiveSummariesByStudentId(@Param("studentId") UUID studentId);
+
+    List<StudentSummary> findAllByRegistrationStudentDepartmentId(UUID departmentId);
+    
+    java.util.Optional<StudentSummary> findByRegistrationId(UUID registrationId);
 }
