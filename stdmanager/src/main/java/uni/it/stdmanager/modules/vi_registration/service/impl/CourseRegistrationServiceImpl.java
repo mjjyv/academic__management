@@ -56,8 +56,8 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         Student student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
 
-        // 3. Kiểm tra lớp học phần
-        CourseSection section = courseSectionRepository.findById(request.getCourseSectionId())
+        // 3. Kiểm tra lớp học phần (Sử dụng PESSIMISTIC LOCK để tránh Race Condition)
+        CourseSection section = courseSectionRepository.findByIdWithLock(request.getCourseSectionId())
                 .orElseThrow(() -> new AppException(ErrorCode.COURSE_SECTION_NOT_FOUND));
 
         // 4. Kiểm tra sĩ số
@@ -120,8 +120,17 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 
     @Override
     public List<CourseRegistrationResponse> getByStudent(UUID studentId) {
+        List<StudentSummaryResponse> summaries = gradeService.getStudentSummaries(studentId);
+        List<UUID> finishedRegistrationIds = summaries.stream()
+                .map(StudentSummaryResponse::getRegistrationId)
+                .collect(Collectors.toList());
+
         return courseRegistrationRepository.findAllByStudentId(studentId).stream()
-                .map(this::mapToResponse)
+                .map(reg -> {
+                    CourseRegistrationResponse resp = mapToResponse(reg);
+                    resp.setIsFinished(finishedRegistrationIds.contains(reg.getId()));
+                    return resp;
+                })
                 .collect(Collectors.toList());
     }
 

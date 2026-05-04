@@ -69,16 +69,22 @@ public class AuthServiceImpl implements AuthService {
         CustomUserDetails userDetails = new CustomUserDetails(user, roles);
         String token = jwtService.generateToken(extraClaims, userDetails);
 
-        // Xác định ID đại diện (Ưu tiên StudentID nếu là SINHVIEN)
+        // Xác định ID đại diện và DepartmentID
         java.util.UUID profileId = user.getId();
+        java.util.UUID departmentId = null;
+
         if (roles.contains("SINHVIEN")) {
-            profileId = studentRepository.findByUserId(user.getId())
-                    .map(s -> s.getId())
-                    .orElse(user.getId());
+            var student = studentRepository.findByUserId(user.getId()).orElse(null);
+            if (student != null) {
+                profileId = student.getId();
+                if (student.getDepartment() != null) departmentId = student.getDepartment().getId();
+            }
         } else if (roles.contains("GIANGVIEN") || roles.contains("GIAOVU") || roles.contains("ADMIN")) {
-            profileId = employeeRepository.findByUserId(user.getId())
-                    .map(e -> e.getId())
-                    .orElse(user.getId());
+            var employee = employeeRepository.findByUserId(user.getId()).orElse(null);
+            if (employee != null) {
+                profileId = employee.getId();
+                if (employee.getDepartment() != null) departmentId = employee.getDepartment().getId();
+            }
         }
 
         return AuthenticationResponse.builder()
@@ -91,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
                         .email(user.getEmail())
                         .avatarUrl(user.getAvatarUrl())
                         .roles(roles)
+                        .departmentId(departmentId)
                         .build())
                 .build();
     }

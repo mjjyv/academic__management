@@ -32,12 +32,19 @@ public class ScheduleController {
         return ApiResponse.success(scheduleService.getLecturerSchedule(userId), "Lấy lịch dạy thành công");
     }
 
+    @GetMapping("/department/{departmentId}")
+    public ApiResponse<List<ScheduleResponse>> getForDepartment(@PathVariable UUID departmentId) {
+        return ApiResponse.success(scheduleService.getDepartmentSchedule(departmentId), "Lấy lịch học khoa thành công");
+    }
+
     @PostMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU', 'GIANGVIEN')")
     public ApiResponse<ScheduleResponse> create(@RequestBody ScheduleRequest request) {
         return ApiResponse.success(scheduleService.createSchedule(request), "Tạo lịch học thành công");
     }
 
     @DeleteMapping("/{scheduleId}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'GIAOVU', 'GIANGVIEN')")
     public ApiResponse<Void> delete(@PathVariable UUID scheduleId) {
         scheduleService.deleteSchedule(scheduleId);
         return ApiResponse.success(null, "Xóa lịch học thành công");

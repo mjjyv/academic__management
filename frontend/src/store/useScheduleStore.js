@@ -33,6 +33,30 @@ const useScheduleStore = create((set, get) => ({
         }
     },
 
+    fetchDepartmentSchedule: async (deptId) => {
+        set({ loading: true });
+        try {
+            const res = await scheduleApi.getDepartmentSchedule(deptId);
+            if (res.success) set({ schedules: res.data });
+        } catch (err) {
+            toast.error("Lỗi khi tải lịch học khoa");
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    fetchSectionSchedule: async (sectionId) => {
+        set({ loading: true });
+        try {
+            const res = await scheduleApi.getScheduleBySection(sectionId);
+            if (res.success) set({ schedules: res.data });
+        } catch (err) {
+            toast.error("Lỗi khi tải lịch học lớp học phần");
+        } finally {
+            set({ loading: false });
+        }
+    },
+
     fetchInfrastructure: async () => {
         try {
             const [slotsRes, buildingsRes] = await Promise.all([

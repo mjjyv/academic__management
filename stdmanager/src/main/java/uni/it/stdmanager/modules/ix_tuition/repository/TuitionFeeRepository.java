@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface TuitionFeeRepository extends JpaRepository<TuitionFee, UUID> {
     Optional<TuitionFee> findFirstByCourseYearAndFeeTypeAndIsActiveTrueOrderByEffectiveDateDesc(
             String courseYear, String feeType);
+
+    Optional<TuitionFee> findFirstByAdmissionYearAndFeeTypeAndIsActiveTrueOrderByEffectiveDateDesc(
+            Integer admissionYear, String feeType);
 }

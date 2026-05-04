@@ -5,12 +5,16 @@ import useAuthStore from '../../store/useAuthStore';
 import SemesterFormModal from '../../components/SemesterFormModal';
 import SectionFormModal from '../../components/SectionFormModal';
 import SectionDetailModal from '../../components/SectionDetailModal';
+import ScheduleFormModal from '../../components/ScheduleFormModal';
 import toast from 'react-hot-toast';
 
 const AcademicOverviewPage = () => {
     const [semesters, setSemesters] = useState([]);
     const [selectedSemester, setSelectedSemester] = useState(null);
     const [sections, setSections] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [selectedDeptId, setSelectedDeptId] = useState('all');
+    const [showOnlyMine, setShowOnlyMine] = useState(false);
     const [loadingSemesters, setLoadingSemesters] = useState(true);
     const [loadingSections, setLoadingSections] = useState(false);
 
@@ -24,11 +28,18 @@ const AcademicOverviewPage = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedSectionForDetail, setSelectedSectionForDetail] = useState(null);
 
+    const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+    const [selectedSectionForSchedule, setSelectedSectionForSchedule] = useState(null);
+
     const user = useAuthStore((state) => state.user);
     const canManage = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
+    const isLecturer = user?.roles?.includes('GIANGVIEN');
 
     useEffect(() => {
         fetchSemesters();
+        if (canManage) {
+            fetchDepartments();
+        }
     }, []);
 
     useEffect(() => {
@@ -37,7 +48,23 @@ const AcademicOverviewPage = () => {
         } else {
             setSections([]);
         }
-    }, [selectedSemester]);
+    }, [selectedSemester, selectedDeptId, showOnlyMine]);
+
+    const fetchDepartments = async () => {
+        try {
+            const { departmentApi } = await import('../../api/departmentApi');
+            const res = await departmentApi.getAllActive();
+            if (res.success) {
+                setDepartments(res.data);
+                // Default to user's department if available
+                if (user?.departmentId && !selectedDeptId) {
+                    setSelectedDeptId(user.departmentId);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching departments", error);
+        }
+    };
 
     const fetchSemesters = async () => {
         setLoadingSemesters(true);
@@ -65,7 +92,24 @@ const AcademicOverviewPage = () => {
     const fetchSections = async (semesterId) => {
         setLoadingSections(true);
         try {
-            const res = await semesterApi.getSectionsBySemester(semesterId);
+            let res;
+            if ((isLecturer && !canManage) || (isLecturer && canManage && showOnlyMine)) {
+                // Task 2: Lecturer only sees assigned sections
+                res = await semesterApi.getSectionsByLecturer(user.id);
+                if (res.success) {
+                    res.data = res.data.filter(s => s.semesterId === semesterId);
+                }
+            } else if (canManage && selectedDeptId !== 'all') {
+                // Task 1: Admin/Giaovu manages by Department
+                res = await semesterApi.getSectionsByDepartment(selectedDeptId);
+                // Filter by semester if needed (since backend returns all for dept)
+                if (res.success) {
+                    res.data = res.data.filter(s => s.semesterId === semesterId);
+                }
+            } else {
+                res = await semesterApi.getSectionsBySemester(semesterId);
+            }
+
             if (res.success) {
                 setSections(res.data);
             }
@@ -136,6 +180,11 @@ const AcademicOverviewPage = () => {
     const handleViewDetail = (section) => {
         setSelectedSectionForDetail(section);
         setIsDetailModalOpen(true);
+    };
+
+    const handleManageSchedule = (section) => {
+        setSelectedSectionForSchedule(section);
+        setIsScheduleModalOpen(true);
     };
 
     return (
@@ -229,6 +278,31 @@ const AcademicOverviewPage = () => {
                     </div>
 
                     <div className="flex gap-2">
+                        {canManage && (
+                            <select 
+                                value={selectedDeptId}
+                                onChange={(e) => setSelectedDeptId(e.target.value)}
+                                className="px-4 py-2.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all shadow-sm"
+                            >
+                                <option value="all">Tất cả các Khoa</option>
+                                {departments.map(dept => (
+                                    <option key={dept.id} value={dept.id}>{dept.name}</option>
+                                ))}
+                            </select>
+                        )}
+                        {isLecturer && (
+                            <button
+                                onClick={() => setShowOnlyMine(!showOnlyMine)}
+                                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all border ${
+                                    showOnlyMine 
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200' 
+                                    : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'
+                                }`}
+                            >
+                                <Users size={18} />
+                                {showOnlyMine ? 'Đang xem lớp của tôi' : 'Xem lớp của tôi'}
+                            </button>
+                        )}
                         {canManage && (
                             <button 
                                 onClick={handleAddSection}
@@ -349,6 +423,14 @@ const AcademicOverviewPage = () => {
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 section={selectedSectionForDetail}
+                onManageSchedule={canManage || isLecturer ? handleManageSchedule : null}
+            />
+
+            <ScheduleFormModal
+                isOpen={isScheduleModalOpen}
+                onClose={() => setIsScheduleModalOpen(false)}
+                section={selectedSectionForSchedule}
+                onUpdate={() => fetchSections(selectedSemester.id)}
             />
         </div>
     );

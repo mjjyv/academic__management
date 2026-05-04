@@ -23,4 +23,5 @@ public class StudentSummaryResponse {
     private String letterGrade;
     private Double gpaValue;
     private String result; // PASS, FAIL
+    private Boolean isFinalized;
 }

@@ -10,6 +10,12 @@ export const semesterApi = {
     getSectionsBySemester: (semesterId) => {
         return axiosClient.get(`/course-sections/semester/${semesterId}`);
     },
+    getSectionsByLecturer: (lecturerId) => {
+        return axiosClient.get(`/course-sections/lecturer/${lecturerId}`);
+    },
+    getSectionsByDepartment: (departmentId) => {
+        return axiosClient.get(`/course-sections/department/${departmentId}`);
+    },
     getSectionById: (id) => {
         return axiosClient.get(`/course-sections/${id}`);
     },

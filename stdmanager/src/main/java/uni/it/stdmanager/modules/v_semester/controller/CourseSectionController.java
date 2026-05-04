@@ -28,6 +28,18 @@ public class CourseSectionController {
         return ApiResponse.success(courseSectionService.getSectionsBySemester(semesterId), "Lấy danh sách lớp học phần thành công");
     }
 
+    @GetMapping("/lecturer/{lecturerId}")
+    @Operation(summary = "4a. Danh sách lớp học phần theo giảng viên")
+    public ApiResponse<List<CourseSectionResponse>> getSectionsByLecturer(@PathVariable UUID lecturerId) {
+        return ApiResponse.success(courseSectionService.getSectionsByLecturer(lecturerId), "Lấy danh sách lớp học phần thành công");
+    }
+
+    @GetMapping("/department/{departmentId}")
+    @Operation(summary = "4b. Danh sách lớp học phần theo khoa")
+    public ApiResponse<List<CourseSectionResponse>> getSectionsByDepartment(@PathVariable UUID departmentId) {
+        return ApiResponse.success(courseSectionService.getSectionsByDepartment(departmentId), "Lấy danh sách lớp học phần thành công");
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "5. Chi tiết lớp học phần")
     public ApiResponse<CourseSectionResponse> getSectionById(@PathVariable UUID id) {

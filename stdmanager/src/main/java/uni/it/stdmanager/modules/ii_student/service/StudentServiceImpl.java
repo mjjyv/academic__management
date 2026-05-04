@@ -95,7 +95,6 @@ public class StudentServiceImpl implements StudentService {
         Student student = Student.builder()
                 .user(user)
                 .studentCode(request.getStudentCode())
-                .fullName(request.getFullName())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
                 .personalIdentificationNumber(request.getPersonalIdentificationNumber())
@@ -130,7 +129,7 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên"));
 
         if (request.getFullName() != null)
-            student.setFullName(request.getFullName());
+            student.getUser().setFullName(request.getFullName());
         if (request.getDateOfBirth() != null)
             student.setDateOfBirth(request.getDateOfBirth());
         if (request.getGender() != null)

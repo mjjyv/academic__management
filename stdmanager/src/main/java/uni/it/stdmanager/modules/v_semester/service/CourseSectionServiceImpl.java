@@ -14,6 +14,8 @@ import uni.it.stdmanager.modules.v_semester.entity.Semester;
 import uni.it.stdmanager.modules.v_semester.repository.CourseSectionRepository;
 import uni.it.stdmanager.modules.v_semester.repository.SemesterRepository;
 
+import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class CourseSectionServiceImpl implements CourseSectionService {
 
     private final CourseSectionRepository courseSectionRepository;
+    private final CourseRegistrationRepository courseRegistrationRepository;
     private final CourseRepository courseRepository;
     private final SemesterRepository semesterRepository;
     private final EmployeeRepository employeeRepository;
@@ -31,6 +34,20 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     @Override
     public List<CourseSectionResponse> getSectionsBySemester(UUID semesterId) {
         return courseSectionRepository.findAllBySemesterId(semesterId).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseSectionResponse> getSectionsByLecturer(UUID lecturerId) {
+        return courseSectionRepository.findAllByLecturerId(lecturerId).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseSectionResponse> getSectionsByDepartment(UUID departmentId) {
+        return courseSectionRepository.findAllByCourseDepartmentId(departmentId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -144,7 +161,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
                 .buildingId(section.getBuildingId())
                 .maxStudents(section.getMaxStudents())
                 .minStudents(section.getMinStudents())
-                .currentStudents(0) // Logic đăng ký sẽ xử lý phần này
+                .currentStudents((int) courseRegistrationRepository.countByCourseSectionIdAndStatus(section.getId(), 1)) // Get actual registered students count
                 .classType(section.getClassType())
                 .status(section.getStatus())
                 .registrationStart(section.getRegistrationStart())

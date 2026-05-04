@@ -23,5 +23,6 @@ public class AuthenticationResponse {
         private String email;
         private String avatarUrl;
         private Set<String> roles;
+        private java.util.UUID departmentId;
     }
 }

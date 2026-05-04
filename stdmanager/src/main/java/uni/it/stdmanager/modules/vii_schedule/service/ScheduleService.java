@@ -10,6 +10,7 @@ public interface ScheduleService {
     List<ScheduleResponse> getSchedulesBySection(UUID sectionId);
     List<ScheduleResponse> getStudentSchedule(UUID studentId);
     List<ScheduleResponse> getLecturerSchedule(UUID userId);
+    List<ScheduleResponse> getDepartmentSchedule(UUID departmentId);
     ScheduleResponse createSchedule(ScheduleRequest request);
     void deleteSchedule(UUID scheduleId);
 }

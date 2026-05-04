@@ -141,6 +141,12 @@ public class GradeServiceImpl implements GradeService {
         CourseRegistration registration = courseRegistrationRepository.findById(registrationId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
+        // Kiểm tra khóa điểm
+        Optional<StudentSummary> summaryOpt = studentSummaryRepository.findByRegistrationId(registrationId);
+        if (summaryOpt.isPresent() && summaryOpt.get().getIsFinalized()) {
+            throw new RuntimeException("Điểm đã được chốt, không thể sửa đổi.");
+        }
+
         for (GradeUpdateRequest.ComponentGradeInput input : request.getGrades()) {
             GradeComponent component = gradeComponentRepository.findById(input.getComponentId())
                     .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
@@ -204,6 +210,7 @@ public class GradeServiceImpl implements GradeService {
                 .letterGrade(summary.getLetterGrade())
                 .gpaValue(summary.getGpaValue() != null ? summary.getGpaValue().doubleValue() : null)
                 .result(summary.getResult())
+                .isFinalized(summary.getIsFinalized())
                 .build();
     }
 

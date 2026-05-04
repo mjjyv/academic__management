@@ -20,4 +20,7 @@ public class CoursePrerequisite extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prerequisite_course_id")
     private Course prerequisiteCourse;
+
+    @Column(name = "prerequisite_type", length = 50)
+    private String prerequisiteType;
 }

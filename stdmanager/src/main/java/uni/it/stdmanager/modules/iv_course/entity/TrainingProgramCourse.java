@@ -41,6 +41,12 @@ public class TrainingProgramCourse extends BaseEntity {
     @Column(name = "group_code", length = 50)
     private String groupCode;
 
+    @Column(name = "is_elective")
+    private Boolean isElective;
+
+    @Column(name = "elective_group_code", length = 50)
+    private String electiveGroupCode;
+
     @Column(name = "credits", precision = 5, scale = 1)
     private BigDecimal credits;
 

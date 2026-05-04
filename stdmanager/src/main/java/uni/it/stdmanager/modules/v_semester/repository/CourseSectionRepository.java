@@ -13,4 +13,9 @@ public interface CourseSectionRepository extends JpaRepository<CourseSection, UU
     Optional<CourseSection> findByClassCode(String classCode);
     List<CourseSection> findAllBySemesterId(UUID semesterId);
     List<CourseSection> findAllByLecturerId(UUID lecturerId);
+    List<CourseSection> findAllByCourseDepartmentId(UUID departmentId);
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("SELECT c FROM CourseSection c WHERE c.id = :id")
+    Optional<CourseSection> findByIdWithLock(@org.springframework.data.repository.query.Param("id") UUID id);
 }

@@ -24,6 +24,18 @@ UPDATE course_sections
 SET lecturer_id = @GV_An, status = 'finished'
 WHERE class_code = 'INT2203.01';
 
+UPDATE course_sections 
+SET lecturer_id = @GV_Kien, status = 'finished'
+WHERE class_code = 'INT1302.02';
+
+UPDATE course_sections 
+SET lecturer_id = @GV_Huong, status = 'finished'
+WHERE class_code = 'INT1304.02';
+
+UPDATE course_sections 
+SET lecturer_id = @GV_An, status = 'finished'
+WHERE class_code = 'INT2203.02';
+
 -- ======================================================================
 -- 2. ĐĂNG KÝ HỌC PHẦN CHO SINH VIÊN K25 (BỔ SUNG NẾU THIẾU)
 -- ======================================================================
@@ -38,7 +50,7 @@ INSERT INTO course_registrations (id, student_id, course_section_id, registratio
 SELECT NEWID(), s.id, sec.id, @Period_HK2, 1, GETDATE(), 1, 1, GETDATE(), GETDATE()
 FROM students s
 CROSS JOIN (
-    SELECT id FROM course_sections WHERE class_code IN ('INT1302.01', 'INT1304.01', 'INT2203.01')
+    SELECT id FROM course_sections WHERE class_code IN ('INT1302.01', 'INT1304.01', 'INT2203.01', 'INT1302.02', 'INT1304.02', 'INT2203.02')
 ) sec
 WHERE s.student_code LIKE 'SV2025%'
 AND @Period_HK2 IS NOT NULL

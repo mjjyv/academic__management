@@ -79,11 +79,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = Employee.builder()
                 .user(user)
                 .employeeCode(request.getEmployeeCode())
-                .fullName(request.getFullName())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
-                .email(request.getEmail())
-                .phone(request.getPhone())
                 .address(request.getAddress())
                 .department(department)
                 .position(position)
@@ -106,11 +103,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // Không cho phép đổi employeeCode ở đây (hoặc check trùng nếu cho phép)
         
-        employee.setFullName(request.getFullName());
         employee.setDateOfBirth(request.getDateOfBirth());
         employee.setGender(request.getGender());
-        employee.setEmail(request.getEmail());
-        employee.setPhone(request.getPhone());
         employee.setAddress(request.getAddress());
         employee.setHireDate(request.getHireDate());
         employee.setContractType(request.getContractType());

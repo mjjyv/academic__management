@@ -24,20 +24,11 @@ public class Employee extends BaseEntity {
     @Column(name = "employee_code", nullable = false, unique = true, length = 20)
     private String employeeCode;
 
-    @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
-
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @Column(name = "gender", length = 10)
     private String gender;
-
-    @Column(name = "email", length = 100)
-    private String email;
-
-    @Column(name = "phone", length = 20)
-    private String phone;
 
     @Column(name = "address", length = 255)
     private String address;
@@ -67,4 +58,16 @@ public class Employee extends BaseEntity {
 
     @Column(name = "specialization", length = 255)
     private String specialization;
+
+    public String getFullName() {
+        return user != null ? user.getFullName() : null;
+    }
+
+    public String getEmail() {
+        return user != null ? user.getEmail() : null;
+    }
+
+    public String getPhone() {
+        return user != null ? user.getPhone() : null;
+    }
 }

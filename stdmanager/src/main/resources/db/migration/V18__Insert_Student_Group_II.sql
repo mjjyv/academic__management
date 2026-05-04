@@ -52,7 +52,7 @@ DECLARE @Class_K25B UNIQUEIDENTIFIER = (SELECT class_id FROM @GeneratedClasses W
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250001')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250001', @PassHash, N'Nguyễn Văn Một', 'mot.nv20250001@stdmanager.edu.vn', '0911111111', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250001', @PassHash, N'Nguyễn Văn Một', 'mot.nv20250001@std.edu.vn', '0911111111', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
@@ -63,7 +63,7 @@ FROM @GeneratedUsers WHERE username = 'sv20250001';
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250002')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250002', @PassHash, N'Trần Thị Hai', 'hai.tt20250002@stdmanager.edu.vn', '0922222222', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250002', @PassHash, N'Trần Thị Hai', 'hai.tt20250002@std.edu.vn', '0922222222', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
@@ -74,7 +74,7 @@ FROM @GeneratedUsers WHERE username = 'sv20250002';
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250003')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250003', @PassHash, N'Lê Văn Ba', 'ba.lv20250003@stdmanager.edu.vn', '0933333333', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250003', @PassHash, N'Lê Văn Ba', 'ba.lv20250003@std.edu.vn', '0933333333', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
@@ -85,7 +85,7 @@ FROM @GeneratedUsers WHERE username = 'sv20250003';
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250004')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250004', @PassHash, N'Phạm Thị Bốn', 'bon.pt20250004@stdmanager.edu.vn', '0944444444', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250004', @PassHash, N'Phạm Thị Bốn', 'bon.pt20250004@std.edu.vn', '0944444444', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
@@ -96,7 +96,7 @@ FROM @GeneratedUsers WHERE username = 'sv20250004';
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250005')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250005', @PassHash, N'Hoàng Văn Năm', 'nam.hv20250005@stdmanager.edu.vn', '0955555555', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250005', @PassHash, N'Hoàng Văn Năm', 'nam.hv20250005@std.edu.vn', '0955555555', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents
@@ -107,7 +107,7 @@ FROM @GeneratedUsers WHERE username = 'sv20250005';
 IF NOT EXISTS (SELECT 1 FROM users WHERE username = 'sv20250006')
     INSERT INTO users (id, username, password_hash, full_name, email, phone, is_active, created_at, updated_at)
     OUTPUT INSERTED.username, INSERTED.id, INSERTED.full_name INTO @GeneratedUsers
-    VALUES (NEWID(), 'sv20250006', @PassHash, N'Đặng Thị Sáu', 'sau.dt20250006@stdmanager.edu.vn', '0966666666', 1, GETDATE(), GETDATE());
+    VALUES (NEWID(), 'sv20250006', @PassHash, N'Đặng Thị Sáu', 'sau.dt20250006@std.edu.vn', '0966666666', 1, GETDATE(), GETDATE());
 
 INSERT INTO students (id, user_id, student_code, full_name, date_of_birth, gender, department_id, major_id, program_id, class_id, admission_year, is_active, created_at, updated_at)
 OUTPUT INSERTED.student_code, INSERTED.id, INSERTED.user_id INTO @GeneratedStudents

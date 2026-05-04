@@ -35,4 +35,10 @@ public class StudentSummary extends BaseEntity {
     @Column(name = "is_finalized")
     @Builder.Default
     private Boolean isFinalized = false;
+
+    @Column(name = "locked_at")
+    private java.time.LocalDateTime lockedAt;
+
+    @Column(name = "locked_by")
+    private java.util.UUID lockedBy;
 }

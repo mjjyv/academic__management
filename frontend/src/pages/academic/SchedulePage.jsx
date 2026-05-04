@@ -2,20 +2,79 @@ import React, { useEffect } from 'react';
 import { Calendar, Clock, MapPin, User, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import useScheduleStore from '../../store/useScheduleStore';
 import useAuthStore from '../../store/useAuthStore';
+import ScheduleFormModal from '../../components/ScheduleFormModal';
+import { Settings } from 'lucide-react';
 
 const SchedulePage = () => {
-  const { schedules, loading, fetchStudentSchedule, fetchLecturerSchedule } = useScheduleStore();
+  const { schedules, loading, fetchStudentSchedule, fetchLecturerSchedule, fetchDepartmentSchedule, fetchSectionSchedule } = useScheduleStore();
   const { user } = useAuthStore();
+  
+  const [departments, setDepartments] = React.useState([]);
+  const [sections, setSections] = React.useState([]);
+  const [selectedDeptId, setSelectedDeptId] = React.useState(user?.departmentId || '');
+  const [selectedSectionId, setSelectedSectionId] = React.useState('');
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const isAdminOrStaff = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
+  const isLecturer = user?.roles?.includes('GIANGVIEN');
+  const canManage = isAdminOrStaff || isLecturer;
 
   useEffect(() => {
-    if (user) {
-      if (user.roles.includes('SINHVIEN')) {
-        fetchStudentSchedule(user.id);
-      } else if (user.roles.includes('GIANGVIEN')) {
-        fetchLecturerSchedule(user.id);
-      }
+    if (isAdminOrStaff) {
+      fetchDepartments();
     }
-  }, [user, fetchStudentSchedule, fetchLecturerSchedule]);
+    if (isLecturer) {
+      fetchLecturerSections();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAdminOrStaff && selectedDeptId) {
+      fetchSections(selectedDeptId);
+      fetchDepartmentSchedule(selectedDeptId);
+      setSelectedSectionId('');
+    }
+  }, [selectedDeptId]);
+
+  useEffect(() => {
+    if (canManage && selectedSectionId) {
+      fetchSectionSchedule(selectedSectionId);
+    } else if (isAdminOrStaff && selectedDeptId && !selectedSectionId) {
+      fetchDepartmentSchedule(selectedDeptId);
+    } else if (isLecturer && !selectedSectionId) {
+      fetchLecturerSchedule(user.id);
+    }
+  }, [selectedSectionId]);
+
+  useEffect(() => {
+    if (user && user.roles.includes('SINHVIEN')) {
+      fetchStudentSchedule(user.id);
+    }
+  }, [user]);
+
+  const fetchDepartments = async () => {
+    try {
+      const { departmentApi } = await import('../../api/departmentApi');
+      const res = await departmentApi.getAllActive();
+      if (res.success) setDepartments(res.data);
+    } catch (error) {}
+  };
+
+  const fetchSections = async (deptId) => {
+    try {
+      const { semesterApi } = await import('../../api/semesterApi');
+      const res = await semesterApi.getSectionsByDepartment(deptId);
+      if (res.success) setSections(res.data);
+    } catch (error) {}
+  };
+
+  const fetchLecturerSections = async () => {
+    try {
+      const { semesterApi } = await import('../../api/semesterApi');
+      const res = await semesterApi.getSectionsByLecturer(user.id);
+      if (res.success) setSections(res.data);
+    } catch (error) {}
+  };
 
   const days = [
     { label: 'Thứ 2', value: 2 },
@@ -39,19 +98,84 @@ const SchedulePage = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             <Calendar className="text-blue-600" />
-            Thời khóa biểu cá nhân
+            {user?.roles?.includes('SINHVIEN') ? 'Thời khóa biểu cá nhân' : 
+             user?.roles?.includes('GIANGVIEN') ? 'Lịch giảng dạy cá nhân' : 
+             'Lịch học khoa / đơn vị'}
           </h1>
-          <p className="text-sm text-gray-500">Theo dõi lịch học và giảng dạy trong tuần.</p>
+          <p className="text-sm text-gray-500">
+            {user?.roles?.includes('SINHVIEN') ? 'Theo dõi lịch học trong tuần.' : 
+             user?.roles?.includes('GIANGVIEN') ? 'Theo dõi lịch giảng dạy trong tuần.' : 
+             'Quản lý lịch học của khoa / đơn vị phụ trách.'}
+          </p>
         </div>
         
-        <div className="flex items-center gap-2 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
-          <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors"><ChevronLeft size={20} /></button>
-          <span className="text-sm font-bold px-4 text-gray-700">Tuần hiện tại</span>
-          <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors"><ChevronRight size={20} /></button>
+        <div className="flex items-center gap-3">
+          {canManage && (
+            <div className="flex gap-2 mr-4">
+              {isAdminOrStaff && (
+                <select 
+                  value={selectedDeptId}
+                  onChange={(e) => setSelectedDeptId(e.target.value)}
+                  className="px-3 py-2 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-700 outline-none shadow-sm"
+                >
+                  <option value="">-- Chọn Khoa --</option>
+                  {departments.map(dept => (
+                    <option key={dept.id} value={dept.id}>{dept.name}</option>
+                  ))}
+                </select>
+              )}
+              <select 
+                value={selectedSectionId}
+                onChange={(e) => setSelectedSectionId(e.target.value)}
+                className="px-3 py-2 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-700 outline-none shadow-sm min-w-[150px]"
+              >
+                <option value="">{isLecturer && !isAdminOrStaff ? 'Lịch giảng dạy tất cả lớp' : 'Tất cả Lớp học phần'}</option>
+                {sections.map(sec => (
+                  <option key={sec.id} value={sec.id}>{sec.classCode} - {sec.courseName}</option>
+                ))}
+              </select>
+
+              {selectedSectionId && (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-100"
+                >
+                  <Settings size={14} /> Quản lý lịch
+                </button>
+              )}
+            </div>
+          )}
+          <div className="flex items-center gap-2 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
+            <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors"><ChevronLeft size={20} /></button>
+            <span className="text-sm font-bold px-4 text-gray-700">Tuần hiện tại</span>
+            <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors"><ChevronRight size={20} /></button>
+          </div>
         </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <span>Học phần chính</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
+              <span>Học phần tự chọn</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <span>ONLINE</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+              <span>OFFLINE</span>
+            </div>
+          </div>
+          <div className="text-xs font-bold text-blue-600">Học kỳ 2025-2026</div>
+        </div>
+        
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
@@ -101,6 +225,12 @@ const SchedulePage = () => {
                                     <User size={10} /> {s.lecturerName}
                                   </div>
                                 </div>
+                                <div className="absolute bottom-1 right-1">
+                                  <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-tighter
+                                    ${s.mode === 'ONLINE' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                    {s.mode}
+                                  </span>
+                                </div>
                               </div>
                             );
                           })}
@@ -149,6 +279,13 @@ const SchedulePage = () => {
           </div>
         </div>
       </div>
+
+      <ScheduleFormModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        section={sections.find(s => s.id === selectedSectionId)}
+        onUpdate={() => fetchSectionSchedule(selectedSectionId)}
+      />
     </div>
   );
 };

@@ -24,7 +24,7 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"user", "studentClass", "department", "major", "program", "currentStatus"})
     @Query("SELECT s FROM Student s WHERE " +
-            "(:keyword IS NULL OR LOWER(s.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND "
+            "(:keyword IS NULL OR LOWER(s.user.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND "
             +
             "(:classId IS NULL OR s.studentClass.id = :classId) AND " +
             "(:statusId IS NULL OR s.currentStatus.id = :statusId)")

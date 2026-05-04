@@ -24,8 +24,17 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
     @Query("SELECT s FROM Schedule s " +
            "JOIN s.courseSection cs " +
            "JOIN cs.semester sem " +
-           "JOIN StudentCourseSection scs ON scs.courseSection.id = cs.id " +
-           "WHERE scs.student.id = :studentId " +
+           "JOIN CourseRegistration cr ON cr.courseSection.id = cs.id " +
+           "WHERE cr.student.id = :studentId " +
+           "AND cr.status = 1 " +
            "AND sem.isActive = true")
     List<Schedule> findCurrentSchedulesByStudentId(@Param("studentId") UUID studentId);
+
+    @Query("SELECT s FROM Schedule s " +
+           "JOIN s.courseSection cs " +
+           "JOIN cs.course c " +
+           "JOIN cs.semester sem " +
+           "WHERE c.department.id = :departmentId " +
+           "AND sem.isActive = true")
+    List<Schedule> findCurrentSchedulesByDepartmentId(@Param("departmentId") UUID departmentId);
 }

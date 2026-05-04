@@ -70,6 +70,10 @@ IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT2203')
     INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, department_id, is_active, created_at, updated_at, created_by, updated_by)
     VALUES (NEWID(), 'INT2203', N'Lập trình Hướng đối tượng (Java)', 3, 30, 30, @Dept_CNTT, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
+IF NOT EXISTS (SELECT 1 FROM courses WHERE course_code = 'INT2204')
+    INSERT INTO courses (id, course_code, course_name, credits, theory_hours, practice_hours, department_id, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), 'INT2204', N'Lập trình Web (Frontend)', 3, 30, 30, @Dept_CNTT, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
 -- ======================================================================
 -- 4. INSERT COURSE_PREREQUISITES (Tiền điều kiện học phần)
 -- ======================================================================
@@ -79,6 +83,7 @@ DECLARE @Course_CTDLGT UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_c
 DECLARE @Course_Toan UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'MAT1001');
 DECLARE @Course_AI UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'INT1304');
 DECLARE @Course_OOP UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'INT2203');
+DECLARE @Course_WEB UNIQUEIDENTIFIER = (SELECT id FROM courses WHERE course_code = 'INT2204');
 
 IF NOT EXISTS (SELECT 1 FROM course_prerequisites WHERE course_id = @Course_CTDLGT AND prerequisite_course_id = @Course_NhapMon)
     INSERT INTO course_prerequisites (id, course_id, prerequisite_course_id, is_active, created_at, updated_at, created_by, updated_by)
@@ -92,6 +97,10 @@ IF NOT EXISTS (SELECT 1 FROM course_prerequisites WHERE course_id = @Course_OOP 
     INSERT INTO course_prerequisites (id, course_id, prerequisite_course_id, is_active, created_at, updated_at, created_by, updated_by)
     VALUES (NEWID(), @Course_OOP, @Course_NhapMon, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 
+IF NOT EXISTS (SELECT 1 FROM course_prerequisites WHERE course_id = @Course_WEB AND prerequisite_course_id = @Course_NhapMon)
+    INSERT INTO course_prerequisites (id, course_id, prerequisite_course_id, is_active, created_at, updated_at, created_by, updated_by)
+    VALUES (NEWID(), @Course_WEB, @Course_NhapMon, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+
 -- ======================================================================
 -- 5. INSERT TRAINING_PROGRAM_COURSES (Gắn học phần vào chương trình)
 -- ======================================================================
@@ -102,12 +111,14 @@ DECLARE @Prog_TTNT UNIQUEIDENTIFIER = (SELECT id FROM training_programs WHERE pr
 -- KTPM Courses (Kỳ 1 và 2)
 IF @Prog_KTPM IS NOT NULL
 BEGIN
-    INSERT INTO training_program_courses (id, training_program_id, course_id, course_code, course_name, semester, year, is_required, group_code, credits, is_prerequisite_required, is_active, created_at, updated_at, created_by, updated_by)
+    INSERT INTO training_program_courses
+    (id, training_program_id, course_id, course_code, course_name, semester, year, is_required, group_code, credits, is_prerequisite_required, is_active, created_at, updated_at, created_by, updated_by)
     VALUES 
     (NEWID(), @Prog_KTPM, @Course_NhapMon, 'INT1301', N'Nhập môn Lập trình', 1, 1, 1, 'CK_NGANH', 3, 0, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId),
     (NEWID(), @Prog_KTPM, @Course_Toan, 'MAT1001', N'Toán rời rạc', 1, 1, 1, 'CK_NGANH', 3, 0, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId),
     (NEWID(), @Prog_KTPM, @Course_CTDLGT, 'INT1302', N'Cấu trúc Dữ liệu & Giải thuật', 2, 1, 1, 'CK_NGANH', 4, 1, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId),
-    (NEWID(), @Prog_KTPM, @Course_OOP, 'INT2203', N'Lập trình Hướng đối tượng', 2, 1, 1, 'CK_NGANH', 3, 1, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
+    (NEWID(), @Prog_KTPM, @Course_OOP, 'INT2203', N'Lập trình Hướng đối tượng', 2, 1, 1, 'CK_NGANH', 3, 1, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId),
+    (NEWID(), @Prog_KTPM, @Course_WEB, 'INT2204', N'Lập trình Web (Frontend)', 2, 1, 1, 'CK_NGANH', 3, 1, 1, GETDATE(), GETDATE(), @AdminUserId, @AdminUserId);
 END
 
 -- TTNT Courses (Kỳ 1 và 2)

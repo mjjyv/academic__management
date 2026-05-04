@@ -23,6 +23,9 @@ public class TuitionFee extends BaseEntity {
     @Column(name = "course_year", length = 10)
     private String courseYear;
 
+    @Column(name = "admission_year")
+    private Integer admissionYear;
+
     @Column(name = "price_per_credit")
     private BigDecimal pricePerCredit;
 

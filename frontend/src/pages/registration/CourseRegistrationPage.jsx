@@ -17,6 +17,7 @@ const CourseRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReg, setSelectedReg] = useState(null); // Cho modal chi tiết
+  const [regTab, setRegTab] = useState('unpaid'); // 'unpaid' hoặc 'paid'
 
   // 1. Khởi tạo dữ liệu
   useEffect(() => {
@@ -131,9 +132,9 @@ const CourseRegistrationPage = () => {
   const maxCredits = selectedPeriod?.maxCredits || 24;
   const progressWidth = Math.min((totalCredits / maxCredits) * 100, 100);
 
-  // Tính toán học phí dự kiến (Chỉ tính các khoản chưa nộp)
+  // Tính toán học phí dự kiến (Chỉ tính các khoản chưa nộp và CHƯA hoàn thành)
   const unpaidAmount = currentRegistrations
-    .filter(r => r.status !== 3 && !r.isPaid)
+    .filter(r => r.status !== 3 && !r.isPaid && !r.isFinished)
     .reduce((acc, curr) => {
       const price = curr.registrationType === 1 ? 500000 : 750000;
       return acc + (curr.credits * price);
@@ -424,15 +425,43 @@ const CourseRegistrationPage = () => {
               </div>
               Lớp đã chọn
             </h2>
+
+            {/* Tabs phân loại */}
+            <div className="flex bg-gray-100 p-1 rounded-2xl mb-6">
+              <button
+                onClick={() => setRegTab('unpaid')}
+                className={`flex-1 py-2 text-[10px] font-black rounded-xl transition-all ${
+                  regTab === 'unpaid' 
+                  ? 'bg-white text-orange-600 shadow-sm' 
+                  : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                CHƯA THANH TOÁN ({currentRegistrations.filter(r => r.status !== 3 && !r.isPaid && !r.isFinished).length})
+              </button>
+              <button
+                onClick={() => setRegTab('paid')}
+                className={`flex-1 py-2 text-[10px] font-black rounded-xl transition-all ${
+                  regTab === 'paid' 
+                  ? 'bg-white text-green-600 shadow-sm' 
+                  : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                ĐÃ THANH TOÁN ({currentRegistrations.filter(r => r.status !== 3 && r.isPaid && !r.isFinished).length})
+              </button>
+            </div>
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-              {currentRegistrations.filter(r => r.status !== 3).length === 0 ? (
+              {currentRegistrations.filter(r => r.status !== 3 && !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid)).length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 opacity-30">
                   <BookOpen size={48} className="mb-4" />
-                  <p className="text-sm font-black italic">Chưa có môn nào</p>
+                  <p className="text-sm font-black italic">
+                    {regTab === 'paid' ? 'Chưa có lớp nào đã thanh toán' : 'Không có lớp nào chưa thanh toán'}
+                  </p>
                 </div>
               ) : (
-                currentRegistrations.filter(r => r.status !== 3).map(reg => (
+                currentRegistrations
+                  .filter(r => r.status !== 3 && !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid))
+                  .map(reg => (
                   <div key={reg.id} className="p-5 bg-gray-50/50 rounded-2xl border border-gray-100 group hover:border-blue-200 transition-colors relative">
                     <div className="absolute -right-2 -top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-10">
                       <button 

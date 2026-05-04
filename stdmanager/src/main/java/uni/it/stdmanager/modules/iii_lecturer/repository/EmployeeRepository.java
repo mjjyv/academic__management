@@ -23,7 +23,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     @EntityGraph(attributePaths = {"user", "department", "position"})
     @Query("SELECT e FROM Employee e WHERE " +
-            "(:keyword IS NULL OR LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(e.employeeCode) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+            "(:keyword IS NULL OR LOWER(e.user.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(e.employeeCode) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
             "(:departmentId IS NULL OR e.department.id = :departmentId) AND " +
             "(:positionId IS NULL OR e.position.id = :positionId)")
     Page<Employee> searchEmployees(@Param("keyword") String keyword,

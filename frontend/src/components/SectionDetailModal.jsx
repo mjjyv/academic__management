@@ -1,6 +1,6 @@
 import { X, Calendar, MapPin, Users, Book, Hash, Info, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
 
-const SectionDetailModal = ({ isOpen, onClose, section }) => {
+const SectionDetailModal = ({ isOpen, onClose, section, onManageSchedule }) => {
     if (!isOpen || !section) return null;
 
     const getStatusColor = (status) => {
@@ -42,9 +42,19 @@ const SectionDetailModal = ({ isOpen, onClose, section }) => {
                             <h2 className="text-xl font-extrabold text-gray-900 mt-1">{section.courseName}</h2>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-full transition-all">
-                        <X size={20} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {onManageSchedule && (
+                            <button 
+                                onClick={() => onManageSchedule(section)}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all border border-blue-100"
+                            >
+                                <Calendar size={14} /> Quản lý lịch học
+                            </button>
+                        )}
+                        <button onClick={onClose} className="p-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-full transition-all">
+                            <X size={20} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="p-8">

@@ -55,6 +55,21 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM course_sections WHERE class_code = 'INT2203.01')
         INSERT INTO course_sections (id, class_code, course_id, semester_id, academic_year, max_students, min_students, status, class_type, room_id, building_id)
         VALUES (NEWID(), 'INT2203.01', @Course_OOP, @Semester_HK2_2526, '2025-2026', 40, 10, 'open', 'theory', (SELECT id FROM rooms WHERE room_code = 'PHONG_LAB1'), (SELECT id FROM buildings WHERE building_code = 'TOA_T3'));
+    
+    -- Lớp Cấu trúc dữ liệu
+    IF NOT EXISTS (SELECT 1 FROM course_sections WHERE class_code = 'INT1302.02')
+        INSERT INTO course_sections (id, class_code, course_id, semester_id, academic_year, max_students, min_students, status, class_type, room_id, building_id)
+        VALUES (NEWID(), 'INT1302.02', @Course_CTDL, @Semester_HK2_2526, '2025-2026', 40, 10, 'open', 'theory', (SELECT id FROM rooms WHERE room_code = 'PHONG_LAB1'), (SELECT id FROM buildings WHERE building_code = 'TOA_T3'));
+
+    -- Lớp Nhập môn AI
+    IF NOT EXISTS (SELECT 1 FROM course_sections WHERE class_code = 'INT1304.02')
+        INSERT INTO course_sections (id, class_code, course_id, semester_id, academic_year, max_students, min_students, status, class_type, room_id, building_id)
+        VALUES (NEWID(), 'INT1304.02', @Course_AI, @Semester_HK2_2526, '2025-2026', 40, 10, 'open', 'theory', (SELECT id FROM rooms WHERE room_code = 'PHONG_LAB1'), (SELECT id FROM buildings WHERE building_code = 'TOA_T3'));
+
+    -- Lớp Lập trình Hướng đối tượng
+    IF NOT EXISTS (SELECT 1 FROM course_sections WHERE class_code = 'INT2203.02')
+        INSERT INTO course_sections (id, class_code, course_id, semester_id, academic_year, max_students, min_students, status, class_type, room_id, building_id)
+        VALUES (NEWID(), 'INT2203.02', @Course_OOP, @Semester_HK2_2526, '2025-2026', 40, 10, 'open', 'theory', (SELECT id FROM rooms WHERE room_code = 'PHONG_LAB1'), (SELECT id FROM buildings WHERE building_code = 'TOA_T3'));
 END
 
 -- ======================================================================
@@ -63,26 +78,47 @@ END
 
 DECLARE @GV_Kien UNIQUEIDENTIFIER = (SELECT id FROM employees WHERE employee_code = 'GV001');
 DECLARE @GV_Huong UNIQUEIDENTIFIER = (SELECT id FROM employees WHERE employee_code = 'GV002');
-DECLARE @S_CTDL UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.01');
-DECLARE @S_AI UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.01');
-DECLARE @S_OOP UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.01');
+DECLARE @S_CTDL1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.01');
+DECLARE @S_AI1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.01');
+DECLARE @S_OOP1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.01');
+DECLARE @S_CTDL2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.02');
+DECLARE @S_AI2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.02');
+DECLARE @S_OOP2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.02');
 
 IF @GV_Kien IS NOT NULL
 BEGIN
-    IF @S_CTDL IS NOT NULL
+    IF @S_CTDL1 IS NOT NULL
         INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
-        VALUES (NEWID(), @GV_Kien, @S_CTDL, N'Giảng viên chính', 1);
+        VALUES (NEWID(), @GV_Kien, @S_CTDL1, N'Giảng viên chính', 1);
 
-    IF @S_AI IS NOT NULL
+    IF @S_AI1 IS NOT NULL
         INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
-        VALUES (NEWID(), @GV_Kien, @S_AI, N'Giảng viên chính', 1);
+        VALUES (NEWID(), @GV_Kien, @S_AI1, N'Giảng viên chính', 1);
 END
 
 IF @GV_Huong IS NOT NULL
 BEGIN
-    IF @S_OOP IS NOT NULL
+    IF @S_OOP1 IS NOT NULL
         INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
-        VALUES (NEWID(), @GV_Huong, @S_OOP, N'Giảng viên chính', 1);
+        VALUES (NEWID(), @GV_Huong, @S_OOP1, N'Giảng viên chính', 1);
+END
+
+IF @GV_Kien IS NOT NULL
+BEGIN
+    IF @S_CTDL2 IS NOT NULL
+        INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
+        VALUES (NEWID(), @GV_Kien, @S_CTDL2, N'Giảng viên chính', 1);
+
+    IF @S_AI2 IS NOT NULL
+        INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
+        VALUES (NEWID(), @GV_Kien, @S_AI2, N'Giảng viên chính', 1);
+END
+
+IF @GV_Huong IS NOT NULL
+BEGIN
+    IF @S_OOP2 IS NOT NULL
+        INSERT INTO lecturer_course_sections (id, lecturer_id, course_section_id, role, is_active)
+        VALUES (NEWID(), @GV_Huong, @S_OOP2, N'Giảng viên chính', 1);
 END
 
 GO

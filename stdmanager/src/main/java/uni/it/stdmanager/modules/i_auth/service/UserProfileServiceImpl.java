@@ -94,21 +94,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         userRepository.save(user);
 
         // Đồng bộ với hồ sơ liên kết (nếu có)
-        studentRepository.findByUserId(user.getId()).ifPresent(student -> {
-            if (canEditSensitiveInfo) {
-                student.setFullName(request.getFullName());
-                studentRepository.save(student);
-            }
-        });
+        // Không cần set fullName, email, phone vì đã lưu vào User entity và Employee/Student fetch từ User
 
-        employeeRepository.findByUserId(user.getId()).ifPresent(employee -> {
-            if (canEditSensitiveInfo) {
-                employee.setFullName(request.getFullName());
-                employee.setEmail(request.getEmail());
-            }
-            employee.setPhone(request.getPhone());
-            employeeRepository.save(employee);
-        });
+        // Employee profile fields that are specific to Employee entity (like position, etc.) 
+        // would be updated here, but fullName/email/phone are now in User.
 
         return getCurrentUserProfile();
     }

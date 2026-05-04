@@ -27,9 +27,6 @@ public class Student extends BaseEntity {
     @Column(name = "student_code", nullable = false, unique = true, length = 20)
     private String studentCode;
 
-    @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
-
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
@@ -76,4 +73,8 @@ public class Student extends BaseEntity {
 
     @Column(name = "admission_year")
     private Integer admissionYear;
+
+    public String getFullName() {
+        return user != null ? user.getFullName() : null;
+    }
 }

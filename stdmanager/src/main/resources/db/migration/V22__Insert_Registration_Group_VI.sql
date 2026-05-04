@@ -39,9 +39,13 @@ DECLARE @Stu4 UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = '
 DECLARE @Stu5 UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20250005');
 DECLARE @Stu6 UNIQUEIDENTIFIER = (SELECT id FROM students WHERE student_code = 'SV20250006');
 
-DECLARE @Sec_CTDL UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.01');
-DECLARE @Sec_AI UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.01');
-DECLARE @Sec_OOP UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.01');
+DECLARE @Sec_CTDL1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.01');
+DECLARE @Sec_AI1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.01');
+DECLARE @Sec_OOP1 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.01');
+
+DECLARE @Sec_CTDL2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1302.02');
+DECLARE @Sec_AI2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT1304.02');
+DECLARE @Sec_OOP2 UNIQUEIDENTIFIER = (SELECT id FROM course_sections WHERE class_code = 'INT2203.02');
 
 -- SV1, SV2, SV3 (KTPM): Đăng ký CTDL, OOP
 IF @PeriodId IS NOT NULL
@@ -49,25 +53,37 @@ BEGIN
     IF @Stu1 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu1, @Sec_CTDL, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
-        
+        VALUES (NEWID(), @Stu1, @Sec_AI1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu1, @Sec_OOP, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu1, @Sec_CTDL1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu1, @Sec_OOP1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 
     IF @Stu2 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu2, @Sec_CTDL, @PeriodId, 1, 1, 0, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu2, @Sec_CTDL1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
         
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu2, @Sec_OOP, @PeriodId, 1, 1, 0, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu2, @Sec_OOP1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu2, @Sec_AI1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 
     IF @Stu3 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu3, @Sec_CTDL, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu3, @Sec_CTDL1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu3, @Sec_OOP1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu3, @Sec_AI1, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 END
 
@@ -77,25 +93,37 @@ BEGIN
     IF @Stu4 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu4, @Sec_CTDL, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu4, @Sec_CTDL2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
         
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu4, @Sec_AI, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu4, @Sec_AI2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu4, @Sec_OOP2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 
     IF @Stu5 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu5, @Sec_CTDL, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu5, @Sec_CTDL2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
         
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu5, @Sec_AI, @PeriodId, 1, 1, 0, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu5, @Sec_AI2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu5, @Sec_OOP2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 
     IF @Stu6 IS NOT NULL
     BEGIN
         INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
-        VALUES (NEWID(), @Stu6, @Sec_AI, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+        VALUES (NEWID(), @Stu6, @Sec_AI2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu6, @Sec_CTDL2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
+
+        INSERT INTO course_registrations (id, student_id, course_section_id, registration_period_id, registration_type, status, is_paid, created_at, created_by)
+        VALUES (NEWID(), @Stu6, @Sec_OOP2, @PeriodId, 1, 1, 1, GETDATE(), @AdminId);
     END
 END
 

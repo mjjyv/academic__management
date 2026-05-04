@@ -11,6 +11,8 @@ import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.iii_lecturer.entity.Department;
 import uni.it.stdmanager.modules.iv_course.entity.Major;
+import uni.it.stdmanager.modules.iv_course.entity.TrainingProgram;
+import uni.it.stdmanager.modules.iv_course.repository.TrainingProgramCourseRepository;
 import uni.it.stdmanager.modules.vi_registration.entity.CourseRegistration;
 import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
 import uni.it.stdmanager.modules.v_semester.entity.CourseSection;
@@ -26,6 +28,7 @@ public class StudentClassServiceImpl implements StudentClassService {
     private final StudentClassRepository studentClassRepository;
     private final StudentRepository studentRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
+    private final TrainingProgramCourseRepository trainingProgramCourseRepository;
 
     @Override
     public List<StudentClassResponse> getAllClasses() {
@@ -110,7 +113,26 @@ public class StudentClassServiceImpl implements StudentClassService {
         Map<CourseSection, List<CourseRegistration>> registrationsBySection = registrations.stream()
                 .collect(Collectors.groupingBy(CourseRegistration::getCourseSection));
 
+        // Lấy chương trình đào tạo của lớp (lấy từ sinh viên đầu tiên)
+        TrainingProgram program = students.get(0).getProgram();
+        List<UUID> requiredCourseIds = Collections.emptyList();
+        if (program != null) {
+            requiredCourseIds = trainingProgramCourseRepository.findAllByTrainingProgramIdAndIsRequiredTrue(program.getId())
+                    .stream()
+                    .map(tpc -> tpc.getCourse().getId())
+                    .collect(Collectors.toList());
+        }
+        final List<UUID> finalRequiredCourseIds = requiredCourseIds;
+
         return registrationsBySection.entrySet().stream()
+                .filter(entry -> {
+                    CourseSection section = entry.getKey();
+                    List<CourseRegistration> sectionRegs = entry.getValue();
+                    // Lọc: môn học phải nằm trong danh sách bắt buộc, HOẶC số lượng SV đăng ký >= 30% sĩ số lớp
+                    boolean isRequired = finalRequiredCourseIds.contains(section.getCourse().getId());
+                    boolean isMajority = sectionRegs.size() >= (students.size() * 0.3);
+                    return isRequired || isMajority;
+                })
                 .map(entry -> {
                     CourseSection section = entry.getKey();
                     List<CourseRegistration> sectionRegs = entry.getValue();

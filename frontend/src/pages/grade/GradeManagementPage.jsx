@@ -216,10 +216,15 @@ const GradeManagementPage = () => {
                           ) : (
                             <button 
                               onClick={() => handleEditClick(d)}
-                              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                              title="Sửa điểm"
+                              disabled={d.isFinalized}
+                              className={`p-2 rounded-lg transition-all ${
+                                d.isFinalized 
+                                  ? 'text-gray-300 cursor-not-allowed bg-gray-50' 
+                                  : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
+                              }`}
+                              title={d.isFinalized ? "Điểm đã chốt (Locked)" : "Sửa điểm"}
                             >
-                              <Edit3 size={18} />
+                              {d.isFinalized ? <Shield size={18} /> : <Edit3 size={18} />}
                             </button>
                           )}
                         </div>

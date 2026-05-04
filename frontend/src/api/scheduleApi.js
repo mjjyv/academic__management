@@ -3,6 +3,7 @@ import axiosClient from './axiosClient';
 const scheduleApi = {
     getStudentSchedule: (studentId) => axiosClient.get(`/schedules/student/${studentId}`),
     getLecturerSchedule: (userId) => axiosClient.get(`/schedules/lecturer/${userId}`),
+    getDepartmentSchedule: (deptId) => axiosClient.get(`/schedules/department/${deptId}`),
     getSectionSchedules: (sectionId) => axiosClient.get(`/schedules/sections/${sectionId}`),
     
     // Infrastructure

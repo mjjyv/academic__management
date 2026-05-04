@@ -26,4 +26,5 @@ public class CourseRegistrationResponse {
     private String lecturerName;
     private String roomName;
     private String buildingName;
+    private Boolean isFinished;
 }

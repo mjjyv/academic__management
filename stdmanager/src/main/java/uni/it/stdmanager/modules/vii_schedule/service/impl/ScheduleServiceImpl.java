@@ -55,6 +55,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<ScheduleResponse> getDepartmentSchedule(UUID departmentId) {
+        return scheduleRepository.findCurrentSchedulesByDepartmentId(departmentId).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public ScheduleResponse createSchedule(ScheduleRequest request) {
         CourseSection section = courseSectionRepository.findById(request.getCourseSectionId())
