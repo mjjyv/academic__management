@@ -33,10 +33,10 @@ const useGradeStore = create((set, get) => ({
         }
     },
 
-    fetchManagementSections: async () => {
+    fetchManagementSections: async (departmentId) => {
         set({ loading: true });
         try {
-            const res = await gradeApi.getManagementSections();
+            const res = await gradeApi.getManagementSections(departmentId);
             if (res.success) set({ managementSections: res.data });
         } catch (err) {
             toast.error("Lỗi khi tải danh sách lớp");

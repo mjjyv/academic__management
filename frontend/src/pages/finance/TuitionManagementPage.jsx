@@ -8,15 +8,27 @@ const TuitionManagementPage = () => {
   const { studentTuitions, fetchAllTuitions, loading } = useFinanceStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [departments, setDepartments] = useState([]);
+  const [studentClasses, setStudentClasses] = useState([]);
   const [selectedDeptId, setSelectedDeptId] = useState('');
+  const [selectedClassId, setSelectedClassId] = useState('');
 
   useEffect(() => {
     fetchDepartments();
   }, []);
 
   useEffect(() => {
-    fetchAllTuitions(selectedDeptId || null);
-  }, [fetchAllTuitions, selectedDeptId]);
+    fetchAllTuitions(selectedDeptId || null, selectedClassId || null);
+  }, [fetchAllTuitions, selectedDeptId, selectedClassId]);
+
+  useEffect(() => {
+    if (selectedDeptId) {
+      fetchClasses(selectedDeptId);
+      setSelectedClassId('');
+    } else {
+      setStudentClasses([]);
+      setSelectedClassId('');
+    }
+  }, [selectedDeptId]);
 
   const fetchDepartments = async () => {
     try {
@@ -24,6 +36,16 @@ const TuitionManagementPage = () => {
       if (res.success) setDepartments(res.data);
     } catch (error) {
       console.error("Lỗi khi tải danh sách khoa", error);
+    }
+  };
+
+  const fetchClasses = async (deptId) => {
+    try {
+      const { studentApi } = await import('../../api/studentApi');
+      const res = await studentApi.getClassesByDepartment(deptId);
+      if (res.success) setStudentClasses(res.data);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách lớp", error);
     }
   };
 
@@ -66,6 +88,21 @@ const TuitionManagementPage = () => {
               <option value="">Tất cả các khoa</option>
               {departments.map(dept => (
                 <option key={dept.id} value={dept.id}>{dept.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 w-full md:w-auto">
+            <Filter size={16} className="text-gray-400" />
+            <select
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              className="bg-transparent text-sm text-gray-600 outline-none min-w-[150px]"
+              disabled={!selectedDeptId}
+            >
+              <option value="">Tất cả các lớp</option>
+              {studentClasses.map(cls => (
+                <option key={cls.id} value={cls.id}>{cls.classCode}</option>
               ))}
             </select>
           </div>

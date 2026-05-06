@@ -198,10 +198,14 @@ public class TuitionServiceImpl implements TuitionService {
         }
 
         @Override
-        public List<StudentTuitionResponse> getAllTuitions(UUID departmentId) {
+        public List<StudentTuitionResponse> getAllTuitions(UUID departmentId, UUID classId) {
                 List<StudentTuition> tuitions;
-                if (departmentId != null) {
+                if (departmentId != null && classId != null) {
+                        tuitions = studentTuitionRepository.findAllByStudentDepartmentIdAndStudentStudentClassId(departmentId, classId);
+                } else if (departmentId != null) {
                         tuitions = studentTuitionRepository.findAllByStudentDepartmentId(departmentId);
+                } else if (classId != null) {
+                        tuitions = studentTuitionRepository.findAllByStudentStudentClassId(classId);
                 } else {
                         tuitions = studentTuitionRepository.findAll();
                 }
@@ -220,13 +224,34 @@ public class TuitionServiceImpl implements TuitionService {
                                 .orElseThrow(() -> new RuntimeException(
                                                 "Không tìm thấy hồ sơ sinh viên cho mã: " + studentCode));
 
-                Semester currentSemester = semesterRepository.findAll().stream()
+                List<Semester> activeSemesters = semesterRepository.findAll().stream()
                                 .filter(s -> s.getIsActive() != null && s.getIsActive())
+                                .collect(Collectors.toList());
+
+                if (activeSemesters.isEmpty()) {
+                        throw new RuntimeException("Không có học kỳ nào đang hoạt động");
+                }
+
+                LocalDate now = LocalDate.now();
+                
+                // Ưu tiên chọn học kỳ mà sinh viên có đăng ký học phần (trong số các học kỳ active)
+                List<UUID> registeredSemesterIds = courseRegistrationRepository.findAllByStudentId(student.getId()).stream()
+                                .filter(r -> r.getStatus() != 3) // Không tính đã hủy
+                                .map(r -> r.getCourseSection().getSemester().getId())
+                                .distinct()
+                                .collect(Collectors.toList());
+
+                Semester currentSemester = activeSemesters.stream()
+                                .filter(s -> registeredSemesterIds.contains(s.getId()))
                                 .findFirst()
-                                .orElseThrow(() -> new RuntimeException("Không có học kỳ nào đang hoạt động"));
+                                .orElseGet(() -> activeSemesters.stream()
+                                                .filter(s -> (s.getStartDate() == null || !s.getStartDate().isAfter(now)) &&
+                                                                (s.getEndDate() == null || !s.getEndDate().isBefore(now)))
+                                                .findFirst()
+                                                .orElse(activeSemesters.get(activeSemesters.size() - 1)));
 
                 return calculateTuition(student.getId(), currentSemester.getId());
-        }
+    }
 
         @Override
         public TuitionSummaryResponse getDebtSummaryForCurrentStudent() {
@@ -236,6 +261,19 @@ public class TuitionServiceImpl implements TuitionService {
                 Student student = studentRepository.findByStudentCode(studentCode)
                                 .orElseThrow(() -> new RuntimeException(
                                                 "Không tìm thấy hồ sơ sinh viên cho mã: " + studentCode));
+
+                // Đảm bảo cập nhật dữ liệu mới nhất cho các học kỳ đang active
+                List<Semester> activeSemesters = semesterRepository.findAll().stream()
+                                .filter(s -> s.getIsActive() != null && s.getIsActive())
+                                .collect(Collectors.toList());
+                
+                for (Semester sem : activeSemesters) {
+                        try {
+                                calculateTuition(student.getId(), sem.getId());
+                        } catch (Exception e) {
+                                // Ignore calculation errors for summary
+                        }
+                }
 
                 List<StudentTuition> tuitions = studentTuitionRepository.findAllByStudentId(student.getId());
 

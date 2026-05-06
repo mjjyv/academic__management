@@ -144,8 +144,8 @@ const CourseRegistrationPage = () => {
       return acc + (curr.credits * price);
     }, 0);
 
-  // Ưu tiên dùng dữ liệu từ store nếu có
-  const expectedTuition = tuitionData?.debtAmount !== undefined ? tuitionData.debtAmount : unpaidAmount;
+  // Ưu tiên dùng logic local để đảm bảo tính reactive: Nếu list ĐÃ THANH TOÁN thì HỌC PHÍ DỰ KIẾN phải là 0
+  const expectedTuition = unpaidAmount > 0 ? unpaidAmount : (tuitionData?.debtAmount || 0);
 
   // Modal Chi Tiết Đăng Ký
   const RegistrationDetailModal = ({ registration, onClose }) => {

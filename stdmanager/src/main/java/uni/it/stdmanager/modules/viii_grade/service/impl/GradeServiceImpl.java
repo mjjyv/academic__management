@@ -102,6 +102,15 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
+    public List<SectionGradeManagementResponse> getSectionsByDepartment(UUID departmentId) {
+        if (departmentId == null) return getAllSectionsForStaff();
+        return courseSectionRepository.findAllByCourseDepartmentId(departmentId).stream()
+                .map(this::mapToSectionResponse)
+                .sorted(Comparator.comparing(SectionGradeManagementResponse::getClassCode))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<GradeDetailResponse> getGradeDetailsBySection(UUID sectionId) {
         List<CourseRegistration> registrations = courseRegistrationRepository.findAllByCourseSectionId(sectionId);
         List<GradeComponent> components = gradeComponentRepository.findAllByCourseSectionIdAndIsActiveTrue(sectionId);

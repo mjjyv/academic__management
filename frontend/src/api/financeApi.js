@@ -12,7 +12,7 @@ const financeApi = {
     getTuitionFees: () => axiosClient.get("/tuition-fees"),
     createTuitionFee: (data) => axiosClient.post("/tuition-fees", data),
     updateTuitionFee: (id, data) => axiosClient.put(`/tuition-fees/${id}`, data),
-    getAllTuitions: (departmentId) => axiosClient.get("/tuition/all", { params: { departmentId } }),
+    getAllTuitions: (departmentId, classId) => axiosClient.get("/tuition/all", { params: { departmentId, classId } }),
     getStudentTuitions: (studentId) => axiosClient.get(`/tuition/student/${studentId}`),
     
     // New Student Endpoints

@@ -41,9 +41,11 @@ public class TuitionController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('GIAOVU', 'ADMIN')")
-    @Operation(summary = "Lấy toàn bộ danh sách học phí, có thể lọc theo khoa (Admin/Giáo vụ)")
-    public ApiResponse<List<StudentTuitionResponse>> getAllTuitions(@RequestParam(required = false) UUID departmentId) {
-        return ApiResponse.success(tuitionService.getAllTuitions(departmentId), "Lấy toàn bộ danh sách học phí thành công");
+    @Operation(summary = "Lấy toàn bộ danh sách học phí, có thể lọc theo khoa/lớp (Admin/Giáo vụ)")
+    public ApiResponse<List<StudentTuitionResponse>> getAllTuitions(
+            @RequestParam(required = false) UUID departmentId,
+            @RequestParam(required = false) UUID classId) {
+        return ApiResponse.success(tuitionService.getAllTuitions(departmentId, classId), "Lấy toàn bộ danh sách học phí thành công");
     }
 
     @PostMapping("/pay")

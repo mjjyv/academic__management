@@ -29,7 +29,7 @@ public class GradeManagementController {
     @GetMapping("/sections")
     @PreAuthorize("hasAnyRole('GIANGVIEN', 'GIAOVU', 'ADMIN')")
     @Operation(summary = "Lấy danh sách lớp học phần để quản lý điểm")
-    public ApiResponse<List<SectionGradeManagementResponse>> getSections() {
+    public ApiResponse<List<SectionGradeManagementResponse>> getSections(@RequestParam(required = false) UUID departmentId) {
         String username = SecurityUtils.getCurrentUserLogin()
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
@@ -39,7 +39,7 @@ public class GradeManagementController {
 
         List<SectionGradeManagementResponse> response;
         if (isStaff) {
-            response = gradeService.getAllSectionsForStaff();
+            response = gradeService.getSectionsByDepartment(departmentId);
         } else {
             // Đối với Giảng viên, cần lấy UserId để tìm EmployeeId
             User user = userRepository.findByUsername(username)

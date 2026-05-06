@@ -6,6 +6,8 @@ const useFinanceStore = create((set) => ({
     tuitionFees: [],
     studentTuitions: [],
     payments: [],
+    totalDebt: 0,
+    totalPaid: 0,
     loading: false,
     error: null,
 
@@ -21,10 +23,10 @@ const useFinanceStore = create((set) => ({
         }
     },
 
-    fetchAllTuitions: async (departmentId) => {
+    fetchAllTuitions: async (departmentId, classId) => {
         set({ loading: true });
         try {
-            const response = await financeApi.getAllTuitions(departmentId);
+            const response = await financeApi.getAllTuitions(departmentId, classId);
             if (response.success) {
                 set({ studentTuitions: response.data, loading: false });
             }
@@ -114,8 +116,12 @@ const useFinanceStore = create((set) => ({
         try {
             const response = await financeApi.getDebtSummary();
             if (response.success) {
-                // Assuming TuitionSummaryResponse has semesterTuitions list
-                set({ studentTuitions: response.data.semesterTuitions, loading: false });
+                set({ 
+                    studentTuitions: response.data.semesterTuitions, 
+                    totalDebt: response.data.totalDebt,
+                    totalPaid: response.data.totalPaid,
+                    loading: false 
+                });
                 return response.data;
             }
         } catch (err) {

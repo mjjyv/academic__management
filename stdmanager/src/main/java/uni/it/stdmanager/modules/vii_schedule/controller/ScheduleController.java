@@ -22,9 +22,9 @@ public class ScheduleController {
         return ApiResponse.success(scheduleService.getSchedulesBySection(sectionId), "Lấy lịch học thành công");
     }
 
-    @GetMapping("/student/{studentId}")
-    public ApiResponse<List<ScheduleResponse>> getForStudent(@PathVariable UUID studentId) {
-        return ApiResponse.success(scheduleService.getStudentSchedule(studentId), "Lấy lịch học thành công");
+    @GetMapping("/student/{userId}")
+    public ApiResponse<List<ScheduleResponse>> getForStudent(@PathVariable UUID userId) {
+        return ApiResponse.success(scheduleService.getStudentSchedule(userId), "Lấy lịch học thành công");
     }
 
     @GetMapping("/lecturer/{userId}")
@@ -35,6 +35,11 @@ public class ScheduleController {
     @GetMapping("/department/{departmentId}")
     public ApiResponse<List<ScheduleResponse>> getForDepartment(@PathVariable UUID departmentId) {
         return ApiResponse.success(scheduleService.getDepartmentSchedule(departmentId), "Lấy lịch học khoa thành công");
+    }
+
+    @GetMapping("/class/{classId}")
+    public ApiResponse<List<ScheduleResponse>> getForClass(@PathVariable UUID classId) {
+        return ApiResponse.success(scheduleService.getSchedulesByClass(classId), "Lấy lịch học lớp thành công");
     }
 
     @PostMapping

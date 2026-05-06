@@ -14,7 +14,7 @@ public interface TuitionService {
 
     List<StudentTuitionResponse> getStudentTuitions(UUID studentId);
 
-    List<StudentTuitionResponse> getAllTuitions(UUID departmentId);
+    List<StudentTuitionResponse> getAllTuitions(UUID departmentId, UUID classId);
 
     StudentTuitionResponse getCurrentSemesterTuitionForCurrentStudent();
 

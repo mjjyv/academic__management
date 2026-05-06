@@ -15,6 +15,7 @@ public interface GradeService {
     // New methods
     List<SectionGradeManagementResponse> getSectionsForLecturer(UUID userId);
     List<SectionGradeManagementResponse> getAllSectionsForStaff();
+    List<SectionGradeManagementResponse> getSectionsByDepartment(UUID departmentId);
     List<GradeDetailResponse> getGradeDetailsBySection(UUID sectionId);
     void updateStudentGrades(UUID registrationId, GradeUpdateRequest request);
 }

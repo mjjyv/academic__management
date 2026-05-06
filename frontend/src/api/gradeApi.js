@@ -5,7 +5,7 @@ const gradeApi = {
     getAllSummaries: (departmentId) => axiosClient.get("/grades/summaries", { params: { departmentId } }),
     
     // Management endpoints
-    getManagementSections: () => axiosClient.get("/grade-management/sections"),
+    getManagementSections: (departmentId) => axiosClient.get("/grade-management/sections", { params: { departmentId } }),
     getSectionDetails: (sectionId) => axiosClient.get(`/grade-management/sections/${sectionId}/details`),
     updateStudentGrades: (registrationId, data) => axiosClient.put(`/grade-management/registrations/${registrationId}/grades`, data),
 };

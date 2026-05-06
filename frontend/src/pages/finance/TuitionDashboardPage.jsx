@@ -8,6 +8,8 @@ const TuitionDashboardPage = () => {
   const { 
     tuitionData, 
     studentTuitions, 
+    totalDebt,
+    totalPaid,
     fetchCurrentTuition, 
     fetchDebtSummary, 
     calculateCurrentTuition, 
@@ -61,7 +63,8 @@ const TuitionDashboardPage = () => {
     };
   };
 
-  const breakdown = getTuitionBreakdown();
+  // Only show semesters where student has registered courses
+  const filteredHistory = studentTuitions.filter(t => t.totalCredits > 0);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -96,10 +99,8 @@ const TuitionDashboardPage = () => {
                 </h2>
                 <div className="flex items-center gap-4 mt-6">
                   <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/5 flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full animate-pulse ${currentTuition.status === 1 ? 'bg-green-400' : 'bg-red-400'}`} />
-                    <span className="text-xs font-bold">
-                      Trạng thái: {currentTuition.status === 1 ? 'Hoàn tất' : (currentTuition.debtAmount > 0 ? 'Đang nợ' : 'Chưa có dữ liệu')}
-                    </span>
+                    <div className={`w-2 h-2 rounded-full animate-pulse ${currentTuition.status === 1 ? 'bg-green-400' : (currentTuition.totalCredits > 0 ? 'bg-red-400' : 'bg-gray-400')}`} />
+                      Trạng thái: {currentTuition.status === 1 ? 'ĐÃ THANH TOÁN' : (currentTuition.totalCredits > 0 ? 'Còn nợ' : 'Chưa đăng ký môn học')}
                   </div>
                   {currentTuition.deadline && (
                     <div className="bg-orange-500/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-orange-500/20 flex items-center gap-3">
@@ -132,8 +133,8 @@ const TuitionDashboardPage = () => {
         <div className="flex-1 flex flex-col gap-6">
           <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex-1 flex flex-col justify-center">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Số dư còn nợ</p>
-            <h3 className="text-3xl font-black text-red-600 mb-6">{formatCurrency(currentTuition.debtAmount)}</h3>
-            <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3">
+            <h3 className="text-3xl font-black text-red-600 mb-6">{formatCurrency(totalDebt)}</h3>
+        <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3">
               <CreditCard size={20} />
               THANH TOÁN QUA VNPAY
             </button>
@@ -142,9 +143,9 @@ const TuitionDashboardPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white p-5 rounded-3xl border border-gray-100">
               <p className="text-[10px] font-black text-gray-400 uppercase mb-1">Đã nộp</p>
-              <p className="text-lg font-black text-green-600">{formatCurrency(currentTuition.paidAmount)}</p>
+              <p className="text-lg font-black text-green-600">{formatCurrency(totalPaid)}</p>
             </div>
-            <div className="bg-white p-5 rounded-3xl border border-gray-100">
+        <div className="bg-white p-5 rounded-3xl border border-gray-100">
               <p className="text-[10px] font-black text-gray-400 uppercase mb-1">Miễn giảm</p>
               <p className="text-lg font-black text-amber-500">-{formatCurrency((currentTuition.scholarshipDeduction || 0) + (currentTuition.exemptionAmount || 0))}</p>
             </div>
@@ -233,15 +234,15 @@ const TuitionDashboardPage = () => {
               Lịch sử các kỳ
             </h2>
             <div className="space-y-4">
-              {studentTuitions.length === 0 ? (
+              {filteredHistory.length === 0 ? (
                 <p className="text-xs text-gray-400 italic text-center py-4">Chưa có lịch sử học phí</p>
               ) : (
-                studentTuitions.map(t => (
+                filteredHistory.map(t => (
                   <div key={t.id} className={`p-4 rounded-2xl border transition-all ${t.semesterId === currentTuition.semesterId ? 'border-blue-200 bg-blue-50/50' : 'border-gray-50 hover:bg-gray-50'}`}>
                     <div className="flex justify-between items-center">
                       <p className="text-sm font-black text-gray-700">{t.semesterName}</p>
                       <span className={`text-[9px] font-black px-2 py-1 rounded-lg ${t.status === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {t.status === 1 ? 'ĐÃ NỘP' : 'CÒN NỢ'}
+                        {t.status === 1 ? 'ĐÃ THANH TOÁN' : 'CÒN NỢ'}
                       </span>
                     </div>
                     <div className="flex justify-between items-end mt-3">

@@ -37,4 +37,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
            "WHERE c.department.id = :departmentId " +
            "AND sem.isActive = true")
     List<Schedule> findCurrentSchedulesByDepartmentId(@Param("departmentId") UUID departmentId);
+
+    @Query("SELECT DISTINCT s FROM Schedule s " +
+           "JOIN s.courseSection cs " +
+           "JOIN cs.semester sem " +
+           "JOIN CourseRegistration cr ON cr.courseSection.id = cs.id " +
+           "JOIN cr.student std " +
+           "WHERE std.studentClass.id = :classId " +
+           "AND cr.status = 1 " +
+           "AND sem.isActive = true")
+    List<Schedule> findSchedulesByClassId(@Param("classId") UUID classId);
 }

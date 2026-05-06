@@ -45,6 +45,18 @@ const useScheduleStore = create((set, get) => ({
         }
     },
 
+    fetchClassSchedule: async (classId) => {
+        set({ loading: true });
+        try {
+            const res = await scheduleApi.getScheduleByClass(classId);
+            if (res.success) set({ schedules: res.data });
+        } catch (err) {
+            toast.error("Lỗi khi tải lịch học lớp");
+        } finally {
+            set({ loading: false });
+        }
+    },
+
     fetchSectionSchedule: async (sectionId) => {
         set({ loading: true });
         try {

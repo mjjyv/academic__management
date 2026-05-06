@@ -39,6 +39,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
     private final CourseSectionRepository courseSectionRepository;
     private final GradeService gradeService;
     private final CourseRepository courseRepository;
+    private final uni.it.stdmanager.modules.ix_tuition.service.TuitionService tuitionService;
 
     @Override
     @Transactional
@@ -98,7 +99,16 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
                 .isPaid(false)
                 .build();
 
-        return mapToResponse(courseRegistrationRepository.save(registration));
+        CourseRegistration saved = courseRegistrationRepository.save(registration);
+
+        // Cập nhật học phí ngay lập tức
+        try {
+            tuitionService.calculateTuition(student.getId(), section.getSemester().getId());
+        } catch (Exception e) {
+            // Log error but don't fail registration
+        }
+
+        return mapToResponse(saved);
     }
 
     @Override
@@ -116,6 +126,13 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         registration.setStatus(3); // 3: Đã hủy
         registration.setIsActive(false);
         courseRegistrationRepository.save(registration);
+
+        // Cập nhật học phí ngay lập tức
+        try {
+            tuitionService.calculateTuition(registration.getStudent().getId(), registration.getCourseSection().getSemester().getId());
+        } catch (Exception e) {
+            // Log error
+        }
     }
 
     @Override

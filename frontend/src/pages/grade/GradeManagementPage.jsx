@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, Search, Filter, CheckCircle2, AlertCircle, FileText, ChevronRight, Save, Edit3, X } from 'lucide-react';
+import { Users, Search, Filter, CheckCircle2, AlertCircle, FileText, ChevronRight, Save, Edit3, X, Shield, Layout } from 'lucide-react';
 import useGradeStore from '../../store/useGradeStore';
 import useAuthStore from '../../store/useAuthStore';
 import toast from 'react-hot-toast';
@@ -15,14 +15,31 @@ const GradeManagementPage = () => {
   } = useGradeStore();
   const { user } = useAuthStore();
   
+  const [selectedDeptId, setSelectedDeptId] = useState('');
+  const [departments, setDepartments] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingRegistrationId, setEditingRegistrationId] = useState(null);
   const [editValues, setEditValues] = useState({}); // { componentId: score }
 
   useEffect(() => {
-    fetchManagementSections();
-  }, [fetchManagementSections]);
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    fetchManagementSections(selectedDeptId || null);
+    setSelectedSectionId('');
+  }, [fetchManagementSections, selectedDeptId]);
+
+  const fetchDepartments = async () => {
+    try {
+      const { departmentApi } = await import('../../api/departmentApi');
+      const res = await departmentApi.getAllActive();
+      if (res.success) setDepartments(res.data);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách khoa", error);
+    }
+  };
 
   useEffect(() => {
     if (selectedSectionId) {
@@ -64,78 +81,110 @@ const GradeManagementPage = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Users className="text-blue-600" />
-            Quản lý Điểm học phần
-          </h1>
-          <p className="text-sm text-gray-500">
-            {user?.roles?.includes('GIANGVIEN') ? 'Quản lý điểm các lớp được phân công.' : 'Quản lý điểm toàn hệ thống.'}
-          </p>
-        </div>
-        
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 w-full md:w-auto">
-            <Filter size={16} className="text-gray-400" />
-            <select 
-              value={selectedSectionId}
-              onChange={(e) => setSelectedSectionId(e.target.value)}
-              className="bg-transparent text-sm text-gray-600 outline-none min-w-[200px]"
-            >
-              <option value="">{managementSections.length > 0 ? "Chọn lớp học phần..." : "Không có lớp học phần nào"}</option>
-              {managementSections.map(section => (
-                <option key={section.sectionId} value={section.sectionId}>
-                  {section.classCode} - {section.courseName} ({section.semesterName})
-                </option>
-              ))}
-            </select>
+      {/* Header Section */}
+      <div className="bg-white/80 backdrop-blur-md sticky top-0 z-30 p-6 rounded-3xl shadow-sm border border-white/20 ring-1 ring-black/5 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
+              <Users className="text-white" size={28} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-gray-800 tracking-tight">
+                Quản lý Điểm học phần
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  <Layout size={12} /> {user?.roles?.includes('ADMIN') ? 'Toàn hệ thống' : 'Giảng viên'}
+                </span>
+                <p className="text-xs text-gray-400">Hệ thống đồng bộ dữ liệu đào tạo thời gian thực</p>
+              </div>
+            </div>
           </div>
           
-          {selectedSectionId && (
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Department Filter (Admin only) */}
+            {user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r)) && (
+              <div className="group relative">
+                <div className="flex items-center gap-2 bg-gray-50 hover:bg-white transition-all px-4 py-2.5 rounded-2xl border border-gray-100 hover:border-blue-200 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer">
+                  <Filter size={16} className="text-blue-500" />
+                  <select 
+                    value={selectedDeptId}
+                    onChange={(e) => setSelectedDeptId(e.target.value)}
+                    className="bg-transparent text-sm font-bold text-gray-600 outline-none cursor-pointer pr-4 min-w-[140px]"
+                  >
+                    <option value="">Tất cả khoa</option>
+                    {departments.map(dept => (
+                      <option key={dept.id} value={dept.id}>{dept.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+            
+            {/* Section Filter */}
+            <div className="group relative">
+              <div className="flex items-center gap-2 bg-gray-50 hover:bg-white transition-all px-4 py-2.5 rounded-2xl border border-gray-100 hover:border-blue-200 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer">
+                <FileText size={16} className="text-indigo-500" />
+                <select 
+                  value={selectedSectionId}
+                  onChange={(e) => setSelectedSectionId(e.target.value)}
+                  className="bg-transparent text-sm font-bold text-gray-600 outline-none cursor-pointer pr-4 max-w-[300px]"
+                >
+                  <option value="">{managementSections.length > 0 ? "Chọn lớp học phần..." : "Không có lớp học phần"}</option>
+                  {managementSections.map(section => (
+                    <option key={section.sectionId} value={section.sectionId}>
+                      {section.classCode} - {section.courseName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className={`relative transition-all duration-300 overflow-hidden ${selectedSectionId ? 'w-full md:w-64 opacity-100' : 'w-0 opacity-0'}`}>
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
               <input
                 type="text"
                 placeholder="Tìm tên, mã SV..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
+                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all text-sm font-medium shadow-inner"
               />
             </div>
-          )}
+          </div>
         </div>
       </div>
 
       {!selectedSectionId ? (
-        <div className="bg-white rounded-2xl p-20 text-center border border-dashed border-gray-200">
-          <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ChevronRight className="text-blue-500" size={32} />
+        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-20 text-center border-2 border-dashed border-blue-100 animate-pulse">
+          <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <ChevronRight className="text-blue-500" size={40} />
           </div>
-          <h3 className="text-lg font-bold text-gray-800">Bắt đầu quản lý điểm</h3>
-          <p className="text-gray-500 max-w-xs mx-auto mt-2">Vui lòng chọn một lớp học phần từ danh sách phía trên để xem và nhập điểm cho sinh viên.</p>
+          <h3 className="text-xl font-black text-gray-800">Bắt đầu quản lý điểm</h3>
+          <p className="text-gray-500 max-w-xs mx-auto mt-3 font-medium">Vui lòng chọn một lớp học phần từ danh sách phía trên để truy cập bảng điểm chi tiết.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+            <div className="flex flex-col items-center justify-center py-32 gap-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-600"></div>
+              <p className="text-sm font-bold text-gray-400 animate-pulse">Đang tải dữ liệu bảng điểm...</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-gray-50/50 border-b border-gray-100">
                   <tr>
-                    <th className="px-6 py-4">Sinh viên</th>
+                    <th className="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Thông tin sinh viên</th>
                     {componentColumns.map(comp => (
-                      <th key={comp.componentId} className="px-4 py-4 text-center">
+                      <th key={comp.componentId} className="px-4 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-widest">
                         {comp.componentName}
-                        <span className="block text-[10px] text-gray-400 normal-case font-medium">({comp.weightPercentage}%)</span>
+                        <span className="block text-[10px] text-blue-400 normal-case font-bold mt-1 bg-blue-50 py-0.5 rounded-full">{comp.weightPercentage}%</span>
                       </th>
                     ))}
-                    <th className="px-6 py-4 text-center">Tổng điểm</th>
-                    <th className="px-6 py-4 text-center">Kết quả</th>
-                    <th className="px-6 py-4 text-right">Thao tác</th>
+                    <th className="px-6 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-widest">Tổng kết</th>
+                    <th className="px-6 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-widest">Kết quả</th>
+                    <th className="px-8 py-5 text-right text-xs font-black text-gray-400 uppercase tracking-widest">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 text-sm">
