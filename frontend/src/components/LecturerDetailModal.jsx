@@ -46,7 +46,7 @@ const LecturerDetailModal = ({ isOpen, onClose, lecturerId }) => {
                 ) : detail ? (
                     <div className="flex-1 overflow-y-auto px-8 pb-8 pt-0 relative bg-white">
                         {/* Avatar & Basic Info */}
-                        <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 mb-8">
+                        <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end mt-4 mb-8">
                             <div className="w-28 h-28 rounded-full bg-white p-1.5 shadow-sm border border-gray-200 shrink-0 relative z-10">
                                 <div className="w-full h-full bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
                                     <User size={40} />

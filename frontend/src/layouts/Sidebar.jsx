@@ -20,8 +20,8 @@ const Sidebar = () => {
                     <BookOpen className="text-slate-400" size={20} />
                 </div>
                 <div>
-                    <h2 className="text-sm font-black text-slate-800 tracking-tight leading-none uppercase">Antigravity</h2>
-                    <p className="text-[8px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">Portal</p>
+                    <h2 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase">Dong A University</h2>
+                    <p className="text-[12px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">Portal</p>
                 </div>
             </div>
 

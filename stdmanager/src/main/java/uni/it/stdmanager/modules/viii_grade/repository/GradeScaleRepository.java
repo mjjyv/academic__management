@@ -16,6 +16,10 @@ public interface GradeScaleRepository extends JpaRepository<GradeScale, UUID> {
     @Query("SELECT gs FROM GradeScale gs WHERE gs.isActive = true ORDER BY gs.displayOrder ASC")
     List<GradeScale> findAllActive();
 
-    @Query("SELECT gs FROM GradeScale gs WHERE gs.isActive = true AND :score >= gs.minScore AND :score <= gs.maxScore")
-    Optional<GradeScale> findByScore(BigDecimal score);
+    @Query("SELECT gs FROM GradeScale gs WHERE gs.isActive = true AND gs.minScore <= :score ORDER BY gs.minScore DESC")
+    List<GradeScale> findScalesByScore(BigDecimal score);
+
+    default Optional<GradeScale> findByScore(BigDecimal score) {
+        return findScalesByScore(score).stream().findFirst();
+    }
 }

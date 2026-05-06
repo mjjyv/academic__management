@@ -265,13 +265,17 @@ const GradeManagementPage = () => {
                           ) : (
                             <button 
                               onClick={() => handleEditClick(d)}
-                              disabled={d.isFinalized}
+                              disabled={d.isFinalized && !user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r))}
                               className={`p-2 rounded-lg transition-all ${
-                                d.isFinalized 
+                                (d.isFinalized && !user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r)))
                                   ? 'text-gray-300 cursor-not-allowed bg-gray-50' 
-                                  : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
+                                  : d.isFinalized
+                                    ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-50'
+                                    : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
                               }`}
-                              title={d.isFinalized ? "Điểm đã chốt (Locked)" : "Sửa điểm"}
+                              title={d.isFinalized 
+                                ? (user?.roles?.some(r => ['ADMIN', 'GIAOVU'].includes(r)) ? "Điểm đã chốt - Click để sửa (Quyền Admin)" : "Điểm đã chốt (Locked)") 
+                                : "Sửa điểm"}
                             >
                               {d.isFinalized ? <Shield size={18} /> : <Edit3 size={18} />}
                             </button>

@@ -13,7 +13,7 @@ import {
     Bell,
     Database,
     School,
-    Trello
+    Layers
 } from 'lucide-react';
 
 export const MENU_ITEMS = [
@@ -63,7 +63,7 @@ export const MENU_ITEMS = [
         title: 'Đăng ký học phần',
         path: '/registration',
         roles: ['ADMIN', 'GIAOVU', 'SINHVIEN'],
-        icon: Trello
+        icon: Layers
     },
     {
         title: 'Lịch học & Giảng dạy',

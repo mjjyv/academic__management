@@ -13,6 +13,7 @@ import uni.it.stdmanager.modules.v_semester.entity.CourseSection;
 import uni.it.stdmanager.modules.v_semester.entity.LecturerCourseSection;
 import uni.it.stdmanager.modules.v_semester.repository.CourseSectionRepository;
 import uni.it.stdmanager.modules.v_semester.repository.LecturerCourseSectionRepository;
+import uni.it.stdmanager.core.security.SecurityUtils;
 import uni.it.stdmanager.modules.vi_registration.entity.CourseRegistration;
 import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
 import uni.it.stdmanager.modules.viii_grade.dto.request.GradeUpdateRequest;
@@ -140,6 +141,7 @@ public class GradeServiceImpl implements GradeService {
                     .totalScore(summary != null ? summary.getTotalScore() : null)
                     .letterGrade(summary != null ? summary.getLetterGrade() : null)
                     .result(summary != null ? summary.getResult() : null)
+                    .isFinalized(summary != null && summary.getIsFinalized())
                     .build();
         }).collect(Collectors.toList());
     }
@@ -150,10 +152,14 @@ public class GradeServiceImpl implements GradeService {
         CourseRegistration registration = courseRegistrationRepository.findById(registrationId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        // Kiểm tra khóa điểm
+        // Kiểm tra khóa điểm (Chỉ ADMIN và GIAOVU mới có quyền sửa điểm đã chốt)
         Optional<StudentSummary> summaryOpt = studentSummaryRepository.findByRegistrationId(registrationId);
         if (summaryOpt.isPresent() && summaryOpt.get().getIsFinalized()) {
-            throw new RuntimeException("Điểm đã được chốt, không thể sửa đổi.");
+            boolean isStaff = SecurityUtils.hasRole("ADMIN") || 
+                              SecurityUtils.hasRole("GIAOVU");
+            if (!isStaff) {
+                throw new RuntimeException("Điểm đã được chốt, không thể sửa đổi.");
+            }
         }
 
         for (GradeUpdateRequest.ComponentGradeInput input : request.getGrades()) {
@@ -185,7 +191,8 @@ public class GradeServiceImpl implements GradeService {
                     .findFirst()
                     .orElse(BigDecimal.ZERO);
             
-            BigDecimal weight = comp.getWeightPercentage().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+            BigDecimal weightPercentage = comp.getWeightPercentage() != null ? comp.getWeightPercentage() : BigDecimal.ZERO;
+            BigDecimal weight = weightPercentage.divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
             totalScore = totalScore.add(score.multiply(weight));
         }
 

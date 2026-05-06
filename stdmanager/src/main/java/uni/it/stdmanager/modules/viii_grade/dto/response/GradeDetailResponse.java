@@ -16,6 +16,7 @@ public class GradeDetailResponse {
     private BigDecimal totalScore;
     private String letterGrade;
     private String result;
+    private Boolean isFinalized;
 
     @Data
     @Builder

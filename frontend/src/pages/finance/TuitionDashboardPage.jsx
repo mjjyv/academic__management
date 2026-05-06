@@ -65,6 +65,7 @@ const TuitionDashboardPage = () => {
 
   // Only show semesters where student has registered courses
   const filteredHistory = studentTuitions.filter(t => t.totalCredits > 0);
+  const breakdown = getTuitionBreakdown();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
