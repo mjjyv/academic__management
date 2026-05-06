@@ -173,6 +173,17 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>11.14.1</version>
+				<configuration>
+					<url>jdbc:sqlserver://localhost:1433;databaseName=stdmanager_db;encrypt=false;trustServerCertificate=true</url>
+					<user>sa</user>
+					<password>P@ssword</password>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

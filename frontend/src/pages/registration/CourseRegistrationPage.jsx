@@ -127,14 +127,18 @@ const CourseRegistrationPage = () => {
     return now >= new Date(p.startTime) && now <= new Date(p.endTime);
   });
 
-  const registeredCount = currentRegistrations.filter(r => r.status !== 3).length;
-  const totalCredits = currentRegistrations.filter(r => r.status !== 3).reduce((acc, curr) => acc + (curr.credits || 0), 0);
+  const registrationsInPeriod = currentRegistrations.filter(r => 
+    r.status !== 3 && 
+    r.registrationPeriodId === selectedPeriod?.id
+  );
+  const registeredCount = registrationsInPeriod.length;
+  const totalCredits = registrationsInPeriod.reduce((acc, curr) => acc + (curr.credits || 0), 0);
   const maxCredits = selectedPeriod?.maxCredits || 24;
   const progressWidth = Math.min((totalCredits / maxCredits) * 100, 100);
 
-  // Tính toán học phí dự kiến (Chỉ tính các khoản chưa nộp và CHƯA hoàn thành)
-  const unpaidAmount = currentRegistrations
-    .filter(r => r.status !== 3 && !r.isPaid && !r.isFinished)
+  // Tính toán học phí dự kiến (Chỉ tính các khoản chưa nộp và CHƯA hoàn thành TRONG ĐỢT NÀY)
+  const unpaidAmount = registrationsInPeriod
+    .filter(r => !r.isPaid && !r.isFinished)
     .reduce((acc, curr) => {
       const price = curr.registrationType === 1 ? 500000 : 750000;
       return acc + (curr.credits * price);
@@ -359,7 +363,11 @@ const CourseRegistrationPage = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                       {filteredSections.map(section => {
-                        const isRegistered = currentRegistrations.some(r => r.courseSectionId === section.id && r.status !== 3);
+                        const isRegistered = currentRegistrations.some(r => 
+                          r.courseSectionId === section.id && 
+                          r.status !== 3 &&
+                          r.registrationPeriodId === selectedPeriod?.id
+                        );
                         return (
                           <tr key={section.id} className="hover:bg-blue-50/40 transition-all duration-300 group">
                             <td className="px-4 py-5 font-mono text-sm text-blue-600 font-black">{section.classCode}</td>
@@ -436,7 +444,7 @@ const CourseRegistrationPage = () => {
                   : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                CHƯA THANH TOÁN ({currentRegistrations.filter(r => r.status !== 3 && !r.isPaid && !r.isFinished).length})
+                CHƯA THANH TOÁN ({registrationsInPeriod.filter(r => !r.isPaid && !r.isFinished).length})
               </button>
               <button
                 onClick={() => setRegTab('paid')}
@@ -446,12 +454,12 @@ const CourseRegistrationPage = () => {
                   : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                ĐÃ THANH TOÁN ({currentRegistrations.filter(r => r.status !== 3 && r.isPaid && !r.isFinished).length})
+                ĐÃ THANH TOÁN ({registrationsInPeriod.filter(r => r.isPaid && !r.isFinished).length})
               </button>
             </div>
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-              {currentRegistrations.filter(r => r.status !== 3 && !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid)).length === 0 ? (
+              {registrationsInPeriod.filter(r => !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid)).length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 opacity-30">
                   <BookOpen size={48} className="mb-4" />
                   <p className="text-sm font-black italic">
@@ -459,8 +467,8 @@ const CourseRegistrationPage = () => {
                   </p>
                 </div>
               ) : (
-                currentRegistrations
-                  .filter(r => r.status !== 3 && !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid))
+                registrationsInPeriod
+                  .filter(r => !r.isFinished && (regTab === 'paid' ? r.isPaid : !r.isPaid))
                   .map(reg => (
                   <div key={reg.id} className="p-5 bg-gray-50/50 rounded-2xl border border-gray-100 group hover:border-blue-200 transition-colors relative">
                     <div className="absolute -right-2 -top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-10">
