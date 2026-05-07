@@ -74,10 +74,10 @@ public class GradeServiceImpl implements GradeService {
     public List<SectionGradeManagementResponse> getSectionsForLecturer(UUID userId) {
         Employee lecturer = employeeRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-        
+
         // Lấy từ cột lecturer_id trong course_sections
         List<CourseSection> sectionsByColumn = courseSectionRepository.findAllByLecturerId(lecturer.getId());
-        
+
         // Lấy từ bảng phụ lecturer_course_sections
         List<LecturerCourseSection> assignments = lecturerCourseSectionRepository.findAllByLecturerId(lecturer.getId());
         List<CourseSection> sectionsByTable = assignments.stream()
@@ -104,7 +104,8 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public List<SectionGradeManagementResponse> getSectionsByDepartment(UUID departmentId) {
-        if (departmentId == null) return getAllSectionsForStaff();
+        if (departmentId == null)
+            return getAllSectionsForStaff();
         return courseSectionRepository.findAllByCourseDepartmentId(departmentId).stream()
                 .map(this::mapToSectionResponse)
                 .sorted(Comparator.comparing(SectionGradeManagementResponse::getClassCode))
@@ -115,21 +116,22 @@ public class GradeServiceImpl implements GradeService {
     public List<GradeDetailResponse> getGradeDetailsBySection(UUID sectionId) {
         List<CourseRegistration> registrations = courseRegistrationRepository.findAllByCourseSectionId(sectionId);
         List<GradeComponent> components = gradeComponentRepository.findAllByCourseSectionIdAndIsActiveTrue(sectionId);
-        
+
         return registrations.stream().map(reg -> {
-            List<StudentComponentGrade> studentGrades = studentComponentGradeRepository.findAllByRegistrationIdAndIsActiveTrue(reg.getId());
+            List<StudentComponentGrade> studentGrades = studentComponentGradeRepository
+                    .findAllByRegistrationIdAndIsActiveTrue(reg.getId());
             Map<UUID, BigDecimal> scoreMap = studentGrades.stream()
                     .collect(Collectors.toMap(sg -> sg.getComponent().getId(), StudentComponentGrade::getScore));
 
-            List<GradeDetailResponse.ComponentGradeResponse> componentResponses = components.stream().map(comp -> 
-                GradeDetailResponse.ComponentGradeResponse.builder()
-                        .componentId(comp.getId())
-                        .componentCode(comp.getComponentCode())
-                        .componentName(comp.getComponentName())
-                        .weightPercentage(comp.getWeightPercentage())
-                        .score(scoreMap.get(comp.getId()))
-                        .build()
-            ).collect(Collectors.toList());
+            List<GradeDetailResponse.ComponentGradeResponse> componentResponses = components.stream()
+                    .map(comp -> GradeDetailResponse.ComponentGradeResponse.builder()
+                            .componentId(comp.getId())
+                            .componentCode(comp.getComponentCode())
+                            .componentName(comp.getComponentName())
+                            .weightPercentage(comp.getWeightPercentage())
+                            .score(scoreMap.get(comp.getId()))
+                            .build())
+                    .collect(Collectors.toList());
 
             StudentSummary summary = studentSummaryRepository.findByRegistrationId(reg.getId()).orElse(null);
 
@@ -155,8 +157,8 @@ public class GradeServiceImpl implements GradeService {
         // Kiểm tra khóa điểm (Chỉ ADMIN và GIAOVU mới có quyền sửa điểm đã chốt)
         Optional<StudentSummary> summaryOpt = studentSummaryRepository.findByRegistrationId(registrationId);
         if (summaryOpt.isPresent() && summaryOpt.get().getIsFinalized()) {
-            boolean isStaff = SecurityUtils.hasRole("ADMIN") || 
-                              SecurityUtils.hasRole("GIAOVU");
+            boolean isStaff = SecurityUtils.hasRole("ADMIN") ||
+                    SecurityUtils.hasRole("GIAOVU");
             if (!isStaff) {
                 throw new RuntimeException("Điểm đã được chốt, không thể sửa đổi.");
             }
@@ -166,12 +168,13 @@ public class GradeServiceImpl implements GradeService {
             GradeComponent component = gradeComponentRepository.findById(input.getComponentId())
                     .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
-            StudentComponentGrade scg = studentComponentGradeRepository.findByRegistrationIdAndComponentId(registrationId, input.getComponentId())
+            StudentComponentGrade scg = studentComponentGradeRepository
+                    .findByRegistrationIdAndComponentId(registrationId, input.getComponentId())
                     .orElseGet(() -> StudentComponentGrade.builder()
                             .registration(registration)
                             .component(component)
                             .build());
-            
+
             scg.setScore(input.getScore());
             studentComponentGradeRepository.save(scg);
         }
@@ -180,8 +183,10 @@ public class GradeServiceImpl implements GradeService {
     }
 
     private void recalculateSummary(CourseRegistration registration) {
-        List<StudentComponentGrade> grades = studentComponentGradeRepository.findAllByRegistrationIdAndIsActiveTrue(registration.getId());
-        List<GradeComponent> components = gradeComponentRepository.findAllByCourseSectionIdAndIsActiveTrue(registration.getCourseSection().getId());
+        List<StudentComponentGrade> grades = studentComponentGradeRepository
+                .findAllByRegistrationIdAndIsActiveTrue(registration.getId());
+        List<GradeComponent> components = gradeComponentRepository
+                .findAllByCourseSectionIdAndIsActiveTrue(registration.getCourseSection().getId());
 
         BigDecimal totalScore = BigDecimal.ZERO;
         for (GradeComponent comp : components) {
@@ -190,8 +195,9 @@ public class GradeServiceImpl implements GradeService {
                     .map(StudentComponentGrade::getScore)
                     .findFirst()
                     .orElse(BigDecimal.ZERO);
-            
-            BigDecimal weightPercentage = comp.getWeightPercentage() != null ? comp.getWeightPercentage() : BigDecimal.ZERO;
+
+            BigDecimal weightPercentage = comp.getWeightPercentage() != null ? comp.getWeightPercentage()
+                    : BigDecimal.ZERO;
             BigDecimal weight = weightPercentage.divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
             totalScore = totalScore.add(score.multiply(weight));
         }
@@ -232,12 +238,13 @@ public class GradeServiceImpl implements GradeService {
 
     private SectionGradeManagementResponse mapToSectionResponse(CourseSection section) {
         long count = courseRegistrationRepository.countByCourseSectionId(section.getId());
-        
+
         return SectionGradeManagementResponse.builder()
                 .sectionId(section.getId())
                 .classCode(section.getClassCode())
                 .courseName(section.getCourse() != null ? section.getCourse().getCourseName() : "Unknown Course")
-                .semesterName(section.getSemester() != null ? section.getSemester().getSemesterName() : "Unknown Semester")
+                .semesterName(
+                        section.getSemester() != null ? section.getSemester().getSemesterName() : "Unknown Semester")
                 .studentCount((int) count)
                 .build();
     }

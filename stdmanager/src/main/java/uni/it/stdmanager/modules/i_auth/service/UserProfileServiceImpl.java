@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uni.it.stdmanager.core.security.SecurityUtils;
 import uni.it.stdmanager.modules.i_auth.dto.response.UserProfileResponse;
 import uni.it.stdmanager.modules.i_auth.entity.User;
-import uni.it.stdmanager.modules.i_auth.entity.UserRole;
+// import uni.it.stdmanager.modules.i_auth.entity.UserRole;
 import uni.it.stdmanager.modules.i_auth.repository.UserRepository;
 import uni.it.stdmanager.modules.i_auth.repository.UserRoleRepository;
 import uni.it.stdmanager.modules.ii_student.entity.Student;
@@ -72,7 +72,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     @Transactional
-    public UserProfileResponse updateProfile(uni.it.stdmanager.modules.i_auth.dto.request.ProfileUpdateRequest request) {
+    public UserProfileResponse updateProfile(
+            uni.it.stdmanager.modules.i_auth.dto.request.ProfileUpdateRequest request) {
         String currentUsername = SecurityUtils.getCurrentUserLogin()
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin xác thực"));
 
@@ -94,9 +95,11 @@ public class UserProfileServiceImpl implements UserProfileService {
         userRepository.save(user);
 
         // Đồng bộ với hồ sơ liên kết (nếu có)
-        // Không cần set fullName, email, phone vì đã lưu vào User entity và Employee/Student fetch từ User
+        // Không cần set fullName, email, phone vì đã lưu vào User entity và
+        // Employee/Student fetch từ User
 
-        // Employee profile fields that are specific to Employee entity (like position, etc.) 
+        // Employee profile fields that are specific to Employee entity (like position,
+        // etc.)
         // would be updated here, but fullName/email/phone are now in User.
 
         return getCurrentUserProfile();
@@ -116,13 +119,15 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         try {
-            // Trong thực tế nên dùng một Service lưu trữ chuyên dụng (S3, Cloudinary, hoặc File System)
-            // Ở đây tôi giả lập lưu vào thư mục static của dự án hoặc trả về một URL giả lập
+            // Trong thực tế nên dùng một Service lưu trữ chuyên dụng (S3, Cloudinary, hoặc
+            // File System)
+            // Ở đây tôi giả lập lưu vào thư mục static của dự án hoặc trả về một URL giả
+            // lập
             // Giả sử ta lưu local:
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             // Lưu path vào user (trong thực tế path này nên được cấu hình)
             String avatarUrl = "/uploads/avatars/" + fileName;
-            
+
             user.setAvatarUrl(avatarUrl);
             userRepository.save(user);
 

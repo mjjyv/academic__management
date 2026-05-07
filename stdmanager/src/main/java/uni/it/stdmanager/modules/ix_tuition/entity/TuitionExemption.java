@@ -7,7 +7,7 @@ import uni.it.stdmanager.modules.ii_student.entity.Student;
 import uni.it.stdmanager.modules.v_semester.entity.Semester;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+// import java.util.UUID;
 
 @Getter
 @Setter
