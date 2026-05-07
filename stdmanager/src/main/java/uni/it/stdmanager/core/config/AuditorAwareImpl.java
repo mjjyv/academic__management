@@ -30,8 +30,7 @@ public class AuditorAwareImpl implements AuditorAware<UUID> {
         // Giả định logic: ID được lưu trong Principal (Custom UserDetails) hoặc là
         // chuỗi UUID
         try {
-            // Trong thực tế, bạn sẽ cast authentication.getPrincipal() về CustomUserDetails
-            // của bạn
+            // Trong thực tế sẽ cast authentication.getPrincipal() về CustomUserDetails
             // Ở đây giả định định danh là chuỗi UUID hợp lệ
             String userId = authentication.getName();
             return Optional.of(UUID.fromString(userId));

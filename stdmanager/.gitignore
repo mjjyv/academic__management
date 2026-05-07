@@ -19,6 +19,12 @@ target/
 *.iml
 *.ipr
 
+**/*.tmp
+
+**/brandGuidelines.md
+**/gemini.md
+**/project_structure.md
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
