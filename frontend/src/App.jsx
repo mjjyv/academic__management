@@ -27,6 +27,10 @@ import SchedulePage from './pages/academic/SchedulePage';
 import AcademicHierarchyPage from './pages/academic/AcademicHierarchyPage';
 import CurriculumManagementPage from './pages/academic/CurriculumManagementPage';
 
+// Admin Module
+import UserManagementPage from './pages/admin/UserManagementPage';
+import RoleManagementPage from './pages/admin/RoleManagementPage';
+
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
   <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -57,7 +61,9 @@ function App() {
             <Route path="/er-diagram" element={<ERDiagramView />} />
 
             {/* Đăng ký các Route tương ứng với menuConfig.js */}
-            <Route path="/users" element={<Placeholder title="Quản trị Người dùng & Phân quyền" />} />
+            {/* Admin Routes */}
+            <Route path="/users" element={<UserManagementPage />} />
+            <Route path="/roles" element={<RoleManagementPage />} />
             <Route path="/students" element={<StudentListPage />} />
             <Route path="/student-classes" element={<ClassHierarchyPage />} />
             <Route path="/lecturers" element={<LecturerListPage />} />

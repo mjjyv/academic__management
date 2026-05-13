@@ -14,7 +14,8 @@ import {
     Database,
     School,
     Layers,
-    Network
+    Network,
+    ShieldCheck
 } from 'lucide-react';
 
 export const MENU_ITEMS = [
@@ -25,10 +26,16 @@ export const MENU_ITEMS = [
         icon: LayoutDashboard
     },
     {
-        title: 'Quản trị hệ thống',
+        title: 'Quản trị Người dùng',
         path: '/users',
         roles: ['ADMIN'],
         icon: Users
+    },
+    {
+        title: 'Vai trò & Quyền',
+        path: '/roles',
+        roles: ['ADMIN'],
+        icon: ShieldCheck
     },
     {
         title: 'Quản lý Sinh viên',
@@ -51,7 +58,7 @@ export const MENU_ITEMS = [
     {
         title: 'Cấu trúc Học thuật',
         path: '/academic-hierarchy',
-        roles: ['ADMIN', 'GIAOVU'],
+        roles: ['ADMIN', 'GIAOVU', 'SINHVIEN'],
         icon: Network
     },
     {

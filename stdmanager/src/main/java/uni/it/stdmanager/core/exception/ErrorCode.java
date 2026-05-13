@@ -25,6 +25,9 @@ public enum ErrorCode {
     CREDIT_LIMIT_EXCEEDED(6006, "Số tín chỉ đăng ký vượt quá giới hạn", HttpStatus.BAD_REQUEST),
     SCHEDULE_CONFLICT(6007, "Lịch học bị trùng", HttpStatus.BAD_REQUEST),
     RESOURCE_NOT_FOUND(404, "Không tìm thấy tài nguyên yêu cầu", HttpStatus.NOT_FOUND),
+    ROLE_NOT_FOUND(1009, "Vai trò không tồn tại", HttpStatus.NOT_FOUND),
+    PERMISSION_NOT_FOUND(1010, "Quyền không tồn tại", HttpStatus.NOT_FOUND),
+    ROLE_EXISTED(1011, "Mã vai trò đã tồn tại", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

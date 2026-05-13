@@ -29,6 +29,11 @@ const AcademicHierarchyPage = () => {
 
     const user = useAuthStore(state => state.user);
     const canManage = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
+    const isStudent = user?.roles?.includes('SINHVIEN');
+
+    useEffect(() => {
+        if (isStudent) setActiveTab('programs');
+    }, [isStudent]);
 
     useEffect(() => {
         fetchDepartments();
@@ -173,7 +178,7 @@ const AcademicHierarchyPage = () => {
                     { id: 'departments', label: 'Khoa', icon: Building2 },
                     { id: 'majors', label: 'Chuyên ngành', icon: BookOpen },
                     { id: 'programs', label: 'Chương trình đào tạo', icon: GraduationCap }
-                ].map(tab => (
+                ].filter(tab => !isStudent || tab.id === 'programs').map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
@@ -297,7 +302,7 @@ const AcademicHierarchyPage = () => {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                {activeTab === 'programs' && (
+                                                {activeTab === 'programs' && canManage && (
                                                     <button 
                                                         onClick={() => handleDuplicateProgram(item.id)}
                                                         className="p-2 hover:bg-amber-50 text-amber-600 rounded-xl transition-all"
@@ -307,18 +312,22 @@ const AcademicHierarchyPage = () => {
                                                     </button>
                                                 )}
                                                 
-                                                <button 
-                                                    onClick={() => handleEdit(item)}
-                                                    className="p-2 hover:bg-blue-50 text-blue-600 rounded-xl transition-all"
-                                                >
-                                                    <Edit2 size={16} />
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 hover:bg-red-50 text-red-600 rounded-xl transition-all"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                                                {canManage && (
+                                                    <>
+                                                        <button 
+                                                            onClick={() => handleEdit(item)}
+                                                            className="p-2 hover:bg-blue-50 text-blue-600 rounded-xl transition-all"
+                                                        >
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleDelete(item.id)}
+                                                            className="p-2 hover:bg-red-50 text-red-600 rounded-xl transition-all"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </>
+                                                )}
                                                 {activeTab === 'programs' && (
                                                     <button 
                                                         onClick={() => navigate(`/academic-hierarchy/programs/${item.id}/curriculum`)}

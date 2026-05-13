@@ -5,6 +5,7 @@ import { trainingProgramApi } from '../../api/trainingProgramApi';
 import { trainingProgramCourseApi } from '../../api/trainingProgramCourseApi';
 import ProgramCourseFormModal from '../../components/ProgramCourseFormModal';
 import toast from 'react-hot-toast';
+import useAuthStore from '../../store/useAuthStore';
 
 const CurriculumManagementPage = () => {
     const { programId } = useParams();
@@ -13,9 +14,13 @@ const CurriculumManagementPage = () => {
     const [curriculum, setCurriculum] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Modal states
+    const user = useAuthStore(state => state.user);
+    const canManage = user?.roles?.some(role => ['ADMIN', 'GIAOVU'].includes(role));
+
+    // Modal and View states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [activeYear, setActiveYear] = useState('1');
 
     useEffect(() => {
         fetchData();
@@ -38,15 +43,23 @@ const CurriculumManagementPage = () => {
         }
     };
 
-    // Group curriculum by semester
+    // Group curriculum by year and semester
     const groupedCurriculum = curriculum.reduce((acc, course) => {
-        const semester = course.semester || 0;
-        if (!acc[semester]) acc[semester] = [];
-        acc[semester].push(course);
+        const year = course.year || 1;
+        const semester = course.semester || 1;
+        if (!acc[year]) acc[year] = {};
+        if (!acc[year][semester]) acc[year][semester] = [];
+        acc[year][semester].push(course);
         return acc;
     }, {});
 
-    const semesters = Object.keys(groupedCurriculum).sort((a, b) => a - b);
+    const years = Object.keys(groupedCurriculum).sort((a, b) => a - b);
+
+    useEffect(() => {
+        if (years.length > 0 && !years.includes(activeYear)) {
+            setActiveYear(years[0]);
+        }
+    }, [years]);
 
     const handleDelete = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa môn học này khỏi chương trình?")) {
@@ -91,24 +104,26 @@ const CurriculumManagementPage = () => {
                         <h1 className="text-2xl font-black text-gray-900 leading-tight">{program?.programName}</h1>
                     </div>
                 </div>
-                <button 
-                    onClick={() => {
-                        setSelectedCourse(null);
-                        setIsModalOpen(true);
-                    }}
-                    className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-2xl font-bold shadow-xl shadow-gray-200 hover:bg-black transition-all"
-                >
-                    <Plus size={20} />
-                    Thêm môn học vào khung
-                </button>
+                {canManage && (
+                    <button 
+                        onClick={() => {
+                            setSelectedCourse(null);
+                            setIsModalOpen(true);
+                        }}
+                        className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-2xl font-bold shadow-xl shadow-gray-200 hover:bg-black transition-all"
+                    >
+                        <Plus size={20} />
+                        Thêm môn học vào khung
+                    </button>
+                )}
             </div>
 
             {/* Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
-                    { label: 'Tổng tín chỉ', value: program?.totalCredits, icon: Hash, color: 'text-blue-600', bg: 'bg-blue-50' },
+                    { label: 'Tổng tín chỉ', value: program?.totalCredits || 0, icon: Hash, color: 'text-blue-600', bg: 'bg-blue-50' },
                     { label: 'Số môn học', value: curriculum.length, icon: Book, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                    { label: 'Thời gian đào tạo', value: `${program?.durationYears} năm`, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+                    { label: 'Hệ đào tạo', value: program?.educationType || 'Chính quy', icon: Layout, color: 'text-amber-600', bg: 'bg-amber-50' },
                     { label: 'Môn bắt buộc', value: curriculum.filter(c => c.isRequired).length, icon: CheckCircle2, color: 'text-indigo-600', bg: 'bg-indigo-50' }
                 ].map((stat, i) => (
                     <div key={i} className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -123,80 +138,126 @@ const CurriculumManagementPage = () => {
                 ))}
             </div>
 
-            {/* Curriculum Tree */}
-            <div className="space-y-12">
-                {semesters.map((sem) => (
-                    <div key={sem} className="relative">
-                        <div className="flex items-center gap-4 mb-6 sticky top-0 z-10 py-2">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gray-900 text-white font-black text-xl shadow-lg shadow-gray-200">
-                                {sem}
+            {/* Year Tabs */}
+            {years.length > 0 && (
+                <div className="flex gap-2 p-1.5 bg-gray-100 rounded-2xl w-fit mb-8">
+                    {years.map(year => (
+                        <button
+                            key={year}
+                            onClick={() => setActiveYear(year)}
+                            className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
+                                activeYear === year 
+                                ? 'bg-white text-blue-600 shadow-sm' 
+                                : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                        >
+                            Năm học {year}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Curriculum Table for selected Year */}
+            <div className="space-y-8">
+                {years.includes(activeYear) && (
+                    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="px-6 py-4 bg-gray-900 flex justify-between items-center text-white">
+                            <h2 className="text-lg font-black uppercase tracking-widest">Chi tiết Năm học thứ {activeYear}</h2>
+                            <div className="text-xs font-bold bg-white/20 px-3 py-1 rounded-lg">
+                                {Object.values(groupedCurriculum[activeYear]).flat().reduce((sum, c) => sum + (c.credits || 0), 0)} Tín chỉ
                             </div>
-                            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Học kỳ {sem}</h2>
-                            <div className="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent"></div>
-                            <span className="text-xs font-bold text-gray-400">
-                                {groupedCurriculum[sem].reduce((sum, c) => sum + (c.credits || 0), 0)} Tín chỉ
-                            </span>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {groupedCurriculum[sem].map((course) => (
-                                <div key={course.id} className="group bg-white border border-gray-100 hover:border-blue-200 rounded-3xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 relative overflow-hidden">
-                                    {/* Decoration */}
-                                    <div className={`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-5 transition-transform group-hover:scale-110 ${course.isRequired ? 'text-blue-600' : 'text-emerald-600'}`}>
-                                        <Layout size={96} />
-                                    </div>
-
-                                    <div className="flex items-start justify-between mb-4 relative z-10">
-                                        <div className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${
-                                            course.isRequired ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
-                                        }`}>
-                                            {course.isRequired ? 'Bắt buộc' : 'Tự chọn'}
-                                        </div>
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button 
-                                                onClick={() => {
-                                                    setSelectedCourse(course);
-                                                    setIsModalOpen(true);
-                                                }}
-                                                className="p-2 hover:bg-blue-50 text-blue-600 rounded-xl transition-all"
-                                            >
-                                                <Edit2 size={14} />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(course.id)}
-                                                className="p-2 hover:bg-red-50 text-red-600 rounded-xl transition-all"
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1 relative z-10">
-                                        <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">{course.courseCode}</div>
-                                        <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
-                                            {course.courseName}
-                                        </h4>
-                                    </div>
-
-                                    <div className="mt-6 flex items-center justify-between relative z-10">
-                                        <div className="flex items-center gap-1.5 font-black text-gray-700">
-                                            <Hash size={14} className="text-gray-300" />
-                                            <span className="text-sm">{course.credits} Tín chỉ</span>
-                                        </div>
-                                        {course.prerequisiteCourseName && (
-                                            <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
-                                                <AlertCircle size={12} />
-                                                Tiên quyết: {course.prerequisiteCourseName}
-                                            </div>
-                                        )}
-                                    </div>
+                        {Object.keys(groupedCurriculum[activeYear]).sort((a, b) => a - b).map((sem) => (
+                            <div key={sem} className="border-b border-gray-100 last:border-0">
+                                <div className="bg-gray-50/80 px-6 py-3 flex justify-between items-center border-b border-gray-100">
+                                    <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
+                                        <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
+                                        Học kỳ {sem}
+                                    </h3>
+                                    <span className="text-xs font-bold text-gray-500">
+                                        {groupedCurriculum[activeYear][sem].reduce((sum, c) => sum + (c.credits || 0), 0)} TC
+                                    </span>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="bg-white text-[11px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">
+                                                <th className="px-6 py-4 w-24">Mã môn</th>
+                                                <th className="px-6 py-4">Tên môn học</th>
+                                                <th className="px-6 py-4 w-24 text-center">Tín chỉ</th>
+                                                <th className="px-6 py-4 w-32">Loại môn</th>
+                                                <th className="px-6 py-4">Tiên quyết</th>
+                                                {canManage && <th className="px-6 py-4 w-24 text-right">Thao tác</th>}
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50">
+                                            {groupedCurriculum[activeYear][sem].map((course) => (
+                                                <tr key={course.id} className="hover:bg-blue-50/30 transition-colors group">
+                                                    <td className="px-6 py-4">
+                                                        <span className="text-[11px] font-black text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md uppercase">
+                                                            {course.courseCode}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                                            {course.courseName}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <span className="font-bold text-gray-700">{course.credits}</span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${
+                                                            course.isRequired ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                                                        }`}>
+                                                            {course.isRequired ? 'Bắt buộc' : 'Tự chọn'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {course.prerequisiteCourseName ? (
+                                                            <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 w-fit px-2.5 py-1 rounded-lg">
+                                                                <AlertCircle size={12} />
+                                                                {course.prerequisiteCourseName}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-gray-300 text-sm">-</span>
+                                                        )}
+                                                    </td>
+                                                    {canManage && (
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        setSelectedCourse(course);
+                                                                        setIsModalOpen(true);
+                                                                    }}
+                                                                    className="p-2 hover:bg-blue-100 text-blue-600 rounded-xl transition-all"
+                                                                    title="Chỉnh sửa"
+                                                                >
+                                                                    <Edit2 size={14} />
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => handleDelete(course.id)}
+                                                                    className="p-2 hover:bg-red-100 text-red-600 rounded-xl transition-all"
+                                                                    title="Xóa môn học"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
 
-                {semesters.length === 0 && (
+                {years.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-20 text-gray-300 bg-white rounded-3xl border border-dashed border-gray-200">
                         <Book size={64} className="opacity-10 mb-4" />
                         <p className="font-bold uppercase tracking-widest text-sm">Chưa có môn học nào</p>
