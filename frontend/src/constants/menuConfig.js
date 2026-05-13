@@ -1,19 +1,20 @@
-import { 
-    LayoutDashboard, 
-    Users, 
-    UserCheck, 
-    GraduationCap, 
-    BookOpen, 
-    ClipboardList, 
-    Calendar, 
-    Award, 
-    Wallet, 
-    Settings, 
-    FileText, 
+import {
+    LayoutDashboard,
+    Users,
+    UserCheck,
+    GraduationCap,
+    BookOpen,
+    ClipboardList,
+    Calendar,
+    Award,
+    Wallet,
+    Settings,
+    FileText,
     Bell,
     Database,
     School,
-    Layers
+    Layers,
+    Network
 } from 'lucide-react';
 
 export const MENU_ITEMS = [
@@ -46,6 +47,12 @@ export const MENU_ITEMS = [
         path: '/lecturers',
         roles: ['ADMIN', 'GIAOVU'],
         icon: GraduationCap
+    },
+    {
+        title: 'Cấu trúc Học thuật',
+        path: '/academic-hierarchy',
+        roles: ['ADMIN', 'GIAOVU'],
+        icon: Network
     },
     {
         title: 'Danh mục Môn học',

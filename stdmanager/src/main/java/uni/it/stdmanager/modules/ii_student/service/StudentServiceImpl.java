@@ -28,6 +28,12 @@ import uni.it.stdmanager.modules.ii_student.entity.StudentStatus;
 import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentStatusRepository;
+import uni.it.stdmanager.modules.iv_course.entity.Major;
+import uni.it.stdmanager.modules.iv_course.entity.TrainingProgram;
+import uni.it.stdmanager.modules.iv_course.repository.MajorRepository;
+import uni.it.stdmanager.modules.iv_course.repository.TrainingProgramRepository;
+import uni.it.stdmanager.modules.iii_lecturer.entity.Department;
+import uni.it.stdmanager.modules.iii_lecturer.repository.DepartmentRepository;
 
 import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
@@ -43,6 +49,9 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentClassRepository studentClassRepository;
     private final StudentStatusRepository studentStatusRepository;
+    private final MajorRepository majorRepository;
+    private final DepartmentRepository departmentRepository;
+    private final TrainingProgramRepository trainingProgramRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
@@ -92,6 +101,20 @@ public class StudentServiceImpl implements StudentService {
         userRoleRepository.save(UserRole.builder().user(user).role(role).build());
 
         // 3. Tạo hồ sơ Student
+        Major major = request.getMajorId() != null 
+                ? majorRepository.findById(request.getMajorId()).orElse(studentClass.getMajor())
+                : studentClass.getMajor();
+        
+        Department department = request.getMajorId() != null && major != null
+                ? major.getDepartment()
+                : studentClass.getDepartment();
+
+        TrainingProgram program = null;
+        if (request.getProgramId() != null) {
+            program = trainingProgramRepository.findById(request.getProgramId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy chương trình đào tạo"));
+        }
+
         Student student = Student.builder()
                 .user(user)
                 .studentCode(request.getStudentCode())
@@ -104,9 +127,9 @@ public class StudentServiceImpl implements StudentService {
                 .currentAddress(request.getCurrentAddress())
                 .studentClass(studentClass)
                 .admissionYear(calculateAdmissionYear(request.getStudentCode()))
-                // Giả định Major & Department lấy từ Class
-                .major(studentClass.getMajor())
-                .department(studentClass.getDepartment())
+                .major(major)
+                .department(department)
+                .program(program)
                 .build();
         student = studentRepository.save(student);
 
@@ -153,6 +176,22 @@ public class StudentServiceImpl implements StudentService {
             StudentClass studentClass = studentClassRepository.findById(request.getClassId())
                     .orElseThrow(() -> new RuntimeException("Lớp không tồn tại"));
             student.setStudentClass(studentClass);
+            // Cập nhật Major/Dept nếu thay đổi lớp (có thể ghi đè bằng majorId/programId bên dưới)
+            student.setMajor(studentClass.getMajor());
+            student.setDepartment(studentClass.getDepartment());
+        }
+
+        if (request.getMajorId() != null) {
+            Major major = majorRepository.findById(request.getMajorId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành"));
+            student.setMajor(major);
+            student.setDepartment(major.getDepartment());
+        }
+
+        if (request.getProgramId() != null) {
+            TrainingProgram program = trainingProgramRepository.findById(request.getProgramId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy chương trình đào tạo"));
+            student.setProgram(program);
         }
 
         return mapToResponse(studentRepository.save(student));

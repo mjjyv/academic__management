@@ -20,5 +20,7 @@ public class StudentUpdateRequest {
     private String address;
     private String currentAddress;
     private UUID classId;
+    private UUID majorId;
+    private UUID programId;
     private UUID statusId;
 }

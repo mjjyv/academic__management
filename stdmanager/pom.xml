@@ -182,6 +182,7 @@
 					<url>jdbc:sqlserver://localhost:1433;databaseName=stdmanager_db;encrypt=false;trustServerCertificate=true</url>
 					<user>sa</user>
 					<password>P@ssword</password>
+					<cleanDisabled>false</cleanDisabled>
 				</configuration>
 			</plugin>
 		</plugins>

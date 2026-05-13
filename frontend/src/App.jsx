@@ -24,6 +24,8 @@ import useAuthStore from './store/useAuthStore';
 import CourseListPage from './pages/academic/CourseListPage';
 import AcademicOverviewPage from './pages/academic/AcademicOverviewPage';
 import SchedulePage from './pages/academic/SchedulePage';
+import AcademicHierarchyPage from './pages/academic/AcademicHierarchyPage';
+import CurriculumManagementPage from './pages/academic/CurriculumManagementPage';
 
 // Placeholder Components cho các Module chưa triển khai
 const Placeholder = ({ title }) => (
@@ -61,6 +63,8 @@ function App() {
             <Route path="/lecturers" element={<LecturerListPage />} />
             <Route path="/academic" element={<CourseListPage />} />
             <Route path="/academic-management" element={<AcademicOverviewPage />} />
+            <Route path="/academic-hierarchy" element={<AcademicHierarchyPage />} />
+            <Route path="/academic-hierarchy/programs/:programId/curriculum" element={<CurriculumManagementPage />} />
             <Route
               path="/registration"
               element={
@@ -86,8 +90,11 @@ function App() {
               }
             />
             <Route path="/tuition-config" element={<TuitionConfigPage />} />
-            <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
             <Route path="/schedule" element={<SchedulePage />} />
+
+            <Route path="/study-results-management" element={<Placeholder title="Quản lý Kết quả Học tập" />} />
+            <Route path="/attendance-management" element={<Placeholder title="Quản lý Điểm danh" />} />
+            <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
             <Route path="/settings" element={<Placeholder title="Thông báo & Cấu hình hệ thống" />} />
           </Route>
         </Route>

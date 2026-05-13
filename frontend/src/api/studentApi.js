@@ -31,4 +31,6 @@ export const classApi = {
     getHierarchy: () => axiosClient.get('/student-classes/hierarchy'),
     getById: (id) => axiosClient.get(`/student-classes/${id}`),
     getClassCourseHistory: (id) => axiosClient.get(`/student-classes/${id}/course-history`),
+    assignProgram: (classId, programId) => axiosClient.post(`/student-classes/${classId}/assign-program/${programId}`),
+    delete: (id) => axiosClient.delete(`/student-classes/${id}`),
 };

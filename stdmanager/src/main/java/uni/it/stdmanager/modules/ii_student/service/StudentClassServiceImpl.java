@@ -4,14 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
+import uni.it.stdmanager.modules.ii_student.dto.request.StudentClassRequest;
 import uni.it.stdmanager.modules.ii_student.dto.response.*;
 import uni.it.stdmanager.modules.ii_student.entity.Student;
 import uni.it.stdmanager.modules.ii_student.entity.StudentClass;
 import uni.it.stdmanager.modules.ii_student.repository.StudentClassRepository;
 import uni.it.stdmanager.modules.ii_student.repository.StudentRepository;
 import uni.it.stdmanager.modules.iii_lecturer.entity.Department;
+import uni.it.stdmanager.modules.iii_lecturer.entity.Employee;
+import uni.it.stdmanager.modules.iii_lecturer.repository.DepartmentRepository;
+import uni.it.stdmanager.modules.iii_lecturer.repository.EmployeeRepository;
 import uni.it.stdmanager.modules.iv_course.entity.Major;
 import uni.it.stdmanager.modules.iv_course.entity.TrainingProgram;
+import uni.it.stdmanager.modules.iv_course.repository.MajorRepository;
+import uni.it.stdmanager.modules.iv_course.repository.TrainingProgramRepository;
 import uni.it.stdmanager.modules.iv_course.repository.TrainingProgramCourseRepository;
 import uni.it.stdmanager.modules.vi_registration.entity.CourseRegistration;
 import uni.it.stdmanager.modules.vi_registration.repository.CourseRegistrationRepository;
@@ -29,6 +35,10 @@ public class StudentClassServiceImpl implements StudentClassService {
     private final StudentRepository studentRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final TrainingProgramCourseRepository trainingProgramCourseRepository;
+    private final MajorRepository majorRepository;
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
+    private final TrainingProgramRepository trainingProgramRepository;
 
     @Override
     public List<StudentClassResponse> getAllClasses() {
@@ -150,6 +160,108 @@ public class StudentClassServiceImpl implements StudentClassService {
                 })
                 .sorted(Comparator.comparing(ClassCourseHistoryResponse::getSemesterName).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public StudentClassResponse createClass(StudentClassRequest request) {
+        if (studentClassRepository.findByClassCode(request.getClassCode()).isPresent()) {
+            throw new RuntimeException("Mã lớp đã tồn tại: " + request.getClassCode());
+        }
+
+        Major major = majorRepository.findById(request.getMajorId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành"));
+
+        Department department = null;
+        if (request.getDepartmentId() != null) {
+            department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy khoa"));
+        } else {
+            department = major.getDepartment();
+        }
+
+        Employee advisor = null;
+        if (request.getAdvisorId() != null) {
+            advisor = employeeRepository.findById(request.getAdvisorId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy cố vấn học tập"));
+        }
+
+        StudentClass studentClass = StudentClass.builder()
+                .classCode(request.getClassCode())
+                .className(request.getClassName())
+                .courseYear(request.getCourseYear())
+                .major(major)
+                .department(department)
+                .advisor(advisor)
+                .build();
+
+        return mapToResponse(studentClassRepository.save(studentClass));
+    }
+
+    @Override
+    @Transactional
+    public StudentClassResponse updateClass(UUID id, StudentClassRequest request) {
+        StudentClass studentClass = studentClassRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lớp học"));
+
+        if (!studentClass.getClassCode().equals(request.getClassCode()) &&
+            studentClassRepository.findByClassCode(request.getClassCode()).isPresent()) {
+            throw new RuntimeException("Mã lớp đã tồn tại");
+        }
+
+        Major major = majorRepository.findById(request.getMajorId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành"));
+
+        Department department = null;
+        if (request.getDepartmentId() != null) {
+            department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy khoa"));
+        } else {
+            department = major.getDepartment();
+        }
+
+        Employee advisor = null;
+        if (request.getAdvisorId() != null) {
+            advisor = employeeRepository.findById(request.getAdvisorId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy cố vấn học tập"));
+        }
+
+        studentClass.setClassCode(request.getClassCode());
+        studentClass.setClassName(request.getClassName());
+        studentClass.setCourseYear(request.getCourseYear());
+        studentClass.setMajor(major);
+        studentClass.setDepartment(department);
+        studentClass.setAdvisor(advisor);
+
+        return mapToResponse(studentClassRepository.save(studentClass));
+    }
+
+    @Override
+    @Transactional
+    public void deleteClass(UUID id) {
+        StudentClass studentClass = studentClassRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lớp học"));
+        studentClassRepository.delete(studentClass);
+    }
+
+    @Override
+    @Transactional
+    public void assignProgramToClass(UUID classId, UUID programId) {
+        StudentClass studentClass = studentClassRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lớp học"));
+        
+        TrainingProgram program = trainingProgramRepository.findById(programId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chương trình đào tạo"));
+
+        // Cập nhật tất cả sinh viên trong lớp
+        List<Student> students = studentRepository.findByStudentClassId(classId);
+        for (Student student : students) {
+            student.setProgram(program);
+            // Có thể cập nhật luôn Major/Dept của SV khớp với Program nếu cần
+            student.setMajor(program.getMajor());
+            student.setDepartment(program.getDepartment());
+        }
+        studentRepository.saveAll(students);
     }
 
     private StudentClassResponse mapToResponse(StudentClass studentClass) {

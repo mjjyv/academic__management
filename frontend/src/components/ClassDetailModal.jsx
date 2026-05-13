@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { classApi } from '../api/studentApi';
-import { X, Users, User, Info, School, Calendar, BookOpen, UserCheck, Search, ChevronRight, History, CheckCircle2, Clock } from 'lucide-react';
+import { trainingProgramApi } from '../api/trainingProgramApi';
+import { X, Users, User, Info, School, Calendar, BookOpen, UserCheck, Search, ChevronRight, History, CheckCircle2, Clock, Zap, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ClassDetailModal = ({ isOpen, onClose, classId }) => {
     const [classDetail, setClassDetail] = useState(null);
     const [history, setHistory] = useState([]);
+    const [programs, setPrograms] = useState([]);
+    const [selectedProgramId, setSelectedProgramId] = useState('');
+    const [assigning, setAssigning] = useState(false);
     const [loading, setLoading] = useState(false);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -14,8 +19,18 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
         if (isOpen && classId) {
             fetchClassDetail();
             fetchClassHistory();
+            fetchPrograms();
         }
     }, [isOpen, classId]);
+
+    const fetchPrograms = async () => {
+        try {
+            const res = await trainingProgramApi.getAll();
+            if (res.success) setPrograms(res.data);
+        } catch (error) {
+            console.error("Error fetching programs", error);
+        }
+    };
 
     const fetchClassDetail = async () => {
         setLoading(true);
@@ -28,6 +43,28 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
             console.error('Lỗi khi tải chi tiết lớp:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleAssignProgram = async () => {
+        if (!selectedProgramId) {
+            toast.error("Vui lòng chọn chương trình đào tạo");
+            return;
+        }
+
+        if (window.confirm("Hệ thống sẽ cập nhật CTĐT cho TOÀN BỘ sinh viên trong lớp. Bạn có chắc chắn?")) {
+            setAssigning(true);
+            try {
+                const res = await classApi.assignProgram(classId, selectedProgramId);
+                if (res.success) {
+                    toast.success("Gán chương trình đào tạo thành công");
+                    fetchClassDetail();
+                }
+            } catch (error) {
+                toast.error("Lỗi khi gán chương trình đào tạo");
+            } finally {
+                setAssigning(false);
+            }
         }
     };
 
@@ -150,6 +187,29 @@ const ClassDetailModal = ({ isOpen, onClose, classId }) => {
                                     <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
                                         <UserCheck size={14} className="text-amber-500" /> {classDetail.advisorName || 'Chưa phân công'}
                                     </p>
+                                </div>
+
+                                <div className="bg-slate-800 p-4 rounded-2xl shadow-lg text-white">
+                                    <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2">
+                                        <Zap size={12} className="text-amber-400" /> Thiết lập CTĐT cho lớp
+                                    </label>
+                                    <select 
+                                        value={selectedProgramId}
+                                        onChange={(e) => setSelectedProgramId(e.target.value)}
+                                        className="w-full bg-slate-700 border-none rounded-xl text-xs font-bold p-2.5 outline-none mb-3"
+                                    >
+                                        <option value="">-- Chọn chương trình --</option>
+                                        {programs.map(p => (
+                                            <option key={p.id} value={p.id}>{p.programName} ({p.programCode})</option>
+                                        ))}
+                                    </select>
+                                    <button 
+                                        onClick={handleAssignProgram}
+                                        disabled={assigning}
+                                        className="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                    >
+                                        {assigning ? <Loader2 size={12} className="animate-spin" /> : 'Gán cho cả lớp'}
+                                    </button>
                                 </div>
 
                                 <div className="bg-blue-600 p-5 rounded-2xl shadow-lg shadow-blue-100 text-white">
