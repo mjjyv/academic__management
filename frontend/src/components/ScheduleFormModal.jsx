@@ -38,7 +38,7 @@ const ScheduleFormModal = ({ isOpen, onClose, section, onUpdate }) => {
     const fetchSectionSchedules = async () => {
         setLoading(true);
         try {
-            const res = await scheduleApi.getSectionSchedules(section.id);
+            const res = await scheduleApi.getScheduleBySection(section.id);
             if (res.success) setSchedules(res.data);
         } catch (error) {
             toast.error("Không thể tải lịch học");

@@ -91,7 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 }
 
                 // Logic check conflict: Same room/lecturer, same day, overlapping periods
-                // scheduleRepository.checkConflict(...)
+                checkConflict(null, request);
 
                 Schedule schedule = Schedule.builder()
                                 .courseSection(section)
@@ -111,6 +111,77 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .build();
 
                 return mapToResponse(scheduleRepository.save(schedule));
+        }
+
+        @Override
+        @Transactional
+        public ScheduleResponse updateSchedule(UUID id, ScheduleRequest request) {
+                Schedule schedule = scheduleRepository.findById(id)
+                                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+
+                checkConflict(id, request);
+
+                if (request.getCourseSectionId() != null) {
+                        CourseSection section = courseSectionRepository.findById(request.getCourseSectionId())
+                                        .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+                        schedule.setCourseSection(section);
+                }
+
+                if (request.getLecturerId() != null) {
+                        Employee lecturer = employeeRepository.findById(request.getLecturerId())
+                                        .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+                        schedule.setLecturer(lecturer);
+                } else {
+                        schedule.setLecturer(null);
+                }
+
+                if (request.getRoomId() != null) {
+                        Room room = roomRepository.findById(request.getRoomId())
+                                        .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+                        schedule.setRoom(room);
+                } else {
+                        schedule.setRoom(null);
+                }
+
+                schedule.setDayOfWeek(request.getDayOfWeek());
+                schedule.setDate(request.getDate());
+                schedule.setShift(request.getShift());
+                schedule.setStartPeriod(request.getStartPeriod());
+                schedule.setEndPeriod(request.getEndPeriod());
+                schedule.setStartDate(request.getStartDate());
+                schedule.setEndDate(request.getEndDate());
+                schedule.setMode(request.getMode());
+                schedule.setNote(request.getNote());
+
+                return mapToResponse(scheduleRepository.save(schedule));
+        }
+
+        private void checkConflict(UUID excludeId, ScheduleRequest request) {
+                if (request.getRoomId() != null) {
+                        boolean roomConflict = scheduleRepository.existsRoomConflict(
+                                        request.getRoomId(),
+                                        request.getDayOfWeek(),
+                                        request.getDate(),
+                                        request.getStartPeriod(),
+                                        request.getEndPeriod(),
+                                        excludeId);
+                        if (roomConflict) {
+                                throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION, "Phòng học đã bị trùng lịch");
+                        }
+                }
+
+                if (request.getLecturerId() != null) {
+                        boolean lecturerConflict = scheduleRepository.existsLecturerConflict(
+                                        request.getLecturerId(),
+                                        request.getDayOfWeek(),
+                                        request.getDate(),
+                                        request.getStartPeriod(),
+                                        request.getEndPeriod(),
+                                        excludeId);
+                        if (lecturerConflict) {
+                                throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION, "Giảng viên đã bị trùng lịch dạy");
+                        }
+                }
         }
 
         @Override

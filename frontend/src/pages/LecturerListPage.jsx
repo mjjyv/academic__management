@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { employeeApi, departmentApi, positionApi } from '../api/lecturerApi';
-import { Search, Plus, MoreVertical, Edit2, Eye, Trash2, Filter, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react';
+import { Search, Plus, MoreVertical, Edit2, Eye, Trash2, Filter, ChevronLeft, ChevronRight, Briefcase, Mail, Phone, MapPin, UserCheck, UserX } from 'lucide-react';
 import toast from 'react-hot-toast';
 import LecturerFormModal from '../components/LecturerFormModal';
 import LecturerDetailModal from '../components/LecturerDetailModal';
@@ -98,110 +98,173 @@ const LecturerListPage = () => {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-8 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 tracking-tight flex items-center gap-2">
-                        Quản lý Giảng viên & Cán bộ
-                    </h2>
-                    <p className="text-gray-500 text-sm mt-1">Tổng số: {totalElements} cán bộ</p>
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-4">
+                        <div className="p-3 bg-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-100">
+                            <Briefcase size={32} />
+                        </div>
+                        Nhân sự & Giảng viên
+                    </h1>
+                    <p className="text-slate-500 mt-2 font-medium">Quản lý đội ngũ cán bộ, giảng viên và nhân viên toàn trường</p>
                 </div>
                 <button
                     onClick={() => openModal('CREATE')}
-                    className="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg font-medium transition-all shadow-sm flex items-center gap-2 text-sm"
+                    className="bg-slate-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-black transition-all shadow-xl shadow-slate-200 flex items-center gap-3 text-sm uppercase tracking-widest active:scale-95"
                 >
-                    <Plus size={16} /> Thêm Cán bộ
+                    <Plus size={20} /> Thêm Cán bộ mới
                 </button>
             </div>
 
-            {/* Bộ lọc */}
-            <div className="bg-white p-4 rounded-xl border border-gray-100 flex flex-col md:flex-row gap-4">
-                <form onSubmit={handleSearch} className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Tìm theo mã CB, tên..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none transition-all text-sm"
-                    />
-                </form>
+            {/* Quick Stats & Filters */}
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+                {/* Stats Card */}
+                <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-6">
+                    <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
+                        <UserCheck size={32} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tổng nhân sự</p>
+                        <p className="text-3xl font-black text-slate-900">{totalElements}</p>
+                    </div>
+                </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <Filter className="text-slate-400" size={18} />
-                    <select
-                        className="bg-gray-50 border border-transparent text-gray-700 py-2 px-4 rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none flex-1 md:w-48 text-sm"
-                        value={selectedDept}
-                        onChange={(e) => { setSelectedDept(e.target.value); setCurrentPage(0); }}
-                    >
-                        <option value="">-- Tất cả Khoa/Viện --</option>
-                        {departments.map(d => (
-                            <option key={d.id} value={d.id}>{d.name}</option>
-                        ))}
-                    </select>
+                {/* Filters Row */}
+                <div className="xl:col-span-3 bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+                    <form onSubmit={handleSearch} className="flex-1 relative w-full group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm theo mã, tên hoặc email..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all text-sm font-bold text-slate-700"
+                        />
+                    </form>
 
-                    <select
-                        className="bg-gray-50 border border-transparent text-gray-700 py-2 px-4 rounded-lg focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-gray-100 outline-none flex-1 md:w-40 text-sm"
-                        value={selectedPosition}
-                        onChange={(e) => { setSelectedPosition(e.target.value); setCurrentPage(0); }}
-                    >
-                        <option value="">-- Chức danh --</option>
-                        {positions.map(p => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
-                        ))}
-                    </select>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="h-10 w-px bg-slate-100 hidden md:block"></div>
+                        <select
+                            className="bg-slate-50 border border-slate-100 text-slate-700 py-3.5 px-4 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 outline-none flex-1 md:w-56 text-xs font-black uppercase tracking-widest"
+                            value={selectedDept}
+                            onChange={(e) => { setSelectedDept(e.target.value); setCurrentPage(0); }}
+                        >
+                            <option value="">-- Tất cả Khoa --</option>
+                            {departments.map(d => (
+                                <option key={d.id} value={d.id}>{d.name}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            className="bg-slate-50 border border-slate-100 text-slate-700 py-3.5 px-4 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 outline-none flex-1 md:w-48 text-xs font-black uppercase tracking-widest"
+                            value={selectedPosition}
+                            onChange={(e) => { setSelectedPosition(e.target.value); setCurrentPage(0); }}
+                        >
+                            <option value="">-- Chức danh --</option>
+                            {positions.map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            {/* Bảng dữ liệu */}
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            {/* Content Area */}
+            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50/50 text-gray-500 text-xs font-medium border-b border-gray-100">
-                                <th className="p-4">Mã CB</th>
-                                <th className="p-4">Họ tên</th>
-                                <th className="p-4">Đơn vị công tác</th>
-                                <th className="p-4">Chức danh / Học vị</th>
-                                <th className="p-4 text-center">Thao tác</th>
+                            <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                                <th className="px-8 py-5">Nhân sự</th>
+                                <th className="px-8 py-5">Công tác</th>
+                                <th className="px-8 py-5">Thông tin liên hệ</th>
+                                <th className="px-8 py-5 text-center">Trạng thái</th>
+                                <th className="px-8 py-5 text-right">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody className="text-sm">
+                        <tbody className="divide-y divide-slate-50">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" className="p-8 text-center text-slate-400">Đang tải dữ liệu...</td>
+                                    <td colSpan="5" className="px-8 py-20 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest animate-pulse">Đang truy xuất dữ liệu...</p>
+                                        </div>
+                                    </td>
                                 </tr>
                             ) : lecturers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-8 text-center text-slate-400">Không tìm thấy cán bộ/giảng viên nào</td>
+                                    <td colSpan="5" className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4 opacity-20">
+                                            <Search size={64} className="text-slate-400" />
+                                            <p className="text-lg font-black text-slate-800 uppercase tracking-widest">Không tìm thấy kết quả</p>
+                                        </div>
+                                    </td>
                                 </tr>
                             ) : (
                                 lecturers.map(lec => (
-                                    <tr key={lec.id} className="group border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                                        <td className="p-4 font-medium text-gray-900">{lec.employeeCode}</td>
-                                        <td className="p-4">
-                                            <p className="font-medium text-gray-900">{lec.fullName}</p>
-                                            <p className="text-xs text-gray-500">{lec.email}</p>
+                                    <tr key={lec.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all overflow-hidden shrink-0">
+                                                    {lec.avatarUrl ? (
+                                                        <img src={lec.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-lg font-black uppercase">{lec.fullName.charAt(0)}</span>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">{lec.fullName}</p>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">ID: {lec.employeeCode}</p>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="p-4">
-                                            <span className="text-gray-600 text-sm">
-                                                {lec.departmentName || 'Chưa xếp'}
+                                        <td className="px-8 py-6">
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-bold text-slate-700">{lec.departmentName || 'Chưa xếp khoa'}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md text-[9px] font-black uppercase tracking-widest">
+                                                        {lec.positionName || 'Nhân viên'}
+                                                    </span>
+                                                    {lec.academicDegree && (
+                                                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 rounded-md text-[9px] font-black uppercase tracking-widest">
+                                                            {lec.academicDegree}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="space-y-1.5">
+                                                <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                                                    <Mail size={12} className="text-slate-300" />
+                                                    <span>{lec.email}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                                                    <Phone size={12} className="text-slate-300" />
+                                                    <span>{lec.phone || 'N/A'}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-center">
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest border border-emerald-100">
+                                                <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+                                                Đang làm việc
                                             </span>
                                         </td>
-                                        <td className="p-4">
-                                            <p className="text-gray-800 text-sm">{lec.positionName || 'N/A'}</p>
-                                            <p className="text-xs text-gray-500">{lec.academicDegree || ''}</p>
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button onClick={() => openModal('VIEW', lec)} className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors" title="Xem chi tiết">
-                                                    <Eye size={16} />
+                                        <td className="px-8 py-6 text-right">
+                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                <button onClick={() => openModal('VIEW', lec)} className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all" title="Xem chi tiết">
+                                                    <Eye size={18} />
                                                 </button>
-                                                <button onClick={() => openModal('EDIT', lec)} className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors" title="Chỉnh sửa">
-                                                    <Edit2 size={16} />
+                                                <button onClick={() => openModal('EDIT', lec)} className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all" title="Chỉnh sửa">
+                                                    <Edit2 size={18} />
                                                 </button>
-                                                <button onClick={() => handleDelete(lec.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Xóa">
-                                                    <Trash2 size={16} />
+                                                <div className="w-px h-4 bg-slate-100 mx-1"></div>
+                                                <button onClick={() => handleDelete(lec.id)} className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Xóa">
+                                                    <Trash2 size={18} />
                                                 </button>
                                             </div>
                                         </td>
@@ -212,30 +275,42 @@ const LecturerListPage = () => {
                     </table>
                 </div>
 
-                {/* Phân trang */}
-                {totalPages > 1 && (
-                    <div className="p-4 border-t border-gray-100 flex items-center justify-between text-sm">
-                        <span className="text-gray-500">Trang {currentPage + 1} / {totalPages}</span>
+                {/* Footer / Pagination */}
+                <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Trang {currentPage + 1} / {totalPages} • Hiển thị {lecturers.length} trên {totalElements} kết quả
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <button
+                            disabled={currentPage === 0}
+                            onClick={() => setCurrentPage(p => p - 1)}
+                            className="p-3 text-slate-400 hover:bg-white hover:text-indigo-600 rounded-xl disabled:opacity-30 transition-all shadow-sm border border-transparent hover:border-slate-100"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
                         <div className="flex items-center gap-1">
-                            <button
-                                disabled={currentPage === 0}
-                                onClick={() => setCurrentPage(p => p - 1)}
-                                className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md disabled:opacity-50 transition-colors"
-                            >
-                                <ChevronLeft size={16} />
-                            </button>
-                            <button
-                                disabled={currentPage === totalPages - 1}
-                                onClick={() => setCurrentPage(p => p + 1)}
-                                className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md disabled:opacity-50 transition-colors"
-                            >
-                                <ChevronRight size={16} />
-                            </button>
+                            {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i)}
+                                    className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${currentPage === i ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-400 hover:bg-white hover:text-slate-800'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
                         </div>
+                        <button
+                            disabled={currentPage === totalPages - 1}
+                            onClick={() => setCurrentPage(p => p + 1)}
+                            className="p-3 text-slate-400 hover:bg-white hover:text-indigo-600 rounded-xl disabled:opacity-30 transition-all shadow-sm border border-transparent hover:border-slate-100"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
                     </div>
-                )}
+                </div>
             </div>
 
+            {/* Modals */}
             {modalState.type === 'CREATE' && (
                 <LecturerFormModal isOpen={true} onClose={closeModal} departments={departments} positions={positions} />
             )}

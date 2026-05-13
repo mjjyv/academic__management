@@ -3,39 +3,51 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 import MainLayout from './layouts/MainLayout';
 
-// Import Pages
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
-import StudentListPage from './pages/students/StudentListPage';
-import ClassHierarchyPage from './pages/students/ClassHierarchyPage';
-import LecturerListPage from './pages/LecturerListPage';
-import ProfilePage from './pages/ProfilePage';
-import ERDiagramView from './pages/ERDiagramView';
-import RegistrationManagementPage from './pages/registration/RegistrationManagementPage';
-import CourseRegistrationPage from './pages/registration/CourseRegistrationPage';
-import StudentTranscriptPage from './pages/grade/StudentTranscriptPage';
-import GradeManagementPage from './pages/grade/GradeManagementPage';
-import TuitionDashboardPage from './pages/finance/TuitionDashboardPage';
-import TuitionManagementPage from './pages/finance/TuitionManagementPage';
-import TuitionConfigPage from './pages/finance/TuitionConfigPage';
+// Core State
 import useAuthStore from './store/useAuthStore';
 
-// Modules IV & V
+// Common Pages
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
+import ERDiagramView from './pages/ERDiagramView';
+
+// Module I & III: Staff & Lecturers
+import UserManagementPage from './pages/admin/UserManagementPage';
+import RoleManagementPage from './pages/admin/RoleManagementPage';
+import LecturerListPage from './pages/LecturerListPage';
+
+// Module II: Students
+import StudentListPage from './pages/students/StudentListPage';
+import ClassHierarchyPage from './pages/students/ClassHierarchyPage';
+
+// Module IV & V: Academic Management
 import CourseListPage from './pages/academic/CourseListPage';
 import AcademicOverviewPage from './pages/academic/AcademicOverviewPage';
 import SchedulePage from './pages/academic/SchedulePage';
 import AcademicHierarchyPage from './pages/academic/AcademicHierarchyPage';
 import CurriculumManagementPage from './pages/academic/CurriculumManagementPage';
 
-// Admin Module
-import UserManagementPage from './pages/admin/UserManagementPage';
-import RoleManagementPage from './pages/admin/RoleManagementPage';
+// Module VI & IX: Registration & Finance
+import CourseRegistrationPage from './pages/registration/CourseRegistrationPage';
+import RegistrationManagementPage from './pages/registration/RegistrationManagementPage';
+import TuitionDashboardPage from './pages/finance/TuitionDashboardPage';
+import TuitionManagementPage from './pages/finance/TuitionManagementPage';
+import TuitionConfigPage from './pages/finance/TuitionConfigPage';
 
-// Placeholder Components cho các Module chưa triển khai
+// Module VIII: Grades
+import StudentTranscriptPage from './pages/grade/StudentTranscriptPage';
+import GradeManagementPage from './pages/grade/GradeManagementPage';
+
+// Placeholder Components
 const Placeholder = ({ title }) => (
-  <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100">
-    <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
-    <p className="text-gray-500 italic">Tính năng này đang được phát triển theo lộ trình của Giai đoạn tiếp theo...</p>
+  <div className="p-10 bg-white rounded-[2.5rem] shadow-xl shadow-slate-100 border border-slate-100 animate-in fade-in zoom-in-95 duration-500">
+    <h2 className="text-3xl font-black text-slate-800 mb-6 tracking-tight">{title}</h2>
+    <div className="p-8 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+      <p className="text-slate-500 font-bold italic text-center">
+        Tính năng này đang được phát triển theo lộ trình của Giai đoạn tiếp theo...
+      </p>
+    </div>
   </div>
 );
 
@@ -45,32 +57,36 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* NHÓM 1: PUBLIC ROUTES - Dành cho khách / chưa đăng nhập */}
+        {/* NHÓM 1: PUBLIC ROUTES */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
         </Route>
 
-        {/* NHÓM 2: PROTECTED ROUTES - Yêu cầu Token & MainLayout */}
+        {/* NHÓM 2: PROTECTED ROUTES */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            {/* Mặc định vào Dashboard */}
+            {/* Core */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-
-            {/* Thêm vào trong nhóm <Route element={<MainLayout />}> */}
             <Route path="/er-diagram" element={<ERDiagramView />} />
 
-            {/* Đăng ký các Route tương ứng với menuConfig.js */}
-            {/* Admin Routes */}
+            {/* Admin & Personnel */}
             <Route path="/users" element={<UserManagementPage />} />
             <Route path="/roles" element={<RoleManagementPage />} />
+            <Route path="/lecturers" element={<LecturerListPage />} />
+
+            {/* Student & Classes */}
             <Route path="/students" element={<StudentListPage />} />
             <Route path="/student-classes" element={<ClassHierarchyPage />} />
-            <Route path="/lecturers" element={<LecturerListPage />} />
+
+            {/* Academic & Schedule */}
             <Route path="/academic" element={<CourseListPage />} />
             <Route path="/academic-management" element={<AcademicOverviewPage />} />
             <Route path="/academic-hierarchy" element={<AcademicHierarchyPage />} />
             <Route path="/academic-hierarchy/programs/:programId/curriculum" element={<CurriculumManagementPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+
+            {/* Registration */}
             <Route
               path="/registration"
               element={
@@ -79,6 +95,8 @@ function App() {
                   : <RegistrationManagementPage />
               }
             />
+
+            {/* Grades & Transcript */}
             <Route
               path="/grades"
               element={
@@ -87,6 +105,8 @@ function App() {
                   : <GradeManagementPage />
               }
             />
+
+            {/* Finance & Tuition */}
             <Route
               path="/finance"
               element={
@@ -96,8 +116,8 @@ function App() {
               }
             />
             <Route path="/tuition-config" element={<TuitionConfigPage />} />
-            <Route path="/schedule" element={<SchedulePage />} />
 
+            {/* Coming Soon / Placeholders */}
             <Route path="/study-results-management" element={<Placeholder title="Quản lý Kết quả Học tập" />} />
             <Route path="/attendance-management" element={<Placeholder title="Quản lý Điểm danh" />} />
             <Route path="/exams" element={<Placeholder title="Khảo thí & Xét tốt nghiệp" />} />
@@ -105,7 +125,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* CẤU HÌNH FALLBACK: Mọi đường dẫn lạ đều đẩy về /login hoặc /dashboard */}
+        {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

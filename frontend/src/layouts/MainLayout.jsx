@@ -35,7 +35,7 @@ const MainLayout = () => {
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
                 
                 {/* Minimalist Top Header */}
-                <header className="h-20 flex items-center justify-between px-10 shrink-0 z-30 bg-white/50 backdrop-blur-xl border-b border-slate-100">
+                <header className="h-20 flex items-center justify-between px-10 shrink-0 z-30 bg-white border-b border-slate-100">
                     <div className="flex items-center gap-6">
                         <div className="relative group hidden md:block">
                             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-slate-500 transition-colors" />

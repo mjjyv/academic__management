@@ -8,6 +8,18 @@ const useScheduleStore = create((set, get) => ({
     buildings: [],
     loading: false,
     error: null,
+    
+    fetchMySchedule: async () => {
+        set({ loading: true });
+        try {
+            const res = await scheduleApi.getMySchedule();
+            if (res.success) set({ schedules: res.data });
+        } catch (err) {
+            toast.error("Lỗi khi tải lịch biểu cá nhân");
+        } finally {
+            set({ loading: false });
+        }
+    },
 
     fetchStudentSchedule: async (studentId) => {
         set({ loading: true });
