@@ -1,0 +1,64 @@
+package uni.it.stdmanager.modules.ix_tuition.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import uni.it.stdmanager.core.dto.ApiResponse;
+import uni.it.stdmanager.modules.ix_tuition.dto.request.PaymentRequest;
+import uni.it.stdmanager.modules.ix_tuition.dto.response.PaymentResponse;
+import uni.it.stdmanager.modules.ix_tuition.dto.response.StudentTuitionResponse;
+import uni.it.stdmanager.modules.ix_tuition.service.TuitionService;
+
+// import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/tuition")
+@RequiredArgsConstructor
+@Tag(name = "Tuition Module", description = "Quản lý học phí và thanh toán")
+public class TuitionController {
+
+    private final TuitionService tuitionService;
+
+    @PostMapping("/student/{studentId}/calculate/{semesterId}")
+    @PreAuthorize("hasAnyRole('GIAOVU', 'ADMIN')")
+    @Operation(summary = "Tính toán học phí kỳ này cho sinh viên (phân biệt học mới/học lại)")
+    public ApiResponse<StudentTuitionResponse> calculateTuition(
+            @PathVariable UUID studentId,
+            @PathVariable UUID semesterId) {
+        return ApiResponse.success(tuitionService.calculateTuition(studentId, semesterId), "Tính học phí thành công");
+    }
+
+    @GetMapping("/student/{studentId}")
+    @PreAuthorize("hasAnyRole('SINHVIEN', 'GIAOVU', 'ADMIN')")
+    @Operation(summary = "Lấy danh sách học phí của sinh viên")
+    public ApiResponse<List<StudentTuitionResponse>> getStudentTuitions(@PathVariable UUID studentId) {
+        return ApiResponse.success(tuitionService.getStudentTuitions(studentId), "Lấy danh sách học phí thành công");
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('GIAOVU', 'ADMIN')")
+    @Operation(summary = "Lấy toàn bộ danh sách học phí, có thể lọc theo khoa/lớp (Admin/Giáo vụ)")
+    public ApiResponse<List<StudentTuitionResponse>> getAllTuitions(
+            @RequestParam(required = false) UUID departmentId,
+            @RequestParam(required = false) UUID classId) {
+        return ApiResponse.success(tuitionService.getAllTuitions(departmentId, classId), "Lấy toàn bộ danh sách học phí thành công");
+    }
+
+    @PostMapping("/pay")
+    @PreAuthorize("hasAnyRole('SINHVIEN', 'GIAOVU', 'ADMIN')")
+    @Operation(summary = "Thanh toán học phí")
+    public ApiResponse<PaymentResponse> payTuition(@RequestBody PaymentRequest request) {
+        return ApiResponse.success(tuitionService.processPayment(request), "Thanh toán thành công");
+    }
+
+    @GetMapping("/{tuitionId}/payments")
+    @PreAuthorize("hasAnyRole('SINHVIEN', 'GIAOVU', 'ADMIN')")
+    @Operation(summary = "Lấy lịch sử thanh toán của một khoản học phí")
+    public ApiResponse<List<PaymentResponse>> getPaymentHistory(@PathVariable UUID tuitionId) {
+        return ApiResponse.success(tuitionService.getPaymentHistory(tuitionId), "Lấy lịch sử thanh toán thành công");
+    }
+}
